@@ -19,6 +19,27 @@ public class ChessGame {
      */
     public TeamColor getTeamTurn() {
         throw new RuntimeException("Not implemented");
+//        boolean gameover = false;
+//        int num_turns = 0;
+//        while(gameover == false){
+//            if(num_turns == 0) {
+//                //white's turn
+//               num_turns = num_turns + 1;
+//                return TeamColor.WHITE;
+//            }
+//            //if game is over return true
+//
+//            //blacks turn when odd
+//            else if (num_turns % 2 != 0) {
+//                num_turns = num_turns + 1;
+//                return TeamColor.BLACK;
+//            }
+//            //whites turn when even
+//            else if (num_turns % 2 == 0){
+//                num_turns = num_turns + 1;
+//                return TeamColor.WHITE;
+//            }
+//        }
     }
 
     /**
