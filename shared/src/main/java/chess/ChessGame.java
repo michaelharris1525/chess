@@ -67,6 +67,7 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+        /*first find out what the piece is, then find out where that piece is on that board, then return a collection of valid moves to chess_piece*/
         throw new RuntimeException("Not implemented");
     }
 
