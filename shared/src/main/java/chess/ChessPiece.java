@@ -86,13 +86,48 @@ public class ChessPiece {
 
         //how king moves
         else if(this.pieceType == PieceType.KING) {
-            //rules valid rules for the king
-//            if(inBoundsRow() == true) {
-//
-//            }
+            // Directions for the king: (row delta, column delta)
+            int[][] directions = {
+                    {-1, 0},  // down
+                    {1, 0},   // up
+                    {0, -1},  // left
+                    {0, 1},   // right
+                    {-1, -1}, // down-left
+                    {-1, 1},  // down-right
+                    {1, -1},  // up-left
+                    {1, 1}    // up-right
+            };
 
-            System.out.println("Hello, KING!");
+            for (int[] direction : directions) {
+                int new_row = myPosition.getRow() + direction[0];
+                int new_col = myPosition.getColumn() + direction[1];
+
+                // Base case: Check if the position is out of bounds
+                if (new_row < 1 || new_row > 8 || new_col < 1 || new_col > 8) {
+                    continue;
+                }
+
+                ChessPosition new_position = new ChessPosition(new_row, new_col);
+                ChessMove move = new ChessMove(myPosition, new_position, null);
+
+                // If the square is empty, add the move and stop further checks in this direction
+                if (board.getPiece(new_position) == null) {
+                    list_moves.add(move);
+                }
+                // If the square has a piece of the same color, stop further checks in this direction
+                else if (board.getPiece(new_position).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
+                    continue;
+                }
+                // If the square has an opponent's piece, add the move and stop further checks in this direction
+                else if (board.getPiece(new_position).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                    list_moves.add(move);
+                }
+            }
+
+
         }
+
+
         //how knight moves
         else if(this.pieceType == PieceType.KNIGHT) {
             boolean left_up = true;
