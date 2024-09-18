@@ -274,7 +274,6 @@ public class ChessPiece {
 
         //how rook moves
         else if(this.pieceType == PieceType.ROOK){
-            System.out.println("Hello, ROOK!");
             boolean left = true;
             boolean right = true;
             boolean up = true;
@@ -350,7 +349,7 @@ public class ChessPiece {
 
             while(up == true){
                 int new_row = new_position.getRow() + 1;
-                ChessPosition up_position = new ChessPosition(new_row, myPosition.getRow());
+                ChessPosition up_position = new ChessPosition(new_row, myPosition.getColumn());
 
                 //base case if it goes out of bounds, only have to worry about 1 since its only going left
                 if(new_row > 8) {
@@ -385,7 +384,7 @@ public class ChessPiece {
 
             while(down == true){
                 int new_row = new_position.getRow() - 1;
-                ChessPosition up_position = new ChessPosition(new_row, myPosition.getRow());
+                ChessPosition up_position = new ChessPosition(new_row, myPosition.getColumn());
 
                 //base case if it goes out of bounds, only have to worry about 1 since its only going left
                 if(new_row < 1) {
