@@ -146,6 +146,7 @@ public class ChessPiece {
 
             //upleft
             for (int i = 2; i > 0; i--){
+
                 int new_row = new_position.getRow() + j;
                 int col_left = new_position.getColumn() - i;
                 //int col_right = new_position.getColumn() + 1;
@@ -153,6 +154,7 @@ public class ChessPiece {
                 //base case if it goes too far left or too high up
                 if(new_row > 8 || col_left < 1) {
                     j++;
+                    new_position = myPosition;
                     continue;
                 }
 
@@ -165,6 +167,7 @@ public class ChessPiece {
 
                 //add if null or empty square
                 if (board.getPiece(up_position) == null) {
+                    j++;
                     list_moves.add(moves);
                 }
 
@@ -182,8 +185,9 @@ public class ChessPiece {
                     continue;
                 }
                 //update new or copy to the left
-                new_position = up_position;
+                new_position = myPosition;
             }
+            j=1;
 
             //upright
             for (int i = 2; i > 0; i--){
@@ -194,6 +198,7 @@ public class ChessPiece {
                 //base case if it goes too far right or too high up
                 if(new_row > 8 || col_right > 8) {
                     j++;
+                    new_position = myPosition;
                     continue;
                 }
 
@@ -206,6 +211,7 @@ public class ChessPiece {
 
                 //add if null or empty square
                 if (board.getPiece(up_position) == null) {
+                    j++;
                     list_moves.add(moves);
                 }
 
@@ -223,8 +229,11 @@ public class ChessPiece {
                     continue;
                 }
                 //update new or copy to the left
-                new_position = up_position;
+                new_position = myPosition;
             }
+
+            j=1;
+
             //down_right
             for (int i = 2; i > 0; i--){
                 int new_row = new_position.getRow() - j;
@@ -232,8 +241,9 @@ public class ChessPiece {
                 //int col_right = new_position.getColumn() + 1;
 
                 //base case if it goes too far right or too high up
-                if(new_row > 8 || col_right > 8) {
+                if(new_row < 1 || col_right > 8) {
                     j++;
+                    new_position = myPosition;
                     continue;
                 }
 
@@ -246,6 +256,7 @@ public class ChessPiece {
 
                 //add if null or empty square
                 if (board.getPiece(up_position) == null) {
+                    j++;
                     list_moves.add(moves);
                 }
 
@@ -263,17 +274,20 @@ public class ChessPiece {
                     continue;
                 }
                 //update new or copy to the left
-                new_position = up_position;
+                new_position = myPosition;
             }
+            j=1;
+
             //down_left
             for (int i = 2; i > 0; i--){
-                int new_row = new_position.getRow() + j;
+                int new_row = new_position.getRow() - j;
                 int col_left = new_position.getColumn() - i;
                 //int col_right = new_position.getColumn() + 1;
 
                 //base case if it goes too far left or too high up
-                if(new_row > 8 || col_left < 1) {
+                if(new_row < 1 || col_left < 1) {
                     j++;
+                    new_position = myPosition;
                     continue;
                 }
 
@@ -286,6 +300,7 @@ public class ChessPiece {
 
                 //add if null or empty square
                 if (board.getPiece(up_position) == null) {
+                    j++;
                     list_moves.add(moves);
                 }
 
@@ -303,7 +318,7 @@ public class ChessPiece {
                     continue;
                 }
                 //update new or copy to the left
-                new_position = up_position;
+                new_position = myPosition;
             }
 
         }
