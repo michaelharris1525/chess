@@ -93,6 +93,9 @@ public class ChessPiece {
 
 
             if(bool_pawn_white == true) {
+                //check to see if pawn has moved or not
+
+                //pawn rules of movement
                 for (int i = 0; i < 2; i++) {
                     if (new_row > 8 || new_col < 1 || new_col > 8) {
                         continue;
@@ -138,6 +141,9 @@ public class ChessPiece {
             }
             //else if pawn is black
             else {
+                //check to see if pawn has moved or not
+
+                //pawn rules of movement
                 for (int i = 0; i < 2; i++) {
                     if (new_row < 1 || new_col < 1 || new_col > 8) {
                         continue;
