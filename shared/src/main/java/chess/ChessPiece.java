@@ -81,12 +81,100 @@ public class ChessPiece {
         Collection<ChessMove>list_moves = new ArrayList<>();
 
         if(this.pieceType == PieceType.PAWN){
-            /*if pawn has not moved yet, can move up one or 2 squares
-            * else pawn moves up only one
-            * if there is a piece diagonal that is not the same color, can move to that spot
-            * after a move is made, delete the piece and addPiece of the same value. So it creates itself before deleting itself.
-            * */
-            System.out.println("Hello, PAWN!");
+            /* if and only if move diagonal if opposite color is on those sides
+            * movement is row+1 always and depending on if there are pieces diagonally col +1 or -1
+            *  */
+            int new_row = myPosition.getRow();
+            int new_col = myPosition.getColumn();
+            boolean bool_pawn_white = false;
+            if(board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.WHITE){
+                bool_pawn_white = true;
+            }
+
+
+            if(bool_pawn_white == true) {
+                for (int i = 0; i < 2; i++) {
+                    if (new_row > 8 || new_col < 1 || new_col > 8) {
+                        continue;
+                    }
+                    //new chess piece position it can maybe go to
+                    if (i == 0) {
+                        int base_Col = new_col - 1;
+                        ChessPosition left_up_position = new ChessPosition(new_row, base_Col - 1);
+                        if (new_row > 8 || base_Col < 1 || base_Col > 8) {
+                            continue;
+                        }
+                        ChessMove basecase_move = new ChessMove(myPosition, left_up_position, null);
+                        if (board.getPiece(left_up_position) == null ||
+                                (board.getPiece(left_up_position).getTeamColor() == board.getPiece(myPosition).getTeamColor())) {
+                            continue;
+                        } else if (board.getPiece(left_up_position).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                            list_moves.add(basecase_move);
+                            continue;
+                        }
+                    }
+                    ChessPosition new_position = new ChessPosition(new_row + 1, new_col + (i - 1));
+                    //new move
+                    ChessMove moves = new ChessMove(myPosition, new_position, null);
+                    if (board.getPiece(new_position) == null) {
+                        list_moves.add(moves);
+                        new_position = myPosition;
+                        continue;
+                    }
+                    // If the square has a piece of the same color, stop further checks in this direction
+                    else if (board.getPiece(new_position).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
+                        new_position = myPosition;
+                        continue;
+                    } else if (board.getPiece(new_position).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                        list_moves.add(moves);
+                        new_position = myPosition;
+                        continue;
+                    }
+
+                }
+            }
+            //else if pawn is black
+            else {
+                for (int i = 0; i < 2; i++) {
+                    if (new_row < 1 || new_col < 1 || new_col > 8) {
+                        continue;
+                    }
+                    //new chess piece position it can maybe go to
+                    if (i == 0) {
+                        int base_Col = new_col - 1;
+                        ChessPosition left_down_position = new ChessPosition(new_row-1, base_Col - 1);
+                        if (new_row < 1 || base_Col < 1 || base_Col > 8) {
+                            continue;
+                        }
+                        ChessMove basecase_move = new ChessMove(myPosition, left_down_position, null);
+                        if (board.getPiece(left_down_position) == null ||
+                                (board.getPiece(left_down_position).getTeamColor() == board.getPiece(myPosition).getTeamColor())) {
+                            continue;
+                        } else if (board.getPiece(left_down_position).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                            list_moves.add(basecase_move);
+                            continue;
+                        }
+                    }
+                    ChessPosition new_position = new ChessPosition(new_row - 1, new_col + (i - 1));
+                    //new move
+                    ChessMove moves = new ChessMove(myPosition, new_position, null);
+                    if (board.getPiece(new_position) == null) {
+                        list_moves.add(moves);
+                        new_position = myPosition;
+                        continue;
+                    }
+                    // If the square has a piece of the same color, stop further checks in this direction
+                    else if (board.getPiece(new_position).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
+                        new_position = myPosition;
+                        continue;
+                    } else if (board.getPiece(new_position).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                        list_moves.add(moves);
+                        new_position = myPosition;
+                        continue;
+                    }
+
+                }
+            }
         }
 
         //how king moves
