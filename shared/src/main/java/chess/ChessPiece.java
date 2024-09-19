@@ -100,7 +100,7 @@ public class ChessPiece {
                     //new chess piece position it can maybe go to
                     if (i == 0) {
                         int base_Col = new_col - 1;
-                        ChessPosition left_up_position = new ChessPosition(new_row, base_Col - 1);
+                        ChessPosition left_up_position = new ChessPosition(new_row + 1, base_Col - 1);
                         if (new_row > 8 || base_Col < 1 || base_Col > 8) {
                             continue;
                         }
@@ -126,6 +126,9 @@ public class ChessPiece {
                         new_position = myPosition;
                         continue;
                     } else if (board.getPiece(new_position).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                        if (i==1) {
+                            continue;
+                        }
                         list_moves.add(moves);
                         new_position = myPosition;
                         continue;
@@ -167,7 +170,12 @@ public class ChessPiece {
                     else if (board.getPiece(new_position).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
                         new_position = myPosition;
                         continue;
-                    } else if (board.getPiece(new_position).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                    }
+                    else if (board.getPiece(new_position).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                        //if pawn is trying to go vertical color doesn't matter, skip
+                        if (i==1) {
+                            continue;
+                        }
                         list_moves.add(moves);
                         new_position = myPosition;
                         continue;
