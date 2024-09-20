@@ -72,6 +72,23 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
 
+    public boolean pawn_white_promotion_check(int row) {
+        if (row == 8 || row == 1){
+            return true;
+        }
+        return false;
+    }
+    public void create_all_promotionalpieces(ChessPosition myPosition, ChessPosition end_position,
+                                             Collection<ChessMove>list_moves) {
+        ChessPiece.PieceType[]all_types = ChessPiece.PieceType.values();
+        for(ChessPiece.PieceType type: all_types) {
+            if(type == PieceType.KING || type == PieceType.PAWN) {
+                continue;
+            }
+            ChessMove promotion_move = new ChessMove(myPosition, end_position, type);
+            list_moves.add(promotion_move);
+        }
+    }
 
 
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
@@ -125,11 +142,10 @@ public class ChessPiece {
                                 (board.getPiece(left_up_position).getTeamColor() == board.getPiece(myPosition).getTeamColor())) {
                             continue;
                         } else if (board.getPiece(left_up_position).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-                            //if pawn is promoted else add the move for possible capture of piece
-//                            if(left_up_position.getRow() == 7) {
-//                                ChessMove Pawn_Promoted = new ChessMove(myPosition,basecase_move,);
-//                                continue;
-//                            }
+                            if(pawn_white_promotion_check(left_up_position.getRow()) == true){
+                                create_all_promotionalpieces(myPosition,left_up_position,list_moves);
+                                continue;
+                            }
                             list_moves.add(basecase_move);
                             continue;
                         }
@@ -138,6 +154,11 @@ public class ChessPiece {
                     //new move
                     ChessMove moves = new ChessMove(myPosition, new_position, null);
                     if (board.getPiece(new_position) == null) {
+                        if(pawn_white_promotion_check(new_position.getRow()) == true){
+                            create_all_promotionalpieces(myPosition,new_position,list_moves);
+                            new_position = myPosition;
+                            continue;
+                        }
                         list_moves.add(moves);
                         new_position = myPosition;
                         continue;
@@ -160,13 +181,11 @@ public class ChessPiece {
             //else if pawn is black
             else {
                 //check to see if pawn has moved or not
-                //don't know how to compare, so I'll go through every possible location of white pawns and compare the row and column having to exactly match...
                 if(myPosition.getRow() == 7) {
                     //base case if there is a piece in the way (white or black) 1 space up or down then continue. Not possible.
                     ChessPosition d1 = new ChessPosition(new_row-1, new_col);
                     ChessPosition d2 = new ChessPosition(new_row-2,new_col);
-//                    ChessMove downone = new ChessMove(myPosition, d1 ,null);
-//                    ChessMove downtwo = new ChessMove(myPosition,d2,null);
+
                     if(board.getPiece(d1) == null && board.getPiece(d2) == null) {
                         ChessPosition pnot_moved_move = new ChessPosition(new_row - 2, new_col);
                         ChessMove not_move = new ChessMove(myPosition, pnot_moved_move, null);
@@ -193,6 +212,10 @@ public class ChessPiece {
                             continue;
                         }
                         else if (board.getPiece(left_down_position).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                            if(pawn_white_promotion_check(left_down_position.getRow()) == true){
+                                create_all_promotionalpieces(myPosition,left_down_position,list_moves);
+                                continue;
+                            }
                             list_moves.add(basecase_move);
                             continue;
                         }
@@ -201,6 +224,11 @@ public class ChessPiece {
                     //new move
                     ChessMove moves = new ChessMove(myPosition, new_position, null);
                     if (board.getPiece(new_position) == null) {
+                        if(pawn_white_promotion_check(new_position.getRow()) == true){
+                            create_all_promotionalpieces(myPosition,new_position,list_moves);
+                            new_position = myPosition;
+                            continue;
+                        }
                         list_moves.add(moves);
                         new_position = myPosition;
                         continue;
