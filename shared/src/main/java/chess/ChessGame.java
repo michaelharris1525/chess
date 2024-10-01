@@ -209,11 +209,15 @@ public class ChessGame {
             //make a new piece
             ChessPiece new_piece = board.getPiece(start_pos);
             //delete piece whether null or not, remove it. Then add piece to board
-            board.removePiece(end_pos);
+           // board.removePiece(end_pos);
             board.addPiece(end_pos, new_piece);
             //delete the piece where it was at before
             board.removePiece(start_pos);
         }
+//        catch(InvalidMoveException e) {
+//            System.out.println("Invalid move: " + e.getMessage());
+//
+//        }
         catch(Exception e) {
             System.out.println("Invalid move: " + e.getMessage());
         }
@@ -363,7 +367,33 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        //if there is no moves for king and all other pieces can't move, you are in stalemate
+        ChessPosition king_position = find_king(teamColor,board);
+        //Collection<ChessMove> king_moves = validMoves(king_position);
+        //List<ChessMove>list_king_moves = new ArrayList<>(king_moves);
+        //for(ChessMove move: list_king_moves){
+        Collection<ChessMove> king_moves = validMoves(king_position);
+        List<ChessMove>list_king_moves = new ArrayList<>(king_moves);
+        if(list_king_moves.size() == 0){
+            //if none of your other pieces can't move return true
+            for(int row = 1; row <=8; row++){
+                for(int col =1; col <=8; col++) {
+                    ChessPosition current_pos = new ChessPosition(row, col);
+                    ChessPiece current_piece = board.getPiece(current_pos);
+                    if (current_piece != null) {
+                        if (current_piece.getTeamColor().equals(TeamColor.WHITE)) {
+                            Collection<ChessMove> white_piece_moves = validMoves(current_pos);
+                            List<ChessMove> list_white_piece_move = new ArrayList<>(white_piece_moves);
+                            if (list_white_piece_move.size() == (0)) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+        //}
     }
 
     /**
