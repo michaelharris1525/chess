@@ -237,7 +237,20 @@ public class ChessGame {
 //        if(move.getPromotionPiece() != null) {
 //
 //        }
-
+        // Handle the special case of pawn promotion
+        if (new_piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            int finalRow = new_piece.getTeamColor() == TeamColor.WHITE ? 8 : 1;
+            if (end_pos.getRow() == finalRow) {
+                if (move.getPromotionPiece() == null) {
+                    throw new InvalidMoveException("Pawn promotion requires a promotion piece.");
+                }
+                // Replace the pawn with the promoted piece
+                new_piece = new ChessPiece(new_piece.getTeamColor(),move.getPromotionPiece());
+            }
+        } else if (move.getPromotionPiece() != null) {
+            // If a promotion type is provided for a non-pawn piece, it's an invalid move
+            throw new InvalidMoveException("Only pawns can be promoted.");
+        }
 
 
 
