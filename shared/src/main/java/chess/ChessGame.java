@@ -123,10 +123,12 @@ public class ChessGame {
         Collection<ChessMove>empty_list_moves = new ArrayList<>();
         Collection<ChessMove>king_list_moves = new ArrayList<>();
 
-        Collection<ChessMove>list_moves = new_piece.pieceMoves(board,startPosition);
+        Collection<ChessMove>list_moves = new ArrayList<>();
         //if piece is a king
         if (new_piece != null) {
-        if(new_piece.getPieceType().equals(ChessPiece.PieceType.KING)) {
+           list_moves = new_piece.pieceMoves(board,startPosition);
+
+            if(new_piece.getPieceType().equals(ChessPiece.PieceType.KING)) {
             //if piece has not moved and is not in check go in here
             if (isInCheck(new_piece.getTeamColor()) == false) {
                 //if piece moves and is not in check do this
