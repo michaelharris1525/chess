@@ -52,89 +52,130 @@ public class ChessGame {
         WHITE,
         BLACK
     }
-
     public Collection<ChessMove> find_valid_moves(TeamColor teamColor, ChessPiece n_piece,
-                                                  Collection<ChessMove>list_moves_deletelater) {
-        //kings position
-        ChessPosition kings_position = find_king(teamColor,board);
-        //opposite color
+                                                  Collection<ChessMove> list_moves_deletelater) {
+        // King's position
+        ChessPosition kings_position = find_king(teamColor, board);
+        // Opposite color
         TeamColor Opposite_color = flip_colors(teamColor);
-        //list of moves the piece can make
+        // List of moves the piece can make
         List<ChessMove> moves_list = new ArrayList<>(list_moves_deletelater);
-        //list of valid moves
+        // List of valid moves
         Collection<ChessMove> valid_moves = new ArrayList<>();
 
-        //iterate through every possible move your piece and color can make,
-        //make that move and use copy of board to see if it works
+        // Iterate through every possible move your piece and color can make,
+        // make that move and use a copy of board to see if it works
         for (int num = 0; num < moves_list.size(); num++) {
-            //chess move for your team color (ex: this is white)
-            ChessMove c_move = moves_list.get(num);
-            //section on github of copying objects
-            ChessBoard copy_of_board = board.copy_board();
-            //if the piece moves it breaks
-            boolean tf_break = false;
+            ChessMove c_move = moves_list.get(num);  // Chess move for your team color
+            ChessBoard copy_of_board = board.copy_board();  // Copy the board for this move simulation
+            boolean isKingInCheck = false;  // Indicates whether the move puts the king in check
 
-            //make move on copy of board and determine if the king is in check or not
-            //makeMove_copy(c_move,copy_of_board);
+            // Make the move on the copied board
+            makeMove_copy(c_move, copy_of_board);
 
-            //all possible values for opposing pieces (ex: this is black)
+            // Check if any move by the opposing pieces puts the king in check
+            outer_loop:
             for (int row = 1; row <= 8; row++) {
                 for (int col = 1; col <= 8; col++) {
-                    //position and piece we'll be using
-                    ChessPosition pos_lookinat = new ChessPosition(row, col);
-                    ChessPiece piece_lookinat = copy_of_board.getPiece(pos_lookinat);
-                    //if piece matches the oppposing player's piece then we care about
-                    // if one of its moves is in check or not, if it is then you break
-                    // and don't add valid move
-                    if (piece_lookinat != null) {
-                        if (piece_lookinat.getTeamColor().equals(Opposite_color)) {
-                            piece_lookinat.pieceMoves(copy_of_board, pos_lookinat);
-                            Collection<ChessMove> list_moves = piece_lookinat.pieceMoves(copy_of_board, pos_lookinat);
-                            List<ChessMove> moves_list_newpiece = new ArrayList<>(list_moves);
-                            for (int i = 0; i < moves_list_newpiece.size(); i++) {
-                                ChessMove chessssmove = moves_list_newpiece.get(i);
-                                makeMove_copy(chessssmove, copy_of_board);
-                                if(isInCheck_king(teamColor,copy_of_board) == false){
-                                    tf_break = true;
-                                }
-                                else if (chessssmove.getEndPosition().equals(kings_position)) {
-                                    tf_break = true;
-                                }
-                                else{
-                                    tf_break = false;
-                                }
-//                                else {
-//                                    //if piece moves and is not in check do this
-//                                    ChessBoard new_copy_of_board = board.copy_board();
-//                                    Collection<ChessMove> new_list_moves = piece_lookinat.pieceMoves(new_copy_of_board, pos_lookinat);
-//                                    List<ChessMove>list_moves_before_change = new ArrayList<>(new_list_moves);
-//                                    for(int s = 0; s< list_moves_before_change.size(); s++){
-//                                        ChessMove king_move = list_moves_before_change.get(s);
-//                                        makeMove_copy(list_moves_before_change.get(s), new_copy_of_board);
-//                                        if(!isInCheck_king(piece_lookinat.getTeamColor(), new_copy_of_board)) {
-//                                            valid_moves.add(list_moves_before_change.get(s));
-//                                            new_copy_of_board= board.copy_board();
-//                                        }
-//                                        new_copy_of_board = board.copy_board();
-//                                    }
-//                                }
+                    ChessPosition pos = new ChessPosition(row, col);
+                    ChessPiece piece = copy_of_board.getPiece(pos);
 
-                                copy_of_board = board.copy_board();
+                    if (piece != null && piece.getTeamColor().equals(Opposite_color)) {
+                        // Get all possible moves for the opponent's piece
+                        Collection<ChessMove> opponentMoves = piece.pieceMoves(copy_of_board, pos);
+                        for (ChessMove opponentMove : opponentMoves) {
+                            // If this move puts the king in check, mark it as invalid
+                            makeMove_copy(opponentMove, copy_of_board);
+                            if (isInCheck_king(teamColor, copy_of_board)) {
+                                isKingInCheck = true;
+                                break outer_loop;  // Stop checking further once the king is in check
                             }
+
+                            // Restore board to its state before the move
+                            copy_of_board = board.copy_board();  // Re-copy the board to restore the state
                         }
                     }
                 }
             }
-            if(tf_break == false) {
+
+            // If the move does not put the king in check, add it to the list of valid moves
+            if (!isKingInCheck) {
                 valid_moves.add(c_move);
             }
         }
-        return valid_moves;
 
-//        for (int num = 0; num < moves_list.size(); num++) {
-//            ChessMove c_move = moves_list.get(num);
-//        }
+        return valid_moves;
     }
+//    public Collection<ChessMove> find_valid_moves(TeamColor teamColor, ChessPiece n_piece,
+//                                                  Collection<ChessMove>list_moves_deletelater) {
+//        //kings position
+//        ChessPosition kings_position = find_king(teamColor,board);
+//        //opposite color
+//        TeamColor Opposite_color = flip_colors(teamColor);
+//        //list of moves the piece can make
+//        List<ChessMove> moves_list = new ArrayList<>(list_moves_deletelater);
+//        //list of valid moves
+//        Collection<ChessMove> valid_moves = new ArrayList<>();
+//
+//        //iterate through every possible move your piece and color can make,
+//        //make that move and use copy of board to see if it works
+//        for (int num = 0; num < moves_list.size(); num++) {
+//            //chess move for your team color (ex: this is white)
+//            ChessMove c_move = moves_list.get(num);
+//            //section on github of copying objects
+//            ChessBoard copy_of_board = board.copy_board();
+//            //if the piece moves it breaks
+//            boolean tf_break = false;
+//
+//            //make move on copy of board and determine if the king is in check or not
+//            //makeMove_copy(c_move,copy_of_board);
+//
+//            //all possible values for opposing pieces (ex: this is black)
+//            for (int row = 1; row <= 8; row++) {
+//                for (int col = 1; col <= 8; col++) {
+//                    //position and piece we'll be using
+//                    ChessPosition pos_lookinat = new ChessPosition(row, col);
+//                    ChessPiece piece_lookinat = copy_of_board.getPiece(pos_lookinat);
+//                    //if piece matches the oppposing player's piece then we care about
+//                    // if one of its moves is in check or not, if it is then you break
+//                    // and don't add valid move
+//
+//                    //make move on white or normal color
+//                    makeMove_copy(c_move,copy_of_board);
+//                    if (piece_lookinat != null) {
+//                        //if black matches king's position or king is in check return true else keep it false;
+//                        if (piece_lookinat.getTeamColor().equals(Opposite_color)) {
+//                            Collection<ChessMove> Black_list_moves
+//                                    = piece_lookinat.pieceMoves(copy_of_board, pos_lookinat);
+//                            List<ChessMove> moves_list_newpiece = new ArrayList<>(Black_list_moves);
+//                            for (int i = 0; i < moves_list_newpiece.size(); i++) {
+//                                ChessMove chessssmove = moves_list_newpiece.get(i);
+//                                makeMove_copy(chessssmove, copy_of_board);
+//                                if(isInCheck_king(teamColor,copy_of_board) == false){
+//                                    tf_break = true;
+//                                }
+//                                else if (chessssmove.getEndPosition().equals(kings_position)) {
+//                                    tf_break = true;
+//                                }
+//
+//
+//                                copy_of_board = board.copy_board();
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            if(tf_break == false) {
+//                valid_moves.add(c_move);
+//                tf_break = false;
+//            }
+//        }
+//        return valid_moves;
+//
+////        for (int num = 0; num < moves_list.size(); num++) {
+////            ChessMove c_move = moves_list.get(num);
+////        }
+//    }
 
     /**
      * Gets a valid moves for a piece at the given location
