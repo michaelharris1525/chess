@@ -11,8 +11,8 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessPiece {
-    private ChessGame.TeamColor pieceColor;
-    private ChessPiece.PieceType pieceType;
+    private final ChessGame.TeamColor pieceColor;
+    private final ChessPiece.PieceType pieceType;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
@@ -112,7 +112,6 @@ public class ChessPiece {
             if(bool_pawn_white == true) {
                 //check to see if pawn has moved or not by comparing all the white pawns on the reset board in the CHESSBOARD CLASS
 
-                //don't know how to compare, so I'll go through every possible location of white pawns and compare the row and column having to exactly match...
                 if(myPosition.getRow() == 2) {
                     ChessPosition d1 = new ChessPosition(new_row+1, new_col);
                     ChessPosition d2 = new ChessPosition(new_row+2,new_col);
@@ -493,7 +492,6 @@ public class ChessPiece {
 
         //how bishop moves
         else if(this.pieceType == PieceType.BISHOP) {
-//            System.out.println("Hello, BISHOP!");
             //moves diagonal so +1 to the row and +1 or -1 for column if its moving up, if moving down its -1 row and -1 and +1 col
             boolean left_up = true;
             boolean right_up = true;
@@ -812,9 +810,6 @@ public class ChessPiece {
 
         //how queen moves
         else if(this.pieceType == PieceType.QUEEN){
-            System.out.println("Hello, QUEEN!");
-
-
             //Bishop moveset
             boolean left_up = true;
             boolean right_up = true;
