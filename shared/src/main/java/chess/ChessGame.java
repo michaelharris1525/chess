@@ -35,7 +35,7 @@ public class ChessGame {
      *
      * @param team the team whose turn it is
      */
-    public void setTeamTurn(TeamColor team) {
+    public void flip_setTeamTurn(TeamColor team) {
         //just flip the colors to the opposite when this functin is called
         if(TeamColor.WHITE == team) {
             team = b_color;
@@ -43,6 +43,10 @@ public class ChessGame {
         else{
             team = w_color;
         }
+        current_color=team;
+    }
+    public void setTeamTurn(TeamColor team) {
+        //just flip the colors to the opposite when this functin is called
         current_color=team;
     }
 
@@ -225,9 +229,9 @@ public class ChessGame {
             }
             //throw new InvalidMoveException();
         }
-//        if(new_piece.getTeamColor() != current_color){
-//            throw new InvalidMoveException();
-//        }
+        if(new_piece.getTeamColor() != current_color){
+            throw new InvalidMoveException();
+        }
 
         //pawn promotion
 //        if(move.getPromotionPiece() != null) {
@@ -242,7 +246,7 @@ public class ChessGame {
         //delete piece whether null or not, remove it. Then add piece to board
        // board.removePiece(end_pos);
         board.addPiece(end_pos, new_piece);
-        setTeamTurn(new_piece.getTeamColor());
+        flip_setTeamTurn(new_piece.getTeamColor());
         //delete the piece where it was at before
         board.removePiece(start_pos);
 
