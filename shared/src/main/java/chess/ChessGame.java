@@ -72,6 +72,7 @@ public class ChessGame {
 
             // Make the move on the copied board
             makeMove_copy(c_move, copy_of_board);
+            ChessBoard new_copy = copy_of_board.copy_board();
 
             // Check if any move by the opposing pieces puts the king in check
             outer_loop:
@@ -85,14 +86,14 @@ public class ChessGame {
                         Collection<ChessMove> opponentMoves = piece.pieceMoves(copy_of_board, pos);
                         for (ChessMove opponentMove : opponentMoves) {
                             // If this move puts the king in check, mark it as invalid
-                            makeMove_copy(opponentMove, copy_of_board);
+                            //makeMove_copy(opponentMove, copy_of_board);
                             if (isInCheck_king(teamColor, copy_of_board)) {
                                 isKingInCheck = true;
                                 break outer_loop;  // Stop checking further once the king is in check
                             }
 
                             // Restore board to its state before the move
-                            copy_of_board = board.copy_board();  // Re-copy the board to restore the state
+                            copy_of_board = new_copy.copy_board();  // Re-copy the board to restore the state
                         }
                     }
                 }
