@@ -53,9 +53,10 @@ public class ChessGame {
         BLACK
     }
 
-    public Collection<ChessMove> find_valid_moves(TeamColor teamColor, ChessPiece n_piece,Collection<ChessMove>list_moves_deletelater) {
+    public Collection<ChessMove> find_valid_moves(TeamColor teamColor, ChessPiece n_piece,
+                                                  Collection<ChessMove>list_moves_deletelater) {
         //kings position
-        ChessPosition kings_position = find_king(teamColor);
+        ChessPosition kings_position = find_king(teamColor,board);
         //opposite color
         TeamColor Opposite_color = flip_colors(teamColor);
         //list of moves the piece can make
@@ -69,12 +70,12 @@ public class ChessGame {
             //chess move for your team color (ex: this is white)
             ChessMove c_move = moves_list.get(num);
             //section on github of copying objects
-            ChessBoard copy_of_board = board;
+            ChessBoard copy_of_board = board.copy_board();
             //if the piece moves it breaks
             boolean tf_break = false;
 
             //make move on copy of board and determine if the king is in check or not
-            makeMove_copy(c_move,copy_of_board);
+            //makeMove_copy(c_move,copy_of_board);
 
             //all possible values for opposing pieces (ex: this is black)
             for (int row = 1; row <= 8; row++) {
@@ -90,15 +91,35 @@ public class ChessGame {
                             piece_lookinat.pieceMoves(copy_of_board, pos_lookinat);
                             Collection<ChessMove> list_moves = piece_lookinat.pieceMoves(copy_of_board, pos_lookinat);
                             List<ChessMove> moves_list_newpiece = new ArrayList<>(list_moves);
-                            for (int i = 0; num < moves_list_newpiece.size(); i++) {
-                                ChessMove chessssmove = moves_list.get(i);
+                            for (int i = 0; i < moves_list_newpiece.size(); i++) {
+                                ChessMove chessssmove = moves_list_newpiece.get(i);
                                 makeMove_copy(chessssmove, copy_of_board);
-                                if(isInCheck(teamColor) == false){
+                                if(isInCheck_king(teamColor,copy_of_board) == false){
                                     tf_break = true;
                                 }
-                                if (chessssmove.getEndPosition().equals(kings_position)) {
+                                else if (chessssmove.getEndPosition().equals(kings_position)) {
                                     tf_break = true;
                                 }
+                                else{
+                                    tf_break = false;
+                                }
+//                                else {
+//                                    //if piece moves and is not in check do this
+//                                    ChessBoard new_copy_of_board = board.copy_board();
+//                                    Collection<ChessMove> new_list_moves = piece_lookinat.pieceMoves(new_copy_of_board, pos_lookinat);
+//                                    List<ChessMove>list_moves_before_change = new ArrayList<>(new_list_moves);
+//                                    for(int s = 0; s< list_moves_before_change.size(); s++){
+//                                        ChessMove king_move = list_moves_before_change.get(s);
+//                                        makeMove_copy(list_moves_before_change.get(s), new_copy_of_board);
+//                                        if(!isInCheck_king(piece_lookinat.getTeamColor(), new_copy_of_board)) {
+//                                            valid_moves.add(list_moves_before_change.get(s));
+//                                            new_copy_of_board= board.copy_board();
+//                                        }
+//                                        new_copy_of_board = board.copy_board();
+//                                    }
+//                                }
+
+                                copy_of_board = board.copy_board();
                             }
                         }
                     }
@@ -132,48 +153,57 @@ public class ChessGame {
         Collection<ChessMove>list_moves = new_piece.pieceMoves(board,startPosition);
         //if piece is a king
         if (new_piece != null) {
-            if(new_piece.getPieceType().equals(ChessPiece.PieceType.KING)) {
-                //if piece has not moved and is not in check go in here
-                if (isInCheck(new_piece.getTeamColor()) == false) {
-                    //if piece moves and is not in check do this
-                    ChessBoard copy_of_board = board;
-                    list_moves = new_piece.pieceMoves(board, startPosition);
-                    List<ChessMove>list_moves_before_change = new ArrayList<>(list_moves);
-                    for(int s = 0; s< list_moves_before_change.size(); s++){
-                        makeMove_copy(list_moves_before_change.get(s), copy_of_board);
-                        if(!isInCheck_king(new_piece.getTeamColor(), copy_of_board)) {
-                            king_list_moves.add(list_moves_before_change.get(s));
-                        }
-                        copy_of_board = board;
-                    }
-                    return king_list_moves;
-                } else {
-                    list_moves = find_valid_moves(new_piece.getTeamColor(), new_piece, list_moves);
-                    return list_moves;
-                }
-            }
-        }
-
-        //if a piece is not a king
-        if (new_piece != null && new_piece.getPieceType().equals(ChessPiece.PieceType.KING)) {
+        if(new_piece.getPieceType().equals(ChessPiece.PieceType.KING)) {
             //if piece has not moved and is not in check go in here
             if (isInCheck(new_piece.getTeamColor()) == false) {
                 //if piece moves and is not in check do this
-                ChessBoard copy_of_board = board;
-                list_moves = new_piece.pieceMoves(board, startPosition);
+                ChessBoard copy_of_board = board.copy_board();
+                list_moves = new_piece.pieceMoves(copy_of_board, startPosition);
                 List<ChessMove>list_moves_before_change = new ArrayList<>(list_moves);
                 for(int s = 0; s< list_moves_before_change.size(); s++){
+                    ChessMove king_move = list_moves_before_change.get(s);
                     makeMove_copy(list_moves_before_change.get(s), copy_of_board);
-                    if(isInCheck(new_piece.getTeamColor())) {
-                        return empty_list_moves;
+                    if(!isInCheck_king(new_piece.getTeamColor(), copy_of_board)) {
+                        king_list_moves.add(list_moves_before_change.get(s));
+                        copy_of_board = board.copy_board();
                     }
-                    copy_of_board = board;
+                    copy_of_board = board.copy_board();
                 }
-                return list_moves;
-            } else {
+                return king_list_moves;
+            }
+            else {
                 list_moves = find_valid_moves(new_piece.getTeamColor(), new_piece, list_moves);
                 return list_moves;
             }
+        }
+        //if a piece is not a king
+        else{
+            //if piece has not moved and is not in check go in here
+            if (isInCheck(new_piece.getTeamColor()) == false) {
+                //if piece moves and is not in check do this
+                ChessBoard copy_of_board = board.copy_board();
+
+                List<ChessMove>new_list_moves = new ArrayList<>();
+                list_moves = new_piece.pieceMoves(copy_of_board, startPosition);
+                List<ChessMove>list_moves_before_change = new ArrayList<>(list_moves);
+
+                for(int s = 0; s< list_moves_before_change.size(); s++){
+                    makeMove_copy(list_moves_before_change.get(s), copy_of_board);
+                    if(!isInCheck_king(new_piece.getTeamColor(), copy_of_board)) {
+                        //since in check, is there a move that takes a piece?
+                        // if so is the king still in check after piece is taken
+                        new_list_moves.add(list_moves_before_change.get(s));
+                    }
+                    copy_of_board = board.copy_board();
+                }
+                return new_list_moves;
+            }
+            else {
+                //crashes here
+                list_moves = find_valid_moves(new_piece.getTeamColor(), new_piece, list_moves);
+                return list_moves;
+             }
+        }
         }
         return list_moves;
     }
@@ -220,11 +250,11 @@ public class ChessGame {
         //throw new RuntimeException("Not implemented");
         ChessPosition start_pos = move.getStartPosition();
         ChessPosition end_pos = move.getEndPosition();
-        //make a new piece
-        ChessPiece new_piece = board.getPiece(start_pos);
+        //make a new piece from original board
+        ChessPiece new_piece = copy_board.getPiece(start_pos);
         //delete piece whether null or not, remove it. Then add piece to board
-        copy_board.removePiece(end_pos);
         copy_board.addPiece(end_pos, new_piece);
+        //copy_board.removePiece(end_pos);
         //delete the piece where it was at before
         copy_board.removePiece(start_pos);
 
@@ -237,14 +267,14 @@ public class ChessGame {
         return w_color;
     }
 
-    public ChessPosition find_king(TeamColor teamColor){
+    public ChessPosition find_king(TeamColor teamColor, ChessBoard copy_or_og){
         ChessPiece what_imlookingfor = new ChessPiece(teamColor, ChessPiece.PieceType.KING);
         ChessPosition king_position = new ChessPosition(1,1);
         for(int row = 1; row <=8; row++) {
             for(int col = 1; col <=8; col++){
                 //goes through the entire board to check to see if that piece is a king, and if it is return the position of the king
                 ChessPosition new_pos = new ChessPosition(row, col);
-                ChessPiece tf_king = board.getPiece(new_pos);
+                ChessPiece tf_king = copy_or_og.getPiece(new_pos);
                 if(what_imlookingfor.equals(tf_king)){
                     //king_position = new_pos;
                     return new_pos;
@@ -267,7 +297,7 @@ public class ChessGame {
         public boolean isInCheck(TeamColor teamColor) {
         //throw new RuntimeException("Not implemented");
         //run all possible pieces on opposite color of teamColor and see if any piece specifically hits the king, and if it does, return true
-        ChessPosition kings_position = find_king(teamColor);
+        ChessPosition kings_position = find_king(teamColor, board);
         //opposite color
         TeamColor Opposite_color = flip_colors(teamColor);
         //all moves that lead to check
@@ -310,7 +340,7 @@ public class ChessGame {
         //throw new RuntimeException("Not implemented");
         ChessPiece king = new ChessPiece(teamColor, ChessPiece.PieceType.KING);
         Collection<ChessMove>empty_moves = new ArrayList<>();
-        if(king.pieceMoves(board, find_king(teamColor)) == empty_moves) {
+        if(king.pieceMoves(board, find_king(teamColor,board)) == empty_moves) {
             return true;
         }
         else{
@@ -350,7 +380,7 @@ public class ChessGame {
     public boolean isInCheck_king(TeamColor teamColor, ChessBoard copy_of_board) {
         //throw new RuntimeException("Not implemented");
         //run all possible pieces on opposite color of teamColor and see if any piece specifically hits the king, and if it does, return true
-        ChessPosition kings_position = find_king(teamColor);
+        ChessPosition kings_position = find_king(teamColor,copy_of_board);
         //opposite color
         TeamColor Opposite_color = flip_colors(teamColor);
         //all moves that lead to check

@@ -16,6 +16,27 @@ public class ChessBoard {
         
     }
 
+    public ChessBoard(ChessBoard other) {
+        // Create a new squares array for the new ChessBoard instance
+        this.squares = new ChessPiece[8][8];  // Creates a new, independent array.
+
+        // Copy pieces from the `other` board
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                ChessPiece pieceToCopy = other.squares[row][col];
+                if (pieceToCopy != null) {
+                    // Create a new ChessPiece object to prevent shared references
+                    this.squares[row][col] = new ChessPiece(pieceToCopy.getTeamColor(), pieceToCopy.getPieceType());
+                }
+            }
+        }
+    }
+
+    public ChessBoard copy_board() {
+        return new ChessBoard(this);
+    }
+
+
     /**
      * Adds a chess piece to the chessboard
      *
@@ -122,4 +143,5 @@ public String toString() {
         addPiece(new ChessPosition(8,3), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP));
         addPiece(new ChessPosition(8,6), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP));
     }
+
 }
