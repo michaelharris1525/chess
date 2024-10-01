@@ -20,6 +20,7 @@ public class ChessGame {
         this.w_color = TeamColor.WHITE;
         this.b_color = TeamColor.BLACK;
         this.board = new ChessBoard();
+        this.board.resetBoard();
     }
 
     /**
@@ -27,7 +28,6 @@ public class ChessGame {
      */
     public TeamColor getTeamTurn() {
         return current_color;
-
     }
 
     /**
@@ -43,6 +43,7 @@ public class ChessGame {
         else{
             team = w_color;
         }
+        current_color=team;
     }
 
     /**
@@ -203,26 +204,50 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        //throw new RuntimeException("Not implemented");
-        //if(validMoves() is in move)
-        try {
-            ChessPosition start_pos = move.getStartPosition();
-            ChessPosition end_pos = move.getEndPosition();
-            //make a new piece
-            ChessPiece new_piece = board.getPiece(start_pos);
-            //delete piece whether null or not, remove it. Then add piece to board
-           // board.removePiece(end_pos);
-            board.addPiece(end_pos, new_piece);
-            //delete the piece where it was at before
-            board.removePiece(start_pos);
+        ChessBoard copy_board = board.copy_board();
+        ChessPosition start_pos = move.getStartPosition();
+        ChessPosition end_pos = move.getEndPosition();
+        //make a new piece
+        ChessPiece new_piece = board.getPiece(start_pos);
+        if(new_piece == null){
+            throw new InvalidMoveException();
         }
-//        catch(InvalidMoveException e) {
-//            System.out.println("Invalid move: " + e.getMessage());
+        Collection<ChessMove>list_possible_moves = new_piece.pieceMoves(board,start_pos);
+        if(!list_possible_moves.contains(move)){
+            throw new InvalidMoveException();
+        }
+        //is your piece in check
+        if(isInCheck(new_piece.getTeamColor())==true) {
+            makeMove_copy(move, copy_board);
+            //is your piece in check after you move
+            if(isInCheck_king(new_piece.getTeamColor(), copy_board)) {
+                throw new InvalidMoveException();
+            }
+            //throw new InvalidMoveException();
+        }
+//        if(new_piece.getTeamColor() != current_color){
+//            throw new InvalidMoveException();
+//        }
+
+        //pawn promotion
+//        if(move.getPromotionPiece() != null) {
 //
 //        }
-        catch(Exception e) {
-            System.out.println("Invalid move: " + e.getMessage());
-        }
+
+
+
+
+
+
+        //delete piece whether null or not, remove it. Then add piece to board
+       // board.removePiece(end_pos);
+        board.addPiece(end_pos, new_piece);
+        setTeamTurn(new_piece.getTeamColor());
+        //delete the piece where it was at before
+        board.removePiece(start_pos);
+
+
+
 
     }
     public void makeMove_copy(ChessMove move, ChessBoard copy_board)  {
@@ -378,6 +403,7 @@ public class ChessGame {
         List<ChessMove>list_king_moves = new ArrayList<>(king_moves);
         if(list_king_moves.size() == 0){
             //if none of your other pieces can't move return true
+            Collection<ChessMove> list_white_piece_move = new ArrayList<>();
             for(int row = 1; row <=8; row++){
                 for(int col =1; col <=8; col++) {
                     ChessPosition current_pos = new ChessPosition(row, col);
@@ -385,13 +411,18 @@ public class ChessGame {
                     if (current_piece != null) {
                         if (current_piece.getTeamColor().equals(TeamColor.WHITE)) {
                             Collection<ChessMove> white_piece_moves = validMoves(current_pos);
-                            List<ChessMove> list_white_piece_move = new ArrayList<>(white_piece_moves);
-                            if (list_white_piece_move.size() == (0)) {
-                                return true;
+                            if(white_piece_moves.size()!=0) {
+                                for (ChessMove move : white_piece_moves) {
+                                    list_white_piece_move.add(move);
+                                }
                             }
+                            //list_white_piece_move.add();
                         }
                     }
                 }
+            }
+            if (list_white_piece_move.size() == (0)) {
+                return true;
             }
         }
         return false;
@@ -413,7 +444,7 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        board.resetBoard();
+        //board.resetBoard();
         return this.board;
     }
 
