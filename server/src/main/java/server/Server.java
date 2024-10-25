@@ -1,20 +1,15 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.UserDataAcess;
-import dataaccess.UserMemorydao;
-import model.AuthData;
-import model.ErrorData;
-import model.UserAlreadyExistsException;
-import model.UserData;
-import org.eclipse.jetty.server.Authentication;
+import dataaccess.*;
+import model.*;
 import spark.*;
 
-import java.util.UUID;
-
 public class Server {
-    private static final UserMemorydao userMemorydao = new UserMemorydao();
-    private static final Service serviceobj = new Service();
+    private final UserMemorydao userDataobj = new UserMemorydao();
+    private final Service serviceobj = new Service();
+    private final AuthTokenDataAcess authTokenData = new AuthTokenStorage();
+    private final GameDataAccess gameData = new GameStorage();
 
 
     public int run(int desiredPort) {
@@ -23,13 +18,12 @@ public class Server {
         Spark.staticFiles.location("web");
 
         //Service serviceobj = new Service();
-
+        //registration
         Spark.post("/user", (Request req, Response res) -> {
             Gson serializer = new Gson();
             try {
                 // Deserialize the request to UserData object
                 UserData userObj = serializer.fromJson(req.body(), UserData.class);
-                UserDataAcess userDataobj = new UserMemorydao();
 
                 // Validate user input (e.g., check username and password and gmail are not blank
                 if (userObj.username() == null || userObj.password() == null || userObj.email() == null) {
@@ -40,7 +34,7 @@ public class Server {
                 //is this register(RegisterRequest) Handler side?
 
                 // Call service layer to register the user
-                AuthData authData = serviceobj.register(userObj, userDataobj);
+                AuthData authData = serviceobj.register(userObj, userDataobj, authTokenData);
 
 
                 // If registration succeeds
@@ -66,7 +60,148 @@ public class Server {
             }
         });
 
+        //Login in User
+        Spark.post("/session", (Request req, Response res) -> {
+            Gson serializer = new Gson();
+            try {
+                // Deserialize the request to UserData object
+                UserData userObj = serializer.fromJson(req.body(), UserData.class);
 
+                // Validate user input (e.g., check username and password are not blank
+                if (userObj.username() == null || userObj.password() == null) {
+                    res.status(400); // Bad request
+                    return serializer.toJson(new ErrorData("Error: bad request"));
+                }
+
+                // Call service layer to register the user
+                AuthData authData = serviceobj.loginuser(userObj, userDataobj, authTokenData);
+
+
+                // If login succeeds
+                res.status(200);
+                return serializer.toJson(authData);
+
+            }
+            catch (UserNameIsNullinMemoryDao e) {
+                // Handle user already exists error
+                res.status(401); // Forbidden
+                return serializer.toJson(new ErrorData("Error: UserName is wrong"));
+            }
+            catch (UserNameIsWrong e) {
+                // Handle user already exists error
+                res.status(401); // Forbidden
+                return serializer.toJson(new ErrorData("Error: UserName is wrong"));
+            }
+            catch (UserPasswordIsWrong e) {
+                // Handle user already exists error
+                res.status(401); // Forbidden
+                return serializer.toJson(new ErrorData("Error: UserPassword is wrong"));
+            }
+            catch (Exception e) {
+                // Handle generic exception for bad JSON format or other errors, no need for this but its alright
+                if (e instanceof com.google.gson.JsonSyntaxException) {
+                    res.status(400); // Bad request for invalid JSON
+                    return serializer.toJson(new ErrorData("Invalid JSON format."));
+                } else {
+                    // Handle any other server-side error
+                    res.status(500); // Internal Server Error
+                    return serializer.toJson(new ErrorData("Error: (description of error)"));
+                }
+            }
+        });
+        //logout
+        Spark.delete("/session", (Request req, Response res) -> {
+            Gson serializer = new Gson();
+            try {
+                //authToken could use a string for future reference
+                //AuthData auth = new AuthData(req.headers("authorization"), null);
+
+                serviceobj.logout(req.headers("authorization"), authTokenData);
+
+                // If login succeeds
+                res.status(200);
+                return serializer.toJson(new Object());
+
+
+            }
+            catch (DataAccessException e) {
+                // Handle any other server-side error
+                res.status(401); // Internal Server Error
+                return serializer.toJson(new ErrorData("Error: Unable to clear data."));
+            }
+
+            catch (Exception e) {
+                // Handle any other server-side error
+                res.status(500); // Internal Server Error
+                return serializer.toJson(new ErrorData("Error: Unable to clear data."));
+            }
+        });
+
+
+        //Create Game two extra things to do here is to make 2 exceptions on request could be null, and auth token to be null
+        Spark.post("/game", (Request req, Response res) -> {
+            Gson serializer = new Gson();
+            try {
+                //AuthData auth = new AuthData(req.headers("authorization"), null);
+                String authToken = req.headers("authorization");
+                if(authToken == null) {
+                    throw new BadRequestsException("Bad request exception");
+                }
+                serviceobj.creategame(authToken, authTokenData, gameData);
+
+                // If create game succeeds
+                res.status(200);
+                return serializer.toJson(new Object());
+
+
+            }
+            catch (BadRequestsException e) {
+                // Handle any other server-side error
+                res.status(500); // Internal Server Error
+                return serializer.toJson(new ErrorData("Error: Unable to clear data."));
+            }
+            catch (Exception e) {
+                // Handle any other server-side error
+                res.status(500); // Internal Server Error
+                return serializer.toJson(new ErrorData("Error: Unable to clear data."));
+            }
+
+        });
+
+        //Clearing it all
+        Spark.delete("/db", (Request req, Response res) -> {
+
+            Gson serializer = new Gson();
+            try {
+                // Call service layer to clear all data, eventually add gamedata here
+                serviceobj.clearAllData(userDataobj, authTokenData);
+
+                // If clearing succeeds
+                res.status(200);
+                return "";
+
+            } catch (Exception e) {
+                // Handle any other server-side error
+                res.status(500); // Internal Server Error
+                return serializer.toJson(new ErrorData("Error: Unable to clear data."));
+            }
+        });
+
+
+
+        //This line initializes the server and can be removed once you have a functioning endpoint 
+        Spark.init();
+
+        Spark.awaitInitialization();
+        return Spark.port();
+    }
+
+
+    public void stop() {
+        Spark.stop();
+        Spark.awaitStop();
+    }
+}
 
 //        // Register your endpoints and handle exceptions here.
 //        //Spark.get("/path", handler);
@@ -88,7 +223,7 @@ public class Server {
 //            return serailzeaddata;
 //        });
 
-        //Delete call for clearing DB
+//Delete call for clearing DB
 //        Spark.delete("/db", (Request req, Response res) -> {
 //            // Handle DELETE request for /db
 //            //turn from json into java object the request needs to be this is deserializing
@@ -107,16 +242,3 @@ public class Server {
 //            return serailzeaddata;
 //
 //        });
-
-        //This line initializes the server and can be removed once you have a functioning endpoint 
-        Spark.init();
-
-        Spark.awaitInitialization();
-        return Spark.port();
-    }
-
-    public void stop() {
-        Spark.stop();
-        Spark.awaitStop();
-    }
-}
