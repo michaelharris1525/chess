@@ -16,5 +16,8 @@ public class GameStorage implements GameDataAccess{
     public void addNewGame(int id){
         gameDatas.put(id, new GameData(id, null, null, null, new ChessGame()));
     }
+    public void clearGameData(){
+        gameDatas.clear();
+    }
 
 }

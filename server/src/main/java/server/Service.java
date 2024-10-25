@@ -66,9 +66,10 @@ public class Service {
     }
 
     // CLEAR
-    void clearAllData(UserMemorydao userd, AuthTokenDataAcess authdata){
+    void clearAllData(UserMemorydao userd, AuthTokenDataAcess authdata, GameDataAccess gameData){
         userd.clearuserdatabase();
         authdata.clearuserdatabase();
+        gameData.clearGameData();
     }
 
 }

@@ -177,7 +177,7 @@ public class Server {
             Gson serializer = new Gson();
             try {
                 // Call service layer to clear all data, eventually add gamedata here
-                serviceobj.clearAllData(userDataobj, authTokenData);
+                serviceobj.clearAllData(userDataobj, authTokenData,gameData);
 
                 // If clearing succeeds
                 res.status(200);
