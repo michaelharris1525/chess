@@ -147,18 +147,21 @@ public class Server {
                 if(authToken == null) {
                     throw new BadRequestsException("Bad request exception");
                 }
-                serviceobj.creategame(authToken, authTokenData, gameData);
-
+                int game_id = serviceobj.creategame(authToken, authTokenData, gameData);
+                GameResponse gameResponse = new GameResponse(game_id);
                 // If create game succeeds
                 res.status(200);
-                return serializer.toJson(new Object());
-
-
+                return serializer.toJson(gameResponse);
             }
             catch (BadRequestsException e) {
                 // Handle any other server-side error
-                res.status(500); // Internal Server Error
-                return serializer.toJson(new ErrorData("Error: Unable to clear data."));
+                res.status(401); // Internal Server Error
+                return serializer.toJson(new ErrorData("Error: BadRequestsexception"));
+            }
+            catch (DataAccessException e) {
+                // Handle any other server-side error
+                res.status(401); // Internal Server Error
+                return serializer.toJson(new ErrorData("Error: BadAuthentication"));
             }
             catch (Exception e) {
                 // Handle any other server-side error

@@ -52,16 +52,17 @@ public class Service {
 
         authdataac.deleteauthtoken(authtoken);
     }
-    void creategame(String auth, AuthTokenDataAcess authdataac, GameDataAccess gameStoraged) throws DataAccessException {
+    int creategame(String auth, AuthTokenDataAcess authdataac,
+                    GameDataAccess gameStoraged) throws DataAccessException {
         //validate AuthToken
         if(authdataac.getauthtoken(auth) == null){
             throw new DataAccessException("you screwed up");
         }
         //if validated create new game
         int new_gameID = gameStoraged.getSize() + 1;
+        gameStoraged.addNewGame(new_gameID);
 
-
-
+        return new_gameID;
     }
 
     // CLEAR
