@@ -7,4 +7,5 @@ public interface AuthTokenDataAcess {
     void clearuserdatabase();
     AuthData getauthtoken(String author);
     void deleteauthtoken(String authtoken);
+    boolean containsAuthToken(String authToken);
 }

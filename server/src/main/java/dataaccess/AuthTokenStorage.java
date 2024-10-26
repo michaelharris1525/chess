@@ -29,4 +29,11 @@ public class AuthTokenStorage implements AuthTokenDataAcess{
         AuthData returndata = authDatas.get(authToken);
         return returndata;
     }
+    public boolean containsAuthToken(String authToken){
+        //AuthData token = getauthtoken(authToken);
+        if(authDatas.containsKey(authToken)){
+            return true;
+        }
+        return false;
+    }
 }

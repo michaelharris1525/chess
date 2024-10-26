@@ -54,7 +54,7 @@ public class Service {
     }
     int creategame(String auth, AuthTokenDataAcess authdataac,
                     GameDataAccess gameStoraged) throws DataAccessException {
-        //validate AuthToken
+        //validate AuthToken, check if auth data is null or not
         if(authdataac.getauthtoken(auth) == null){
             throw new DataAccessException("you screwed up");
         }
@@ -63,6 +63,16 @@ public class Service {
         gameStoraged.addNewGame(new_gameID);
 
         return new_gameID;
+    }
+    void joinGame(String authToken, AuthTokenDataAcess authdataac,
+                  GameDataAccess gameStoraged) throws DataAccessException {
+        if(authdataac.getauthtoken(authToken) == null){
+            throw new DataAccessException("you screwed up");
+        }
+
+        //does game exists
+        if(!gameStoraged.isGameReal())
+
     }
 
     // CLEAR

@@ -171,6 +171,40 @@ public class Server {
 
         });
 
+        //JOINING GAME
+        Spark.put("/game", (Request req, Response res) -> {
+                Gson serializer = new Gson();
+                try {
+                    //AuthData auth = new AuthData(req.headers("authorization"), null);
+                    String authToken = req.headers("authorization");
+                    if (authToken == null || !authTokenData.containsAuthToken(authToken)) {
+                        throw new BadRequestsException("Bad request exception");
+                    }
+                    serviceobj.joinGame(authToken, authTokenData, gameData);
+
+                    JoinGameRequest reqResult = new JoinGameRequest();
+                    // If create game succeeds
+                    res.status(200);
+                    return serializer.toJson("gameResponse");
+                }
+                catch (BadRequestsException e) {
+                    // Handle any other server-side error
+                    res.status(401); // Internal Server Error
+                    return serializer.toJson(new ErrorData("Error: BadRequestsexception"));
+                }
+                catch (DataAccessException e) {
+                    // Handle any other server-side error
+                    res.status(401); // Internal Server Error
+                    return serializer.toJson(new ErrorData("Error: BadAuthentication"));
+                }
+                catch (Exception e) {
+                    // Handle any other server-side error
+                    res.status(500); // Internal Server Error
+                    return serializer.toJson(new ErrorData("Error: Unable to clear data."));
+                }
+            });
+
+
         //Clearing it all
         Spark.delete("/db", (Request req, Response res) -> {
 

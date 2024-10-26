@@ -20,4 +20,8 @@ public class GameStorage implements GameDataAccess{
         gameDatas.clear();
     }
 
+    public boolean isGameReal(int gameId){
+        return gameDatas.containsKey(gameId);
+    }
+
 }
