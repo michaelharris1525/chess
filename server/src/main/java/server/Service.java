@@ -65,13 +65,27 @@ public class Service {
         return new_gameID;
     }
     void joinGame(String authToken, AuthTokenDataAcess authdataac,
-                  GameDataAccess gameStoraged) throws DataAccessException {
+                  GameDataAccess gameStoraged, GameData gameDATAFROMREQUEST, JoinGameRequest joinRequest) throws DataAccessException, PlayerColorException, BadRequestsException {
         if(authdataac.getauthtoken(authToken) == null){
             throw new DataAccessException("you screwed up");
         }
 
-        //does game exists
-        if(!gameStoraged.isGameReal())
+        if (gameDATAFROMREQUEST == null) {
+            throw new BadRequestsException("GAMEDATAFROMREQUEST");
+        }
+
+        String playerColor = joinRequest.getPlayerColor();
+
+        if (("WHITE".equals(playerColor) && gameDATAFROMREQUEST.getWhiteColor() != null) ||
+                ("BLACK".equals(playerColor) && gameDATAFROMREQUEST.getBlackColor() != null)) {
+            throw new PlayerColorException("Problem with white and player color, already taken");
+        }
+        if ("WHITE".equals(playerColor)) {
+            gameStoraged.UpdateWhiteColor(gameDATAFROMREQUEST.gameID(),playerColor); // set WHITE player
+        }
+        else if ("BLACK".equals(playerColor)) {
+            gameStoraged.UpdateBlackColor(gameDATAFROMREQUEST.gameID(),playerColor); // set BLACK player
+        }
 
     }
 

@@ -180,12 +180,26 @@ public class Server {
                     if (authToken == null || !authTokenData.containsAuthToken(authToken)) {
                         throw new BadRequestsException("Bad request exception");
                     }
-                    serviceobj.joinGame(authToken, authTokenData, gameData);
 
-                    JoinGameRequest reqResult = new JoinGameRequest();
+                    JoinGameRequest joinRequest = serializer.fromJson(req.body(), JoinGameRequest.class);
+
+                    if (joinRequest == null || joinRequest.getPlayerColor() == null
+                            || joinRequest.getGameID() == null) {
+                        throw new joinRequestisNULL("JoinREQUEST IS NULL");
+                    }
+
+                    //Retrieve game and validate the color choice
+                    GameData gameDATAFROMREQUEST =  gameData.getGameData(joinRequest.getGameID());
+
+                    serviceobj.joinGame(authToken, authTokenData, gameData, gameDATAFROMREQUEST, joinRequest);
+
                     // If create game succeeds
                     res.status(200);
-                    return serializer.toJson("gameResponse");
+                    return serializer.toJson(new Object());
+                }
+                catch(joinRequestisNULL e){
+                    res.status(400); // Internal Server Error
+                    return serializer.toJson(new ErrorData("Error: BadRequestsexception"));
                 }
                 catch (BadRequestsException e) {
                     // Handle any other server-side error
@@ -195,7 +209,11 @@ public class Server {
                 catch (DataAccessException e) {
                     // Handle any other server-side error
                     res.status(401); // Internal Server Error
-                    return serializer.toJson(new ErrorData("Error: BadAuthentication"));
+                    return serializer.toJson(new ErrorData("Error: unauthorized"));
+                }
+                catch (PlayerColorException e){
+                    res.status(403); // Internal Server Error
+                    return serializer.toJson(new ErrorData("Error: unauthorized"));
                 }
                 catch (Exception e) {
                     // Handle any other server-side error
