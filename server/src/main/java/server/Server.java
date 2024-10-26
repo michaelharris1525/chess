@@ -5,6 +5,12 @@ import dataaccess.*;
 import model.*;
 import spark.*;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 public class Server {
     private final UserMemorydao userDataobj = new UserMemorydao();
     private final Service serviceobj = new Service();
@@ -147,7 +153,11 @@ public class Server {
                 if(authToken == null) {
                     throw new BadRequestsException("Bad request exception");
                 }
-                int game_id = serviceobj.creategame(authToken, authTokenData, gameData);
+                //extract game name to add to change
+                Map<String, String> requestBody =
+                        serializer.fromJson(req.body(), Map.class);
+                String nameofGameFromUser = requestBody.get("gameName");
+                int game_id = serviceobj.creategame(authToken, authTokenData, gameData, nameofGameFromUser);
                 GameResponse gameResponse = new GameResponse(game_id);
                 // If create game succeeds
                 res.status(200);
@@ -169,6 +179,37 @@ public class Server {
                 return serializer.toJson(new ErrorData("Error: Unable to clear data."));
             }
 
+        });
+
+        //List Games
+        Spark.get("/game", (Request req, Response res) -> {
+            Gson serializer = new Gson();
+            try {
+                String authToken = req.headers("authorization");
+                if (authToken == null || !authTokenData.containsAuthToken(authToken)) {
+                    throw new BadRequestsException("Bad request exception");
+                }
+                // Collect all games and format them
+                Collection<Integer>gameIntsets = gameData.getAllKeysInts();
+                Collection<GameData>gameDatasets = gameData.getAllGameData();
+
+                // Create the response structure
+                Map<String, Collection<GameData>> response = new HashMap<>();
+                response.put("games", gameDatasets);
+
+                res.status(200);
+                return serializer.toJson(response);
+            }
+            catch (BadRequestsException e) {
+                // Handle any other server-side error
+                res.status(401); // Internal Server Error
+                return serializer.toJson(new ErrorData("Error: BadRequestsexception"));
+            }
+            catch (Exception e) {
+                // Handle any other server-side error
+                res.status(500); // Internal Server Error
+                return serializer.toJson(new ErrorData("Error: Unable to clear data."));
+            }
         });
 
         //JOINING GAME
@@ -195,7 +236,8 @@ public class Server {
 
                     // If create game succeeds
                     res.status(200);
-                    return serializer.toJson(new Object());
+                    //return serializer.toJson(new Object());
+                    return "{}";
                 }
                 catch(joinRequestisNULL e){
                     res.status(400); // Internal Server Error
@@ -233,7 +275,7 @@ public class Server {
 
                 // If clearing succeeds
                 res.status(200);
-                return "";
+                return "{}";
 
             } catch (Exception e) {
                 // Handle any other server-side error

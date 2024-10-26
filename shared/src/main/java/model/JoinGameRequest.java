@@ -11,5 +11,11 @@ public class JoinGameRequest {
     public Integer getGameID() {
         return gameID;
     }
+    public void updatePlayerWhite(){
+        playerColor = "WHITE";
+    }
+    public void updatePlayerBlack(){
+        playerColor = "BLACK";
+    }
 }
 

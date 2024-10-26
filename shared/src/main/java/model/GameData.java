@@ -9,4 +9,5 @@ public record GameData(int gameID, String whiteUsername, String blackUsername, S
     public String getBlackColor(){
         return blackUsername;
     }
+
 }
