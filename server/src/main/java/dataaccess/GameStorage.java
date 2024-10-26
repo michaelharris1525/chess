@@ -26,7 +26,6 @@ public class GameStorage implements GameDataAccess{
                     new GameData(existingGame.gameID(), newusername, existingGame.blackUsername(),
                             existingGame.gameName(), existingGame.game()));
         }
-        //gameDatas.put(gameId, new GameData(gameId, username, null, null, new ChessGame()));
     }
     public void UpdateBlackColor(int gameId, String newusername){
         GameData existingGame = gameDatas.get(gameId);
