@@ -1,4 +1,4 @@
-package passoff.server;
+package service;
 
 
 import dataaccess.*;
@@ -10,7 +10,7 @@ import server.Service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class ServiceTestsP3 {
+public class P3ServiceTest {
     private Service serviceObj = new Service();
 
     void badCreateUserAndLoginAndJoinGameWhite(UserData newUser20, UserDataAcess dataObja, AuthTokenDataAcess authTData201,

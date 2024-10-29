@@ -1,21 +1,16 @@
-package service;
+package passoff.server;
 
 
-import com.sun.source.tree.AssertTree;
 import dataaccess.*;
 import model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import server.Service;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class ServiceTestsP3 {
+public class P3ServiceTests {
     private Service serviceObj = new Service();
 
     void badCreateUserAndLoginAndJoinGameWhite(UserData newUser20, UserDataAcess dataObja, AuthTokenDataAcess authTData201,
