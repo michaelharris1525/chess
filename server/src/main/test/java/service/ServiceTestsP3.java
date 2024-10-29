@@ -1,6 +1,7 @@
 package service;
 
 
+import com.sun.source.tree.AssertTree;
 import dataaccess.*;
 import model.*;
 import org.junit.jupiter.api.Assertions;
@@ -66,8 +67,6 @@ public class ServiceTestsP3 {
     }
     @Test
     public void loginUserNormal() throws UserAlreadyExistsException, UserNameIsWrong,UserPasswordIsWrong,UserNameIsNullinMemoryDao {
-        //    public AuthData loginuser(UserData user, UserDataAcess dataobj,AuthTokenDataAcess authDataAcessobj)
-        //    throws UserNameIsWrong, UserPasswordIsWrong, UserNameIsNullinMemoryDao {
         UserData newUser = new UserData("Mr. PoopyButtHole", "Poppy0",  "JustBasicJosephatgmail.com");
         UserDataAcess dataObj = new UserMemorydao();
         AuthTokenDataAcess authTData = new AuthTokenStorage();
@@ -81,8 +80,6 @@ public class ServiceTestsP3 {
     }
     @Test
     public void loginUserDoesNotExist() throws UserAlreadyExistsException, UserNameIsWrong,UserPasswordIsWrong,UserNameIsNullinMemoryDao {
-        //    public AuthData loginuser(UserData user, UserDataAcess dataobj,AuthTokenDataAcess authDataAcessobj)
-        //    throws UserNameIsWrong, UserPasswordIsWrong, UserNameIsNullinMemoryDao {
         UserData newUser = new UserData("Mr. PoopyButtHole", "Poppy0",  "JustBasicJosephatgmail.com");
         UserDataAcess dataObj = new UserMemorydao();
         AuthTokenDataAcess authTData = new AuthTokenStorage();
@@ -90,11 +87,36 @@ public class ServiceTestsP3 {
         Assertions.assertThrows(UserNameIsNullinMemoryDao.class, () -> {
             serviceObj.loginuser(newUser, dataObj, authTData);
         }, "Expected UserNameIsNull or doesnt exist  to be thrown when registering an existing user.");
-
-
-
-
     }
+    @Test
+    public void loggingoutNormal() throws DataAccessException,UserAlreadyExistsException, UserNameIsWrong,UserPasswordIsWrong,UserNameIsNullinMemoryDao{
+        UserData newUser = new UserData("Mr. PoopyButtHole", "Poppy0",  "JustBasicJosephatgmail.com");
+        UserDataAcess dataObj = new UserMemorydao();
+        AuthTokenDataAcess authTData = new AuthTokenStorage();
+        //register
+        serviceObj.register(newUser, dataObj, authTData);
+        AuthData token = serviceObj.loginuser(newUser, dataObj, authTData);
+
+        serviceObj.logout(token.authToken(), authTData);
+        //if nothing thrown, assert true
+        Assertions.assertTrue(true);
+    }
+    @Test
+    public void LogOuttwice() throws DataAccessException,UserAlreadyExistsException, UserNameIsWrong,UserPasswordIsWrong,UserNameIsNullinMemoryDao{
+        UserData newUser = new UserData("Mr. PoopyButtHole", "Poppy0",  "JustBasicJosephatgmail.com");
+        UserDataAcess dataObj = new UserMemorydao();
+        AuthTokenDataAcess authTData = new AuthTokenStorage();
+        //register
+        serviceObj.register(newUser, dataObj, authTData);
+        AuthData token = serviceObj.loginuser(newUser, dataObj, authTData);
+
+        serviceObj.logout(token.authToken(), authTData);
+
+        Assertions.assertThrows(DataAccessException.class, () -> {
+            serviceObj.logout(token.authToken(), authTData);
+        }, "Expected DataAcessException. User successfully deleted if this passes");
+    }
+
 
     }
 
