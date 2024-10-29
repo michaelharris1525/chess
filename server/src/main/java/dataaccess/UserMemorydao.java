@@ -39,4 +39,10 @@ public class UserMemorydao implements UserDataAcess {
     public void clearuserdatabase(){
         totalUsers.clear();
     }
+    public boolean isEmpty() {
+        if(totalUsers.isEmpty()){
+            return true;
+        }
+        return false;
+    }
 }

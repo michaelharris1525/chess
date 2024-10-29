@@ -190,7 +190,6 @@ public class Server {
                     throw new BadRequestsException("Bad request exception");
                 }
                 // Collect all games and format them
-                Collection<Integer>gameIntsets = gameData.getAllKeysInts();
                 Collection<GameData>gameDatasets = gameData.getAllGameData();
 
                 // Create the response structure

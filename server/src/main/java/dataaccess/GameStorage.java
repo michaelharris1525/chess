@@ -13,9 +13,7 @@ public class GameStorage implements GameDataAccess{
     public Collection<GameData> getAllGameData(){
         return gameDatas.values();
     }
-    public Collection<Integer> getAllKeysInts(){
-        return gameDatas.keySet();
-    }
+
     public int getSize(){
         return gameDatas.size();
     }
@@ -45,8 +43,12 @@ public class GameStorage implements GameDataAccess{
         gameDatas.clear();
     }
 
-//    public boolean isGameReal(int gameId){
-//        return gameDatas.containsKey(gameId);
-//    }
+    public boolean isEmpty() {
+        if(gameDatas.isEmpty()){
+            return true;
+        }
+        return false;
+    }
+
 
 }

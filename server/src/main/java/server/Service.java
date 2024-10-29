@@ -52,6 +52,7 @@ public class Service {
 
         authdataac.deleteauthtoken(authtoken);
     }
+
     int creategame(String auth, AuthTokenDataAcess authdataac,
                     GameDataAccess gameStoraged, String nameOFGame) throws DataAccessException {
         //validate AuthToken, check if auth data is null or not
@@ -101,8 +102,8 @@ public class Service {
 
     }
 
-    // CLEAR
-    void clearAllData(UserMemorydao userd, AuthTokenDataAcess authdata, GameDataAccess gameData){
+    // CLEAR, make 11 unit tests
+    public void clearAllData(UserMemorydao userd, AuthTokenDataAcess authdata, GameDataAccess gameData){
         userd.clearuserdatabase();
         authdata.clearuserdatabase();
         gameData.clearGameData();

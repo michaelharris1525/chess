@@ -85,8 +85,8 @@ public class ChessPiece {
             if(type == PieceType.KING || type == PieceType.PAWN) {
                 continue;
             }
-            ChessMove promotion_move = new ChessMove(myPosition, end_position, type);
-            list_moves.add(promotion_move);
+            ChessMove promotionMove = new ChessMove(myPosition, end_position, type);
+            list_moves.add(promotionMove);
         }
     }
 
@@ -102,35 +102,35 @@ public class ChessPiece {
             * movement is row+1 always and depending on if there are pieces diagonally col +1 or -1
             *  */
             int new_row = myPosition.getRow();
-            int new_col = myPosition.getColumn();
-            boolean bool_pawn_white = false;
+            int newCol = myPosition.getColumn();
+            boolean boolPawnWhite = false;
             if(board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.WHITE){
-                bool_pawn_white = true;
+                boolPawnWhite = true;
             }
 
 
-            if(bool_pawn_white == true) {
+            if(boolPawnWhite == true) {
                 //check to see if pawn has moved or not by comparing all the white pawns on the reset board in the CHESSBOARD CLASS
 
                 if(myPosition.getRow() == 2) {
-                    ChessPosition d1 = new ChessPosition(new_row+1, new_col);
-                    ChessPosition d2 = new ChessPosition(new_row+2,new_col);
+                    ChessPosition d1 = new ChessPosition(new_row+1, newCol);
+                    ChessPosition d2 = new ChessPosition(new_row+2,newCol);
 
                     //check to see if you can move two spaces up
                     if(board.getPiece(d1) == null && board.getPiece(d2) == null) {
-                        ChessPosition pnot_moved_move = new ChessPosition(new_row + 2, new_col);
+                        ChessPosition pnot_moved_move = new ChessPosition(new_row + 2, newCol);
                         ChessMove not_move = new ChessMove(myPosition, pnot_moved_move, null);
                         list_moves.add(not_move);
                     }
                 }
                 //pawn rules of movement
                 for (int i = 0; i < 3; i++) {
-                    if (new_row > 8 || new_col < 1 || new_col > 8) {
+                    if (new_row > 8 || newCol < 1 || newCol > 8) {
                         continue;
                     }
                     //new chess piece position it can maybe go to
                     if (i == 0 || i == 2) {
-                        int base_Col = new_col + (i-1);
+                        int base_Col = newCol + (i-1);
                         ChessPosition left_up_position = new ChessPosition(new_row + 1,
                                 base_Col);
                         if (new_row > 8 || base_Col < 1 || base_Col > 8) {
@@ -149,7 +149,7 @@ public class ChessPiece {
                             continue;
                         }
                     }
-                    ChessPosition new_position = new ChessPosition(new_row + 1, new_col + (i - 1));
+                    ChessPosition new_position = new ChessPosition(new_row + 1, newCol + (i - 1));
                     //new move
                     ChessMove moves = new ChessMove(myPosition, new_position, null);
                     if (board.getPiece(new_position) == null) {
@@ -182,11 +182,11 @@ public class ChessPiece {
                 //check to see if pawn has moved or not
                 if(myPosition.getRow() == 7) {
                     //base case if there is a piece in the way (white or black) 1 space up or down then continue. Not possible.
-                    ChessPosition d1 = new ChessPosition(new_row-1, new_col);
-                    ChessPosition d2 = new ChessPosition(new_row-2,new_col);
+                    ChessPosition d1 = new ChessPosition(new_row-1, newCol);
+                    ChessPosition d2 = new ChessPosition(new_row-2,newCol);
 
                     if(board.getPiece(d1) == null && board.getPiece(d2) == null) {
-                        ChessPosition pnot_moved_move = new ChessPosition(new_row - 2, new_col);
+                        ChessPosition pnot_moved_move = new ChessPosition(new_row - 2, newCol);
                         ChessMove not_move = new ChessMove(myPosition, pnot_moved_move, null);
                         list_moves.add(not_move);
                     }
@@ -194,12 +194,12 @@ public class ChessPiece {
 
                 //pawn rules of movement
                 for (int i = 0; i < 3; i++) {
-                    if (new_row < 1 || new_col < 1 || new_col > 8) {
+                    if (new_row < 1 || newCol < 1 || newCol > 8) {
                         continue;
                     }
                     //new chess piece position it can maybe go to
                     if (i == 0 || i ==2) {
-                        int base_Col = new_col + (i-1);
+                        int base_Col = newCol + (i-1);
                         ChessPosition left_down_position = new ChessPosition(new_row-1,
                                 base_Col);
                         if (new_row < 1 || base_Col < 1 || base_Col > 8) {
@@ -219,7 +219,7 @@ public class ChessPiece {
                             continue;
                         }
                     }
-                    ChessPosition new_position = new ChessPosition(new_row - 1, new_col + (i - 1));
+                    ChessPosition new_position = new ChessPosition(new_row - 1, newCol + (i - 1));
                     //new move
                     ChessMove moves = new ChessMove(myPosition, new_position, null);
                     if (board.getPiece(new_position) == null) {
@@ -267,14 +267,14 @@ public class ChessPiece {
 
             for (int[] direction : directions) {
                 int new_row = myPosition.getRow() + direction[0];
-                int new_col = myPosition.getColumn() + direction[1];
+                int newCol = myPosition.getColumn() + direction[1];
 
                 // Base case: Check if the position is out of bounds
-                if (new_row < 1 || new_row > 8 || new_col < 1 || new_col > 8) {
+                if (new_row < 1 || new_row > 8 || newCol < 1 || newCol > 8) {
                     continue;
                 }
 
-                ChessPosition new_position = new ChessPosition(new_row, new_col);
+                ChessPosition new_position = new ChessPosition(new_row, newCol);
                 ChessMove move = new ChessMove(myPosition, new_position, null);
 
                 // If the square is empty, add the move and stop further checks in this direction
@@ -675,16 +675,16 @@ public class ChessPiece {
 
             //GOING LEFT
             while(left == true) {
-                int new_col = new_position.getColumn() - 1;
+                int newCol = new_position.getColumn() - 1;
 
                 //base case if it goes out of bounds, only have to worry about 1 since its only going left
-                if(new_col < 1) {
+                if(newCol < 1) {
                     new_position = myPosition;
                     break;
                 }
 
                 //new chess position
-                ChessPosition left_position = new ChessPosition(myPosition.getRow(), new_col);
+                ChessPosition left_position = new ChessPosition(myPosition.getRow(), newCol);
                 //new chess move
                 ChessMove moves = new ChessMove(myPosition, left_position,null);
 
@@ -708,11 +708,11 @@ public class ChessPiece {
 
             //GOING RIGHT
             while(right == true) {
-                int new_col = new_position.getColumn() + 1;
-                ChessPosition left_position = new ChessPosition(myPosition.getRow(), new_col);
+                int newCol = new_position.getColumn() + 1;
+                ChessPosition left_position = new ChessPosition(myPosition.getRow(), newCol);
 
                 //base case if it goes out of bounds, only have to worry about 1 since its only going left
-                if(new_col > 8) {
+                if(newCol > 8) {
                     new_position = myPosition;
                     break;
                 }
@@ -827,16 +827,16 @@ public class ChessPiece {
 
             //GOING LEFT
             while(left == true) {
-                int new_col = new_position.getColumn() - 1;
+                int newCol = new_position.getColumn() - 1;
 
                 //base case if it goes out of bounds, only have to worry about 1 since its only going left
-                if(new_col < 1) {
+                if(newCol < 1) {
                     new_position = myPosition;
                     break;
                 }
 
                 //new chess position
-                ChessPosition left_position = new ChessPosition(myPosition.getRow(), new_col);
+                ChessPosition left_position = new ChessPosition(myPosition.getRow(), newCol);
                 //new chess move
                 ChessMove moves = new ChessMove(myPosition, left_position,null);
 
@@ -860,11 +860,11 @@ public class ChessPiece {
 
             //GOING RIGHT
             while(right == true) {
-                int new_col = new_position.getColumn() + 1;
-                ChessPosition left_position = new ChessPosition(myPosition.getRow(), new_col);
+                int newCol = new_position.getColumn() + 1;
+                ChessPosition left_position = new ChessPosition(myPosition.getRow(), newCol);
 
                 //base case if it goes out of bounds, only have to worry about 1 since its only going left
-                if(new_col > 8) {
+                if(newCol > 8) {
                     new_position = myPosition;
                     break;
                 }
