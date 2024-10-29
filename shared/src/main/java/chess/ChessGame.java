@@ -329,17 +329,17 @@ public class ChessGame {
                 ChessPosition positionUlookingAt = new ChessPosition(row, col);
                 //section on github of copying objects
                 ChessBoard copyOfBoards = board;
-                ChessPiece pieceUlookingAt = copyOfBoards.getPiece(positionUlookingAt);
+                ChessPiece pizzaLookAt = copyOfBoards.getPiece(positionUlookingAt);
                 //if piece matches the oppposing player's piece then we care about if its in check or not
                 //fix this line, for some reason no likey this if statement
 
-                if (pieceUlookingAt != null) {
-                    if (pieceUlookingAt.getTeamColor().equals(oppositeColor)) {
-                        pieceUlookingAt.pieceMoves(copyOfBoards, positionUlookingAt);
-                        Collection<ChessMove> listMoves = pieceUlookingAt.pieceMoves(copyOfBoards, positionUlookingAt);
-                        List<ChessMove> movesList = new ArrayList<>(listMoves);
-                        for (int num = 0; num < movesList.size(); num++) {
-                            ChessMove cMove = movesList.get(num);
+                if (pizzaLookAt != null) {
+                    if (pizzaLookAt.getTeamColor().equals(oppositeColor)) {
+                        pizzaLookAt.pieceMoves(copyOfBoards, positionUlookingAt);
+                        Collection<ChessMove> listMoves = pizzaLookAt.pieceMoves(copyOfBoards, positionUlookingAt);
+                        List<ChessMove> cMovesList = new ArrayList<>(listMoves);
+                        for (int num = 0; num < cMovesList.size(); num++) {
+                            ChessMove cMove = cMovesList.get(num);
                             if (cMove.getEndPosition().equals(kingsPosition)) {
                                 return true;
                             }
