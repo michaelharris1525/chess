@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class Service {
     //REGISTER
-    AuthData register(UserData user, UserDataAcess dataobj, AuthTokenDataAcess authDataAcessobj) throws UserAlreadyExistsException {
+    public AuthData register(UserData user, UserDataAcess dataobj, AuthTokenDataAcess authDataAcessobj) throws UserAlreadyExistsException {
         //on your handler do some checking in handler on server for registering
         AuthData authdata = new AuthData(UUID.randomUUID().toString(), user.username());
 
@@ -27,7 +27,7 @@ public class Service {
 
     //LOGIN
     //if you have a problem, change useralreadyexistsexcpetion by adding a new exception super class
-    AuthData loginuser(UserData user, UserDataAcess dataobj,AuthTokenDataAcess authDataAcessobj) throws UserNameIsWrong, UserPasswordIsWrong, UserNameIsNullinMemoryDao {
+    public AuthData loginuser(UserData user, UserDataAcess dataobj,AuthTokenDataAcess authDataAcessobj) throws UserNameIsWrong, UserPasswordIsWrong, UserNameIsNullinMemoryDao {
         //on your handler do some checking in handler on server for registering
         AuthData authdata = new AuthData(UUID.randomUUID().toString(), user.username());
 
@@ -45,7 +45,7 @@ public class Service {
     }
 
     //LOGOUT
-    void logout(String authtoken, AuthTokenDataAcess authdataac) throws DataAccessException {
+    public void logout(String authtoken, AuthTokenDataAcess authdataac) throws DataAccessException {
         if(authdataac.getauthtoken(authtoken) == null){
             throw new DataAccessException("Messed up");
         }
@@ -53,7 +53,7 @@ public class Service {
         authdataac.deleteauthtoken(authtoken);
     }
 
-    int creategame(String auth, AuthTokenDataAcess authdataac,
+    public int creategame(String auth, AuthTokenDataAcess authdataac,
                     GameDataAccess gameStoraged, String nameOFGame) throws DataAccessException {
         //validate AuthToken, check if auth data is null or not
         if(authdataac.getauthtoken(auth) == null){
@@ -67,7 +67,7 @@ public class Service {
 
         return new_gameID;
     }
-    void joinGame(String authToken, AuthTokenDataAcess authdataac,
+    public void joinGame(String authToken, AuthTokenDataAcess authdataac,
                   GameDataAccess gameStoraged, GameData gameDATAFROMREQUEST, JoinGameRequest joinRequest) throws DataAccessException, PlayerColorException, BadRequestsException {
         if(authdataac.getauthtoken(authToken) == null){
             throw new DataAccessException("you screwed up");
