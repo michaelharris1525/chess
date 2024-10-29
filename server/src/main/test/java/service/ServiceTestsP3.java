@@ -51,13 +51,28 @@ public class ServiceTestsP3 {
         AuthTokenDataAcess authTData = new AuthTokenStorage();
         //dataobj.adduserdata(newUser);
         boolean passorfail = false;
-        AuthData ret = serviceObj.register(newUser2, dataObj, authTData);
+        serviceObj.register(newUser2, dataObj, authTData);
         if(!dataObj.isEmpty()){
             passorfail = true;
         }
 
         Assertions.assertTrue(passorfail);
+    }
+    @Test
+    public void UserNameIsAlreadyInThere() throws UserAlreadyExistsException {
+        UserData newUser = new UserData("Mr. PoopyButtHole", "Poppy0",  "JustBasicJosephatgmail.com");
+        UserData newUser2 = new UserData("Mr. PoopyButtHole", "Poppy0",  "JustBasicJosephatgmail.com");
+        UserDataAcess dataObj = new UserMemorydao();
+        AuthTokenDataAcess authTData = new AuthTokenStorage();
+        //dataobj.adduserdata(newUser);
+        boolean passorfail = false;
+        serviceObj.register(newUser2, dataObj, authTData);
+
+        Assertions.assertThrows(UserAlreadyExistsException.class, () -> {
+            serviceObj.register(newUser2, dataObj, authTData);
+        }, "Expected UserAlreadyExistsException to be thrown when registering an existing user.");
+    }
 
     }
 
-}
+
