@@ -57,61 +57,45 @@ public class ChessGame {
         WHITE,
         BLACK
     }
-    public Collection<ChessMove> findValidMoves(TeamColor teamColor, ChessPiece nPeace,
-                                                  Collection<ChessMove> listMovesDeleteLater) {
-        // King's position
-        ChessPosition kingsPosition = findKing(teamColor, board);
-        // Opposite color
-        TeamColor oppositeColor = flipColors(teamColor);
-        // List of moves the piece can make
-        List<ChessMove> movesList = new ArrayList<>(listMovesDeleteLater);
-        // List of valid moves
+    public Collection<ChessMove> findValidMoves(TeamColor teamColor, ChessPiece piece, Collection<ChessMove> potentialMoves) {
+        TeamColor opponentColor = flipColors(teamColor);
         Collection<ChessMove> validMoves = new ArrayList<>();
-        ChessBoard copyOfBoards = board.copyOfBoard();
-        // Iterate through every possible move your piece and color can make,
-        // make that move and use a copy of board to see if it works
-        for (int num = 0; num < movesList.size(); num++) {
-            ChessMove cMove = movesList.get(num);  // Chess move for your team color
-            copyOfBoards = board.copyOfBoard();  // Copy the board for this move simulation
-            boolean isKingInCheck = false;  // Indicates whether the move puts the king in check
 
-            // Make the move on the copied board
-            makeMoveCopy(cMove, copyOfBoards);
-            ChessBoard newCopy = copyOfBoards.copyOfBoard();
+        for (ChessMove move : potentialMoves) {
+            // Copy the board once for the current move simulation
+            ChessBoard simulatedBoard = board.copyOfBoard();
+            makeMoveCopy(move, simulatedBoard);  // Simulate the move on the copied board
 
-            // Check if any move by the opposing pieces puts the king in check
+            boolean kingIsInCheck = false;
+
+            // Loop over all squares to find opponent pieces
             outerLoop:
             for (int row = 1; row <= 8; row++) {
                 for (int col = 1; col <= 8; col++) {
                     ChessPosition pos = new ChessPosition(row, col);
-                    ChessPiece piece = copyOfBoards.getPiece(pos);
+                    ChessPiece opponentPiece = simulatedBoard.getPiece(pos);
 
-                    if (piece != null && piece.getTeamColor().equals(oppositeColor)) {
-                        // Get all possible moves for the opponent's piece
-                        Collection<ChessMove> opponentMoves = piece.pieceMoves(copyOfBoards, pos);
-                        for (ChessMove opponentMove : opponentMoves) {
-                            // If this move puts the king in check, mark it as invalid
-                            //makeMoveCopy(opponentMove, copyOfBoards);
-                            if (isInCheckKing(teamColor, copyOfBoards)) {
-                                isKingInCheck = true;
-                                break outerLoop;  // Stop checking further once the king is in check
+                    if (opponentPiece != null && opponentPiece.getTeamColor() == opponentColor) {
+                        // Check each potential move of the opponent's piece
+                        for (ChessMove opponentMove : opponentPiece.pieceMoves(simulatedBoard, pos)) {
+                            if (isInCheckKing(teamColor, simulatedBoard)) {
+                                kingIsInCheck = true;
+                                break outerLoop;  // Stop further checks if king is in check
                             }
-
-                            // Restore board to its state before the move
-                            copyOfBoards = newCopy.copyOfBoard();  // Re-copy the board to restore the state
                         }
                     }
                 }
             }
 
-            // If the move does not put the king in check, add it to the list of valid moves
-            if (!isKingInCheck) {
-                validMoves.add(cMove);
+            // Add the move to valid moves if it does not put the king in check
+            if (!kingIsInCheck) {
+                validMoves.add(move);
             }
         }
 
         return validMoves;
     }
+
 
 
     /**
@@ -186,19 +170,6 @@ public class ChessGame {
         }
         }
         return listMoves;
-    }
-    boolean isInsideValidMoves(ChessMove moveCheck) {
-        //list of moves the piece can make
-        Collection<ChessMove>validMoves = validMoves(moveCheck.getStartPosition());
-        List<ChessMove> validMovesList = new ArrayList<>(validMoves);
-        //list of valid moves
-        for (int num = 0; num < validMovesList.size(); num++) {
-            ChessMove moveToCompare = validMovesList.get(num);
-            if(validMovesList.equals(moveCheck)){
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

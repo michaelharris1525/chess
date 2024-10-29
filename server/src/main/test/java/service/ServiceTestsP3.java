@@ -19,12 +19,12 @@ public class ServiceTestsP3 {
     private Service serviceObj = new Service();
 
     void badCreateUserAndLoginAndJoinGameWhite(UserData newUser20, UserDataAcess dataObja, AuthTokenDataAcess authTData201,
-                                       GameDataAccess gStorage, String nameofGame) throws UserNameIsWrong, UserNameIsNullinMemoryDao, UserPasswordIsWrong, UserAlreadyExistsException, BadRequestsException, DataAccessException, PlayerColorException {
+                                       GameDataAccess gStorage, String NameOfGame) throws UserNameIsWrong, UserNameIsNullinMemoryDao, UserPasswordIsWrong, UserAlreadyExistsException, BadRequestsException, DataAccessException, PlayerColorException {
         //register
         serviceObj.register(newUser20, dataObja, authTData201);
         AuthData token = serviceObj.loginuser(newUser20,
                 dataObja, authTData201);
-        int gameId= serviceObj.createGame(token.authToken(), authTData201, gStorage, nameofGame);
+        int gameId= serviceObj.createGame(token.authToken(), authTData201, gStorage, NameOfGame);
 
         // Retrieve the created GameData from the storage for the game ID
         GameData gameDataFromRequest = gStorage.getGameData(gameId);
@@ -49,17 +49,17 @@ public class ServiceTestsP3 {
 
         AuthTokenDataAcess atStorage = new AuthTokenStorage();
         GameDataAccess gStorage = new GameStorage();
-        UserMemorydao userStorage = new UserMemorydao();
+        UserMemorydao UserStorage = new UserMemorydao();
 
 
         atStorage.addAuthToken(token);
         gStorage.addNewGame(id, gameName);
-        userStorage.adduserdata(newUser);
+        UserStorage.adduserdata(newUser);
 
-        serviceObj.clearAllData(userStorage, atStorage, gStorage);
+        serviceObj.clearAllData(UserStorage, atStorage, gStorage);
         boolean authTokenDeletedFromDataBase = false;
 
-        if(userStorage.isEmpty() &&
+        if(UserStorage.isEmpty() &&
         gStorage.isEmpty() == true &&  !atStorage.containsAuthToken("1234")){
             authTokenDeletedFromDataBase = true;
         }
@@ -149,12 +149,12 @@ public class ServiceTestsP3 {
         UserDataAcess dataObja = new UserMemorydao();
         AuthTokenDataAcess authTData20 = new AuthTokenStorage();
         GameDataAccess gStorage = new GameStorage();
-        String nameofGame = "MR POOOPY BUTTHOLES ARENA";
+        String NameOfGame = "MR POOOPY BUTTHOLES ARENA";
         //register
         serviceObj.register(newUser20, dataObja, authTData20);
         AuthData token = serviceObj.loginuser(newUser20,
                 dataObja, authTData20);
-        serviceObj.createGame(token.authToken(), authTData20, gStorage,nameofGame);
+        serviceObj.createGame(token.authToken(), authTData20, gStorage,NameOfGame);
         Assertions.assertTrue(!gStorage.isEmpty());
     }
 
@@ -164,14 +164,14 @@ public class ServiceTestsP3 {
         UserDataAcess dataObjae = new UserMemorydao();
         AuthTokenDataAcess authTData20 = new AuthTokenStorage();
         GameDataAccess gStorage = new GameStorage();
-        String nameofGame = "MR POOOPY BUTTHOLES ARENA";
+        String NameOfGame = "MR POOOPY BUTTHOLES ARENA";
         //register
         serviceObj.register(newUser20, dataObjae, authTData20);
         serviceObj.loginuser(newUser20,
                 dataObjae, authTData20);
         String wrongToken = "False Token";
         Assertions.assertThrows(DataAccessException.class, () -> {
-            serviceObj.createGame(wrongToken, authTData20, gStorage,nameofGame);
+            serviceObj.createGame(wrongToken, authTData20, gStorage,NameOfGame);
         }, "Expected DataAcessException. User successfully deleted if this passes");
 
     }
@@ -182,12 +182,12 @@ public class ServiceTestsP3 {
         UserDataAcess dataO = new UserMemorydao();
         AuthTokenDataAcess authTData201 = new AuthTokenStorage();
         GameDataAccess gStorage12 = new GameStorage();
-        String nameofGame = "MR POOOPY BUTTHOLES ARENA";
+        String NameOfGame = "MR POOOPY BUTTHOLES ARENA";
         //register
         serviceObj.register(newUser12, dataO, authTData201);
         AuthData token = serviceObj.loginuser(newUser12,
                 dataO, authTData201);
-        int gameId= serviceObj.createGame(token.authToken(), authTData201, gStorage12, nameofGame);
+        int gameId= serviceObj.createGame(token.authToken(), authTData201, gStorage12, NameOfGame);
 
         // Retrieve the created GameData from the storage for the game ID
         GameData gameDataFromRequest = gStorage12.getGameData(gameId);
@@ -198,7 +198,7 @@ public class ServiceTestsP3 {
         joinRequest.updatePlayerWhite();
 
         serviceObj.joinGame(token.authToken(), authTData201, gStorage12, gameDataFromRequest,joinRequest);
-        assertEquals(nameofGame, gameDataFromRequest.gameName());
+        assertEquals(NameOfGame, gameDataFromRequest.gameName());
     }
     @Test
     public void badAuthJoin() throws DataAccessException, UserAlreadyExistsException, UserNameIsWrong, UserNameIsNullinMemoryDao, UserPasswordIsWrong, BadRequestsException, PlayerColorException {
@@ -208,10 +208,10 @@ public class ServiceTestsP3 {
         UserDataAcess dataObja = new UserMemorydao();
         AuthTokenDataAcess authTData201 = new AuthTokenStorage();
         GameDataAccess gStorage = new GameStorage();
-        String nameofGame = "MR POOOPY BUTTHOLES ARENA";
+        String NameOfGame = "MR POOOPY BUTTHOLES ARENA";
 
         Assertions.assertThrows(DataAccessException.class, () -> {
-            badCreateUserAndLoginAndJoinGameWhite(newUser2002,dataObja,authTData201,gStorage,nameofGame);
+            badCreateUserAndLoginAndJoinGameWhite(newUser2002,dataObja,authTData201,gStorage,NameOfGame);
             }, "Expected DataAccessException, Using the");
 
     }

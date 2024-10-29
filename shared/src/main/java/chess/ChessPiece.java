@@ -87,20 +87,20 @@ public class ChessPiece {
     }
 
     private void addRookMoves(ChessPosition myPosition, ChessBoard board, Collection<ChessMove> listMoves, int rowOffset, int colOffset) {
-        ChessPosition newPosition = myPosition;
+        ChessPosition newPeez1 = myPosition;
 
         while (true) {
-            int newRow = newPosition.getRow() + rowOffset;
-            int newCol = newPosition.getColumn() + colOffset;
+            int newRow = newPeez1.getRow() + rowOffset;
+            int newCol = newPeez1.getColumn() + colOffset;
 
             // Check if the new position is within board limits
             if (newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8) {
                 break;
             }
 
-            newPosition = new ChessPosition(newRow, newCol);
-            ChessMove move = new ChessMove(myPosition, newPosition, null);
-            ChessPiece pieceAtNewPosition = board.getPiece(newPosition);
+            newPeez1 = new ChessPosition(newRow, newCol);
+            ChessMove move = new ChessMove(myPosition, newPeez1, null);
+            ChessPiece pieceAtNewPosition = board.getPiece(newPeez1);
 
             // Add the move if the square is empty, or stop if a piece of the same color is there
             if (pieceAtNewPosition == null) {
@@ -161,20 +161,20 @@ public class ChessPiece {
     }
 
     private void addBishopMoves(ChessPosition myPosition, ChessBoard board, Collection<ChessMove> listMoves, int rowOffset, int colOffset) {
-        ChessPosition newPosition = myPosition;
+        ChessPosition newPeez = myPosition;
 
         while (true) {
-            int newRow = newPosition.getRow() + rowOffset;
-            int newCol = newPosition.getColumn() + colOffset;
+            int newRow = newPeez.getRow() + rowOffset;
+            int newCol = newPeez.getColumn() + colOffset;
 
             // Check if the new position is within board limits
             if (newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8) {
                 break;
             }
 
-            newPosition = new ChessPosition(newRow, newCol);
-            ChessMove move = new ChessMove(myPosition, newPosition, null);
-            ChessPiece pieceAtNewPosition = board.getPiece(newPosition);
+            newPeez = new ChessPosition(newRow, newCol);
+            ChessMove move = new ChessMove(myPosition, newPeez, null);
+            ChessPiece pieceAtNewPosition = board.getPiece(newPeez);
 
             // Add the move if the square is empty, or stop if a piece of the same color is there
             if (pieceAtNewPosition == null) {
