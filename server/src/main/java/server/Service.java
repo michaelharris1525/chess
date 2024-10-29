@@ -93,12 +93,6 @@ public class Service {
             joinRequest.updatePlayerBlack();
             gameStoraged.UpdateBlackColor(gameDATAFROMREQUEST.gameID(),authdataforusername.username()); // set BLACK player
         }
-        //need to pass in the username, you get that from the authdata you receive when you check if the game exists or not by the gameID
-
-
-
-        //also need to update color as well the username
-
 
     }
 
