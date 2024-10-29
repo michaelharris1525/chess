@@ -1,4 +1,4 @@
 package model;
 
-public record UserLoginData(String UserName, String Password) {
+public record UserLoginData(String userName, String password) {
 }

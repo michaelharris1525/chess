@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public interface GameDataAccess {
     int getSize();
-    void addNewGame(int id, String GameName);
+    void addNewGame(int id, String gameName);
     void clearGameData();
     GameData getGameData(int key);
     void updateWhiteColor(int gameId, String white);

@@ -187,14 +187,14 @@ public class ChessGame {
         }
         return listMoves;
     }
-    boolean isInsideValidMoves(ChessMove move_check) {
+    boolean isInsideValidMoves(ChessMove moveCheck) {
         //list of moves the piece can make
-        Collection<ChessMove>validMoves = validMoves(move_check.getStartPosition());
+        Collection<ChessMove>validMoves = validMoves(moveCheck.getStartPosition());
         List<ChessMove> validMovesList = new ArrayList<>(validMoves);
         //list of valid moves
         for (int num = 0; num < validMovesList.size(); num++) {
             ChessMove moveToCompare = validMovesList.get(num);
-            if(validMovesList.equals(move_check)){
+            if(validMovesList.equals(moveCheck)){
                 return true;
             }
         }
@@ -288,14 +288,14 @@ public class ChessGame {
         return wColor;
     }
 
-    public ChessPosition findKing(TeamColor teamColor, ChessBoard copy_or_og){
+    public ChessPosition findKing(TeamColor teamColor, ChessBoard copyOrOg){
         ChessPiece whatImLookingFor = new ChessPiece(teamColor, ChessPiece.PieceType.KING);
         ChessPosition kingsPosition = new ChessPosition(1,1);
         for(int row = 1; row <=8; row++) {
             for(int col = 1; col <=8; col++){
                 //goes through the entire board to check to see if that piece is a king, and if it is return the position of the king
                 ChessPosition new_pos = new ChessPosition(row, col);
-                ChessPiece trueOrFalseKing = copy_or_og.getPiece(new_pos);
+                ChessPiece trueOrFalseKing = copyOrOg.getPiece(new_pos);
                 if(whatImLookingFor.equals(trueOrFalseKing)){
                     //kingsPosition = new_pos;
                     return new_pos;
