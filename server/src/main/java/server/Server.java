@@ -157,7 +157,7 @@ public class Server {
                 Map<String, String> requestBody =
                         serializer.fromJson(req.body(), Map.class);
                 String nameofGameFromUser = requestBody.get("gameName");
-                int gameId = serviceobj.creategame(authToken, authTokenData, gameData, nameofGameFromUser);
+                int gameId = serviceobj.createGame(authToken, authTokenData, gameData, nameofGameFromUser);
                 GameResponse gameResponse = new GameResponse(gameId);
                 // If create game succeeds
                 res.status(200);

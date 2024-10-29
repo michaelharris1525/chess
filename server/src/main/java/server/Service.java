@@ -53,15 +53,15 @@ public class Service {
         authdataac.deleteauthtoken(authtoken);
     }
 
-    public int creategame(String auth, AuthTokenDataAcess authdataac,
-                    GameDataAccess gameStoraged, String nameOFGame) throws DataAccessException {
+    public int createGame(String auth, AuthTokenDataAcess authdataac,
+                    GameDataAccess gameStoraged, String nameofGame) throws DataAccessException {
         //validate AuthToken, check if auth data is null or not
         if(authdataac.getauthtoken(auth) == null){
             throw new DataAccessException("you screwed up");
         }
         //if validated create new game
         int newGameId = gameStoraged.getSize() + 1;
-        gameStoraged.addNewGame(newGameId, nameOFGame);
+        gameStoraged.addNewGame(newGameId, nameofGame);
 
         //also need to check if there is a new name given into it
 

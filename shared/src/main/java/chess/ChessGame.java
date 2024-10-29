@@ -139,12 +139,12 @@ public class ChessGame {
                 //if piece moves and is not in check do this
                 ChessBoard copyOfBoards = board.copyOfBoard();
                 listMoves = newPiece.pieceMoves(copyOfBoards, startPosition);
-                List<ChessMove>listMoves_before_change = new ArrayList<>(listMoves);
-                for(int s = 0; s< listMoves_before_change.size(); s++){
-                    ChessMove kingMove = listMoves_before_change.get(s);
-                    makeMoveCopy(listMoves_before_change.get(s), copyOfBoards);
+                List<ChessMove>listMovesBeforeChange = new ArrayList<>(listMoves);
+                for(int s = 0; s< listMovesBeforeChange.size(); s++){
+                    ChessMove kingMove = listMovesBeforeChange.get(s);
+                    makeMoveCopy(listMovesBeforeChange.get(s), copyOfBoards);
                     if(!isInCheckKing(newPiece.getTeamColor(), copyOfBoards)) {
-                        kingListMoves.add(listMoves_before_change.get(s));
+                        kingListMoves.add(listMovesBeforeChange.get(s));
                         copyOfBoards = board.copyOfBoard();
                     }
                     copyOfBoards = board.copyOfBoard();
@@ -165,14 +165,14 @@ public class ChessGame {
 
                 List<ChessMove>newListMoves = new ArrayList<>();
                 listMoves = newPiece.pieceMoves(copyOfBoards, startPosition);
-                List<ChessMove>listMoves_before_change = new ArrayList<>(listMoves);
+                List<ChessMove>listMovesBeforeChange = new ArrayList<>(listMoves);
 
-                for(int s = 0; s< listMoves_before_change.size(); s++){
-                    makeMoveCopy(listMoves_before_change.get(s), copyOfBoards);
+                for(int s = 0; s< listMovesBeforeChange.size(); s++){
+                    makeMoveCopy(listMovesBeforeChange.get(s), copyOfBoards);
                     if(!isInCheckKing(newPiece.getTeamColor(), copyOfBoards)) {
                         //since in check, is there a move that takes a piece?
                         // if so is the king still in check after piece is taken
-                        newListMoves.add(listMoves_before_change.get(s));
+                        newListMoves.add(listMovesBeforeChange.get(s));
                     }
                     copyOfBoards = board.copyOfBoard();
                 }
@@ -294,11 +294,11 @@ public class ChessGame {
         for(int row = 1; row <=8; row++) {
             for(int col = 1; col <=8; col++){
                 //goes through the entire board to check to see if that piece is a king, and if it is return the position of the king
-                ChessPosition new_pos = new ChessPosition(row, col);
-                ChessPiece trueOrFalseKing = copyOrOg.getPiece(new_pos);
+                ChessPosition newPosition = new ChessPosition(row, col);
+                ChessPiece trueOrFalseKing = copyOrOg.getPiece(newPosition);
                 if(whatImLookingFor.equals(trueOrFalseKing)){
-                    //kingsPosition = new_pos;
-                    return new_pos;
+                    //kingsPosition = newPosition;
+                    return newPosition;
                 }
             }
         }
@@ -377,12 +377,12 @@ public class ChessGame {
             if(editedMoves.equals(emptyMoves)){
                 for(int row = 1; row <=8; row++) {
                     for (int col = 1; col <= 8; col++) {
-                        ChessPosition new_pos = new ChessPosition(row, col);
-                        ChessPiece yourPiece = board.getPiece(new_pos);
+                        ChessPosition newPosition = new ChessPosition(row, col);
+                        ChessPiece yourPiece = board.getPiece(newPosition);
 
                         if (yourPiece != null) {
                             if (yourPiece.getTeamColor().equals(teamColor)) {
-                                Collection<ChessMove> yourCollection = yourPiece.pieceMoves(board, new_pos);
+                                Collection<ChessMove> yourCollection = yourPiece.pieceMoves(board, newPosition);
                                 List<ChessMove> listUrPromotionalMoves = new ArrayList<>(yourCollection);
                                 for (ChessMove yourMove : listUrPromotionalMoves) {
                                     makeMoveCopy(yourMove, copyOfBoard);
