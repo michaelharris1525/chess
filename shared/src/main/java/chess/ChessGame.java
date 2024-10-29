@@ -471,17 +471,11 @@ public class ChessGame {
         ChessPosition kingsPosition = findKing(teamColor,copyOfBoards);
         //opposite color
         TeamColor oppositeColor = flipColors(teamColor);
-        //all moves that lead to check
-        //Collection<ChessMove> all_moves_in_check = new ArrayList<>();
-        //
+
         for(int row = 1; row <=8; row++) {
             for(int col = 1; col <=8; col++) {
                 ChessPosition positionUlookingAt = new ChessPosition(row, col);
-                //section on github of copying objects
-                //ChessBoard copyOfBoards = board;
                 ChessPiece pieceUlookingAt = copyOfBoards.getPiece(positionUlookingAt);
-                //if piece matches the oppposing player's piece then we care about if its in check or not
-                //fix this line, for some reason no likey this if statement
 
                 if (pieceUlookingAt != null) {
                     if (pieceUlookingAt.getTeamColor().equals(oppositeColor)) {
