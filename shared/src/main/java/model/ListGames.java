@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ListGames {
     private final int gameID;
-    private HashMap<Integer, GameData> ListOfGames;
+    private HashMap<Integer, GameData> listOfGames;
 
     public ListGames(int gameID) {
         this.gameID = gameID;
@@ -16,7 +16,7 @@ public class ListGames {
     }
 
     public void updateListGames(HashMap<Integer, GameData> gameDatafromAcess){
-        ListOfGames = gameDatafromAcess;
+        listOfGames = gameDatafromAcess;
     }
 }
 

@@ -157,8 +157,8 @@ public class Server {
                 Map<String, String> requestBody =
                         serializer.fromJson(req.body(), Map.class);
                 String nameofGameFromUser = requestBody.get("gameName");
-                int game_id = serviceobj.creategame(authToken, authTokenData, gameData, nameofGameFromUser);
-                GameResponse gameResponse = new GameResponse(game_id);
+                int gameId = serviceobj.creategame(authToken, authTokenData, gameData, nameofGameFromUser);
+                GameResponse gameResponse = new GameResponse(gameId);
                 // If create game succeeds
                 res.status(200);
                 return serializer.toJson(gameResponse);
@@ -225,7 +225,7 @@ public class Server {
 
                     if (joinRequest == null || joinRequest.getPlayerColor() == null
                             || joinRequest.getGameID() == null) {
-                        throw new joinRequestisNULL("JoinREQUEST IS NULL");
+                        throw new JoinRequestIsNull("JoinREQUEST IS NULL");
                     }
 
                     //Retrieve game and validate the color choice
@@ -238,7 +238,7 @@ public class Server {
                     //return serializer.toJson(new Object());
                     return "{}";
                 }
-                catch(joinRequestisNULL e){
+                catch(JoinRequestIsNull e){
                     res.status(400); // Internal Server Error
                     return serializer.toJson(new ErrorData("Error: BadRequestsexception"));
                 }

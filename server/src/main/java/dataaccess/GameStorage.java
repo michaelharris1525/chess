@@ -17,7 +17,7 @@ public class GameStorage implements GameDataAccess{
     public int getSize(){
         return gameDatas.size();
     }
-    public void UpdateWhiteColor(int gameId, String newusername){
+    public void updateWhiteColor(int gameId, String newusername){
         GameData existingGame = gameDatas.get(gameId);
         if(existingGame != null){
             gameDatas.put(existingGame.gameID(),
@@ -25,7 +25,7 @@ public class GameStorage implements GameDataAccess{
                             existingGame.gameName(), existingGame.game()));
         }
     }
-    public void UpdateBlackColor(int gameId, String newusername){
+    public void updateBlackColor(int gameId, String newusername){
         GameData existingGame = gameDatas.get(gameId);
         if(existingGame != null){
             gameDatas.put(existingGame.gameID(),

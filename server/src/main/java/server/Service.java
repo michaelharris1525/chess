@@ -60,12 +60,12 @@ public class Service {
             throw new DataAccessException("you screwed up");
         }
         //if validated create new game
-        int new_gameID = gameStoraged.getSize() + 1;
-        gameStoraged.addNewGame(new_gameID, nameOFGame);
+        int newGameId = gameStoraged.getSize() + 1;
+        gameStoraged.addNewGame(newGameId, nameOFGame);
 
         //also need to check if there is a new name given into it
 
-        return new_gameID;
+        return newGameId;
     }
     public void joinGame(String authToken, AuthTokenDataAcess authdataac,
                   GameDataAccess gameStoraged, GameData gameDATAFROMREQUEST, JoinGameRequest joinRequest) throws DataAccessException, PlayerColorException, BadRequestsException {
@@ -87,11 +87,11 @@ public class Service {
         }
         if ("WHITE".equals(playerColor)) {
             joinRequest.updatePlayerWhite();
-            gameStoraged.UpdateWhiteColor(gameDATAFROMREQUEST.gameID(),authdataforusername.username());// set WHITE player
+            gameStoraged.updateWhiteColor(gameDATAFROMREQUEST.gameID(),authdataforusername.username());// set WHITE player
         }
         else if ("BLACK".equals(playerColor)) {
             joinRequest.updatePlayerBlack();
-            gameStoraged.UpdateBlackColor(gameDATAFROMREQUEST.gameID(),authdataforusername.username()); // set BLACK player
+            gameStoraged.updateBlackColor(gameDATAFROMREQUEST.gameID(),authdataforusername.username()); // set BLACK player
         }
 
     }

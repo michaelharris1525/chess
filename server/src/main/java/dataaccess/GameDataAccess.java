@@ -11,8 +11,8 @@ public interface GameDataAccess {
     void addNewGame(int id, String GameName);
     void clearGameData();
     GameData getGameData(int key);
-    void UpdateWhiteColor(int gameId, String white);
-    void UpdateBlackColor(int gameId, String black);
+    void updateWhiteColor(int gameId, String white);
+    void updateBlackColor(int gameId, String black);
     Collection<GameData> getAllGameData();
     boolean isEmpty();
 }

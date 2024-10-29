@@ -32,7 +32,7 @@ public class ChessBoard {
         }
     }
 
-    public ChessBoard copy_board() {
+    public ChessBoard copyOfBoard() {
         return new ChessBoard(this);
     }
 
