@@ -34,7 +34,7 @@ public class P3ServiceTests {
     }
     @Test
     public void testsClear(){
-        /*get storage from each data base
+        /*get storage from each data bas
         * put data in the storage classes
         * assert if the data is in there like getting an authtoken an expecting */
         AuthData token = new AuthData("1234", "Mr. PoopyButtHole");
