@@ -10,7 +10,7 @@ import server.Service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class P3ServiceTest {
+public class P3ServiceTests {
     private Service serviceObj = new Service();
 
     void badCreateUserAndLoginAndJoinGameWhite(UserData newUser20, UserDataAcess dataObja, AuthTokenDataAcess authTData201,
