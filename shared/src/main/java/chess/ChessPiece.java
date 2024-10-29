@@ -72,6 +72,318 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
 
+    public void howRookMoves(ChessPosition myPosition, ChessBoard board, Collection<ChessMove>listMoves){
+        boolean left = true;
+        boolean right = true;
+        boolean up = true;
+        boolean down = true;
+        ChessPosition newPosition = myPosition;
+        //find out where it is on the board, go to the left, up, right, down and return a list of array.
+
+        //GOING LEFT
+        while(left == true) {
+            int newCol = newPosition.getColumn() - 1;
+
+            //base case if it goes out of bounds, only have to worry about 1 since its only going left
+            if(newCol < 1) {
+                newPosition = myPosition;
+                break;
+            }
+
+            //new chess position
+            ChessPosition leftPosition = new ChessPosition(myPosition.getRow(), newCol);
+            //new chess move
+            ChessMove moves = new ChessMove(myPosition, leftPosition,null);
+
+            if (board.getPiece(leftPosition) == null) {
+                listMoves.add(moves);
+            }
+            //break if the board is out of bounds when a piece that is the same color of a piece is on that square on the chess board
+            else if (board.getPiece(leftPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
+                newPosition = myPosition;
+                break;
+            }
+            else if(board.getPiece(leftPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
+                listMoves.add(moves);
+                newPosition = myPosition;
+                break;
+            }
+            //update new or copy to the left
+            newPosition = leftPosition;
+        }
+
+
+        //GOING RIGHT
+        while(right == true) {
+            int newCol = newPosition.getColumn() + 1;
+            ChessPosition leftPosition = new ChessPosition(myPosition.getRow(), newCol);
+
+            //base case if it goes out of bounds, only have to worry about 1 since its only going left
+            if(newCol > 8) {
+                newPosition = myPosition;
+                break;
+            }
+
+            //new chess move
+            ChessMove moves = new ChessMove(myPosition, leftPosition,null);
+
+            //break if the board is out of bounds when a piece that is the same color of a piece is on that square on the chess board
+            if (board.getPiece(leftPosition) == null) {
+                listMoves.add(moves);
+            }
+            else if (board.getPiece(leftPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
+                newPosition = myPosition;
+                break;
+            }
+            else if(board.getPiece(leftPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
+                listMoves.add(moves);
+                newPosition = myPosition;
+                break;
+            }
+            //update new or copy to the left
+            newPosition = leftPosition;
+        }
+
+        // GOING UP
+
+        while(up == true){
+            int newRow = newPosition.getRow() + 1;
+            ChessPosition upPosition = new ChessPosition(newRow, myPosition.getColumn());
+
+            //base case if it goes out of bounds, only have to worry about 1 since its only going left
+            if(newRow > 8) {
+                newPosition = myPosition;
+                break;
+            }
+
+            //new chess move
+            ChessMove moves = new ChessMove(myPosition, upPosition,null);
+
+
+
+            //break if the board is out of bounds when a piece that is the same color of a piece is on that square on the chess board
+            if (board.getPiece(upPosition) == null) {
+                listMoves.add(moves);
+            }
+            else if (board.getPiece(upPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
+                newPosition = myPosition;
+                break;
+            }
+
+            else if(board.getPiece(upPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
+                listMoves.add(moves);
+                newPosition = myPosition;
+                break;
+            }
+            //update new or copy to the left
+            newPosition = upPosition;
+        }
+
+        //GOING DOWN
+
+        while(down == true){
+            int newRow = newPosition.getRow() - 1;
+            ChessPosition upPosition = new ChessPosition(newRow, myPosition.getColumn());
+
+            //base case if it goes out of bounds, only have to worry about 1 since its only going left
+            if(newRow < 1) {
+                newPosition = myPosition;
+                break;
+            }
+
+            //new chess move
+            ChessMove moves = new ChessMove(myPosition, upPosition,null);
+
+            //break if the board is out of bounds when a piece that is the same color of a piece is on that square on the chess board
+            if (board.getPiece(upPosition) == null) {
+                listMoves.add(moves);
+            }
+            else if (board.getPiece(upPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
+                newPosition = myPosition;
+                break;
+            }
+
+            else if(board.getPiece(upPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
+                listMoves.add(moves);
+                newPosition = myPosition;
+                break;
+            }
+            //update new or copy to the left
+            newPosition = upPosition;
+        }
+    }
+    public void howBishopMoves(ChessPosition myPosition, ChessBoard board, Collection<ChessMove>listMoves ){
+        //moves diagonal so +1 to the row and +1 or -1 for column if its moving up, if moving down its -1 row and -1 and +1 col
+        boolean leftUp = true;
+        boolean rightUp = true;
+        boolean downLeft = true;
+        boolean downRight = true;
+
+        ChessPosition newPosition = myPosition;
+        ChessMove move;
+
+        //diagonal down left and right
+        while(downLeft == true){
+            int newRow = newPosition.getRow() - 1;
+            int colLeft = newPosition.getColumn() - 1;
+
+            //base case if it goes too far left or too far down
+            if(newRow < 1 || colLeft < 1) {
+                newPosition = myPosition;
+                break;
+            }
+
+
+            //new chess piece position
+            ChessPosition upPosition = new ChessPosition(newRow, colLeft);
+
+            //new chess move
+            ChessMove moves = new ChessMove(myPosition, upPosition,null);
+
+            //add if null or empty square
+            if (board.getPiece(upPosition) == null) {
+                listMoves.add(moves);
+            }
+
+            //if null do two team color stuff
+            //break if a piece is the same color of a piece is on that square on the chess board
+            else if (board.getPiece(upPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
+                newPosition = myPosition;
+                break;
+            }
+            //add possibe move and then break
+            else if(board.getPiece(upPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
+                listMoves.add(moves);
+                newPosition = myPosition;
+                break;
+            }
+
+
+            //update new or copy to the left
+            newPosition = upPosition;
+        }
+
+        while(downRight == true){
+            int newRow = newPosition.getRow() - 1;
+            int colRight = newPosition.getColumn() + 1;
+
+            //base case if it goes too far right or too far down
+            if(newRow < 1 || colRight > 8) {
+                //reset position
+                newPosition = myPosition;
+                break;
+            }
+
+            //new chess piece position it can maybe go to
+            ChessPosition upPosition = new ChessPosition(newRow, colRight);
+
+            //new moves
+            ChessMove moves = new ChessMove(myPosition, upPosition,null);
+
+            //add if null or empty square
+            if (board.getPiece(upPosition) == null) {
+                listMoves.add(moves);
+            }
+
+            //break if a piece is the same color of a piece is on that square on the chess board
+            else if (board.getPiece(upPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
+                newPosition = myPosition;
+                break;
+            }
+
+
+            //add possibe move and then break
+            else if(board.getPiece(upPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
+                newPosition = myPosition;
+                listMoves.add(moves);
+                break;
+            }
+            //update new or copy to the left
+            newPosition = upPosition;
+        }
+
+
+        //diagonal up left and right
+        while(leftUp == true){
+            int newRow = newPosition.getRow() + 1;
+            int colLeft = newPosition.getColumn() - 1;
+            //int colRight = newPosition.getColumn() + 1;
+
+            //base case if it goes too far left or too high up
+            if(newRow > 8 || colLeft < 1) {
+                newPosition = myPosition;
+                break;
+            }
+
+            //new chess piece position it can maybe go to
+            ChessPosition upPosition = new ChessPosition(newRow, colLeft);
+
+            //new moves
+            ChessMove moves = new ChessMove(myPosition, upPosition,null);
+
+
+            //add if null or empty square
+            if (board.getPiece(upPosition) == null) {
+                listMoves.add(moves);
+            }
+
+            //break if a piece is the same color of a piece is on that square on the chess board
+            else if (board.getPiece(upPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
+                newPosition = myPosition;
+                break;
+            }
+            //add if null or empty square
+            else if (board.getPiece(upPosition) == null) {
+                listMoves.add(moves);
+            }
+            //add possibe move and then break
+            else if(board.getPiece(upPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
+                listMoves.add(moves);
+                newPosition = myPosition;
+                break;
+            }
+            //update new or copy to the left
+            newPosition = upPosition;
+        }
+        while(rightUp == true){
+            int newRow = newPosition.getRow() + 1;
+//                int colLeft = newPosition.getColumn() - 1;
+            int colRight = newPosition.getColumn() + 1;
+
+            //base case if it goes to far right or up
+            if(newRow > 8 || colRight > 8) {
+                newPosition = myPosition;
+                break;
+            }
+
+            //new chess piece position it can maybe go to
+            ChessPosition upPosition = new ChessPosition(newRow, colRight);
+
+            //new moves
+            ChessMove moves = new ChessMove(myPosition, upPosition,null);
+
+            //add if null or empty square
+            if (board.getPiece(upPosition) == null) {
+                listMoves.add(moves);
+            }
+
+            //break if a piece is the same color of a piece is on that square on the chess board
+            else if (board.getPiece(upPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
+                newPosition = myPosition;
+                break;
+            }
+
+            //add possibe move and then break
+            else if(board.getPiece(upPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
+                listMoves.add(moves);
+                newPosition = myPosition;
+                break;
+            }
+            //update new or copy to the left
+            newPosition = upPosition;
+        }
+    }
+
     public boolean pawnWhitePromotionCheck(int row) {
         if (row == 8 || row == 1){
             return true;
@@ -484,636 +796,20 @@ public class ChessPiece {
             }
 
         }
-
-
-
-
-
-
         //how bishop moves
         else if(this.pieceType == PieceType.BISHOP) {
-            //moves diagonal so +1 to the row and +1 or -1 for column if its moving up, if moving down its -1 row and -1 and +1 col
-            boolean leftUp = true;
-            boolean rightUp = true;
-            boolean downLeft = true;
-            boolean downRight = true;
-
-            ChessPosition newPosition = myPosition;
-            ChessMove move;
-
-            //diagonal down left and right
-            while(downLeft == true){
-                int newRow = newPosition.getRow() - 1;
-                int colLeft = newPosition.getColumn() - 1;
-
-                //base case if it goes too far left or too far down
-                if(newRow < 1 || colLeft < 1) {
-                    newPosition = myPosition;
-                    break;
-                }
-
-
-                //new chess piece position
-                ChessPosition upPosition = new ChessPosition(newRow, colLeft);
-
-                //new chess move
-                ChessMove moves = new ChessMove(myPosition, upPosition,null);
-
-                //add if null or empty square
-                if (board.getPiece(upPosition) == null) {
-                    listMoves.add(moves);
-                }
-
-                //if null do two team color stuff
-                //break if a piece is the same color of a piece is on that square on the chess board
-                else if (board.getPiece(upPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
-                    newPosition = myPosition;
-                    break;
-                }
-                //add possibe move and then break
-                else if(board.getPiece(upPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
-                    listMoves.add(moves);
-                    newPosition = myPosition;
-                    break;
-                }
-
-
-                //update new or copy to the left
-                newPosition = upPosition;
-            }
-
-            while(downRight == true){
-                int newRow = newPosition.getRow() - 1;
-                int colRight = newPosition.getColumn() + 1;
-
-                //base case if it goes too far right or too far down
-                if(newRow < 1 || colRight > 8) {
-                    //reset position
-                    newPosition = myPosition;
-                    break;
-                }
-
-                //new chess piece position it can maybe go to
-                ChessPosition upPosition = new ChessPosition(newRow, colRight);
-
-                //new moves
-                ChessMove moves = new ChessMove(myPosition, upPosition,null);
-
-                //add if null or empty square
-                if (board.getPiece(upPosition) == null) {
-                    listMoves.add(moves);
-                }
-
-                //break if a piece is the same color of a piece is on that square on the chess board
-                else if (board.getPiece(upPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
-                    newPosition = myPosition;
-                    break;
-                }
-
-
-                //add possibe move and then break
-                else if(board.getPiece(upPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
-                    newPosition = myPosition;
-                    listMoves.add(moves);
-                    break;
-                }
-                //update new or copy to the left
-                newPosition = upPosition;
-            }
-
-
-            //diagonal up left and right
-            while(leftUp == true){
-                int newRow = newPosition.getRow() + 1;
-                int colLeft = newPosition.getColumn() - 1;
-                //int colRight = newPosition.getColumn() + 1;
-
-                //base case if it goes too far left or too high up
-                if(newRow > 8 || colLeft < 1) {
-                    newPosition = myPosition;
-                    break;
-                }
-
-                //new chess piece position it can maybe go to
-                ChessPosition upPosition = new ChessPosition(newRow, colLeft);
-
-                //new moves
-                ChessMove moves = new ChessMove(myPosition, upPosition,null);
-
-
-                //add if null or empty square
-                if (board.getPiece(upPosition) == null) {
-                    listMoves.add(moves);
-                }
-
-                //break if a piece is the same color of a piece is on that square on the chess board
-                else if (board.getPiece(upPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
-                    newPosition = myPosition;
-                    break;
-                }
-                //add if null or empty square
-                else if (board.getPiece(upPosition) == null) {
-                    listMoves.add(moves);
-                }
-                //add possibe move and then break
-                else if(board.getPiece(upPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
-                    listMoves.add(moves);
-                    newPosition = myPosition;
-                    break;
-                }
-                //update new or copy to the left
-                newPosition = upPosition;
-            }
-            while(rightUp == true){
-                int newRow = newPosition.getRow() + 1;
-//                int colLeft = newPosition.getColumn() - 1;
-                int colRight = newPosition.getColumn() + 1;
-
-                //base case if it goes to far right or up
-                if(newRow > 8 || colRight > 8) {
-                    newPosition = myPosition;
-                    break;
-                }
-
-                //new chess piece position it can maybe go to
-                ChessPosition upPosition = new ChessPosition(newRow, colRight);
-
-                //new moves
-                ChessMove moves = new ChessMove(myPosition, upPosition,null);
-
-                //add if null or empty square
-                if (board.getPiece(upPosition) == null) {
-                    listMoves.add(moves);
-                }
-
-                //break if a piece is the same color of a piece is on that square on the chess board
-                else if (board.getPiece(upPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
-                    newPosition = myPosition;
-                    break;
-                }
-
-                //add possibe move and then break
-                else if(board.getPiece(upPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
-                    listMoves.add(moves);
-                    newPosition = myPosition;
-                    break;
-                }
-                //update new or copy to the left
-                newPosition = upPosition;
-            }
-
+            howBishopMoves(myPosition,board,listMoves);
         }
 
         //how rook moves
         else if(this.pieceType == PieceType.ROOK){
-            boolean left = true;
-            boolean right = true;
-            boolean up = true;
-            boolean down = true;
-            ChessPosition newPosition = myPosition;
-            //find out where it is on the board, go to the left, up, right, down and return a list of array.
-
-            //GOING LEFT
-            while(left == true) {
-                int newCol = newPosition.getColumn() - 1;
-
-                //base case if it goes out of bounds, only have to worry about 1 since its only going left
-                if(newCol < 1) {
-                    newPosition = myPosition;
-                    break;
-                }
-
-                //new chess position
-                ChessPosition leftPosition = new ChessPosition(myPosition.getRow(), newCol);
-                //new chess move
-                ChessMove moves = new ChessMove(myPosition, leftPosition,null);
-
-                if (board.getPiece(leftPosition) == null) {
-                    listMoves.add(moves);
-                }
-                //break if the board is out of bounds when a piece that is the same color of a piece is on that square on the chess board
-                else if (board.getPiece(leftPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
-                    newPosition = myPosition;
-                    break;
-                }
-                else if(board.getPiece(leftPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
-                    listMoves.add(moves);
-                    newPosition = myPosition;
-                    break;
-                }
-                //update new or copy to the left
-                newPosition = leftPosition;
-            }
-
-
-            //GOING RIGHT
-            while(right == true) {
-                int newCol = newPosition.getColumn() + 1;
-                ChessPosition leftPosition = new ChessPosition(myPosition.getRow(), newCol);
-
-                //base case if it goes out of bounds, only have to worry about 1 since its only going left
-                if(newCol > 8) {
-                    newPosition = myPosition;
-                    break;
-                }
-
-                //new chess move
-                ChessMove moves = new ChessMove(myPosition, leftPosition,null);
-
-                //break if the board is out of bounds when a piece that is the same color of a piece is on that square on the chess board
-                if (board.getPiece(leftPosition) == null) {
-                    listMoves.add(moves);
-                }
-                else if (board.getPiece(leftPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
-                    newPosition = myPosition;
-                    break;
-                }
-                else if(board.getPiece(leftPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
-                    listMoves.add(moves);
-                    newPosition = myPosition;
-                    break;
-                }
-                //update new or copy to the left
-                newPosition = leftPosition;
-            }
-
-            // GOING UP
-
-            while(up == true){
-                int newRow = newPosition.getRow() + 1;
-                ChessPosition upPosition = new ChessPosition(newRow, myPosition.getColumn());
-
-                //base case if it goes out of bounds, only have to worry about 1 since its only going left
-                if(newRow > 8) {
-                    newPosition = myPosition;
-                    break;
-                }
-
-                //new chess move
-                ChessMove moves = new ChessMove(myPosition, upPosition,null);
-
-
-
-                //break if the board is out of bounds when a piece that is the same color of a piece is on that square on the chess board
-                if (board.getPiece(upPosition) == null) {
-                    listMoves.add(moves);
-                }
-                else if (board.getPiece(upPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
-                    newPosition = myPosition;
-                    break;
-                }
-
-                else if(board.getPiece(upPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
-                    listMoves.add(moves);
-                    newPosition = myPosition;
-                    break;
-                }
-                //update new or copy to the left
-                newPosition = upPosition;
-            }
-
-            //GOING DOWN
-
-            while(down == true){
-                int newRow = newPosition.getRow() - 1;
-                ChessPosition upPosition = new ChessPosition(newRow, myPosition.getColumn());
-
-                //base case if it goes out of bounds, only have to worry about 1 since its only going left
-                if(newRow < 1) {
-                    newPosition = myPosition;
-                    break;
-                }
-
-                //new chess move
-                ChessMove moves = new ChessMove(myPosition, upPosition,null);
-
-                //break if the board is out of bounds when a piece that is the same color of a piece is on that square on the chess board
-                if (board.getPiece(upPosition) == null) {
-                    listMoves.add(moves);
-                }
-                else if (board.getPiece(upPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
-                    newPosition = myPosition;
-                    break;
-                }
-
-                else if(board.getPiece(upPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
-                    listMoves.add(moves);
-                    newPosition = myPosition;
-                    break;
-                }
-                //update new or copy to the left
-                newPosition = upPosition;
-            }
-
-            //(myPosition.getRow())(myPosition.getColumn())
+            howRookMoves(myPosition,board,listMoves);
         }
 
         //how queen moves
         else if(this.pieceType == PieceType.QUEEN){
-            //Bishop moveset
-            boolean leftUp = true;
-            boolean rightUp = true;
-            boolean downLeft = true;
-            boolean downRight = true;
-
-            ChessPosition newPosition = myPosition;
-
-            //Rook Moveset
-            boolean left = true;
-            boolean right = true;
-            boolean up = true;
-            boolean down = true;
-            //find out where it is on the board, go to the left, up, right, down and return a list of array.
-
-            //GOING LEFT
-            while(left == true) {
-                int newCol = newPosition.getColumn() - 1;
-
-                //base case if it goes out of bounds, only have to worry about 1 since its only going left
-                if(newCol < 1) {
-                    newPosition = myPosition;
-                    break;
-                }
-
-                //new chess position
-                ChessPosition leftPosition = new ChessPosition(myPosition.getRow(), newCol);
-                //new chess move
-                ChessMove moves = new ChessMove(myPosition, leftPosition,null);
-
-                if (board.getPiece(leftPosition) == null) {
-                    listMoves.add(moves);
-                }
-                //break if the board is out of bounds when a piece that is the same color of a piece is on that square on the chess board
-                else if (board.getPiece(leftPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
-                    newPosition = myPosition;
-                    break;
-                }
-                else if(board.getPiece(leftPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
-                    listMoves.add(moves);
-                    newPosition = myPosition;
-                    break;
-                }
-                //update new or copy to the left
-                newPosition = leftPosition;
-            }
-
-
-            //GOING RIGHT
-            while(right == true) {
-                int newCol = newPosition.getColumn() + 1;
-                ChessPosition leftPosition = new ChessPosition(myPosition.getRow(), newCol);
-
-                //base case if it goes out of bounds, only have to worry about 1 since its only going left
-                if(newCol > 8) {
-                    newPosition = myPosition;
-                    break;
-                }
-
-                //new chess move
-                ChessMove moves = new ChessMove(myPosition, leftPosition,null);
-
-                //break if the board is out of bounds when a piece that is the same color of a piece is on that square on the chess board
-                if (board.getPiece(leftPosition) == null) {
-                    listMoves.add(moves);
-                }
-                else if (board.getPiece(leftPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
-                    newPosition = myPosition;
-                    break;
-                }
-                else if(board.getPiece(leftPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
-                    listMoves.add(moves);
-                    newPosition = myPosition;
-                    break;
-                }
-                //update new or copy to the left
-                newPosition = leftPosition;
-            }
-
-            // GOING UP
-
-            while(up == true){
-                int newRow = newPosition.getRow() + 1;
-                ChessPosition upPosition = new ChessPosition(newRow, myPosition.getColumn());
-
-                //base case if it goes out of bounds, only have to worry about 1 since its only going left
-                if(newRow > 8) {
-                    newPosition = myPosition;
-                    break;
-                }
-
-                //new chess move
-                ChessMove moves = new ChessMove(myPosition, upPosition,null);
-
-
-
-                //break if the board is out of bounds when a piece that is the same color of a piece is on that square on the chess board
-                if (board.getPiece(upPosition) == null) {
-                    listMoves.add(moves);
-                }
-                else if (board.getPiece(upPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
-                    newPosition = myPosition;
-                    break;
-                }
-
-                else if(board.getPiece(upPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
-                    listMoves.add(moves);
-                    newPosition = myPosition;
-                    break;
-                }
-                //update new or copy to the left
-                newPosition = upPosition;
-            }
-
-            //GOING DOWN
-
-            while(down == true) {
-                int newRow = newPosition.getRow() - 1;
-                ChessPosition upPosition = new ChessPosition(newRow, myPosition.getColumn());
-
-                //base case if it goes out of bounds, only have to worry about 1 since its only going left
-                if (newRow < 1) {
-                    newPosition = myPosition;
-                    break;
-                }
-
-                //new chess move
-                ChessMove moves = new ChessMove(myPosition, upPosition, null);
-
-                //break if the board is out of bounds when a piece that is the same color of a piece is on that square on the chess board
-                if (board.getPiece(upPosition) == null) {
-                    listMoves.add(moves);
-                } else if (board.getPiece(upPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
-                    newPosition = myPosition;
-                    break;
-                } else if (board.getPiece(upPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-                    listMoves.add(moves);
-                    newPosition = myPosition;
-                    break;
-                }
-                //update new or copy to the left
-                newPosition = upPosition;
-            }
-
-            //diagonal down left and right
-            while(downLeft == true){
-                int newRow = newPosition.getRow() - 1;
-                int colLeft = newPosition.getColumn() - 1;
-
-                //base case if it goes too far left or too far down
-                if(newRow < 1 || colLeft < 1) {
-                    newPosition = myPosition;
-                    break;
-                }
-
-
-                //new chess piece position
-                ChessPosition upPosition = new ChessPosition(newRow, colLeft);
-
-                //new chess move
-                ChessMove moves = new ChessMove(myPosition, upPosition,null);
-
-                //add if null or empty square
-                if (board.getPiece(upPosition) == null) {
-                    listMoves.add(moves);
-                }
-
-                //if null do two team color stuff
-                //break if a piece is the same color of a piece is on that square on the chess board
-                else if (board.getPiece(upPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
-                    newPosition = myPosition;
-                    break;
-                }
-                //add possibe move and then break
-                else if(board.getPiece(upPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
-                    listMoves.add(moves);
-                    newPosition = myPosition;
-                    break;
-                }
-
-
-                //update new or copy to the left
-                newPosition = upPosition;
-            }
-
-            while(downRight == true){
-                int newRow = newPosition.getRow() - 1;
-                int colRight = newPosition.getColumn() + 1;
-
-                //base case if it goes too far right or too far down
-                if(newRow < 1 || colRight > 8) {
-                    //reset position
-                    newPosition = myPosition;
-                    break;
-                }
-
-                //new chess piece position it can maybe go to
-                ChessPosition upPosition = new ChessPosition(newRow, colRight);
-
-                //new moves
-                ChessMove moves = new ChessMove(myPosition, upPosition,null);
-
-                //add if null or empty square
-                if (board.getPiece(upPosition) == null) {
-                    listMoves.add(moves);
-                }
-
-                //break if a piece is the same color of a piece is on that square on the chess board
-                else if (board.getPiece(upPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
-                    newPosition = myPosition;
-                    break;
-                }
-
-
-                //add possibe move and then break
-                else if(board.getPiece(upPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
-                    newPosition = myPosition;
-                    listMoves.add(moves);
-                    break;
-                }
-                //update new or copy to the left
-                newPosition = upPosition;
-            }
-
-
-            //diagonal up left and right
-            while(leftUp == true){
-                int newRow = newPosition.getRow() + 1;
-                int colLeft = newPosition.getColumn() - 1;
-                //int colRight = newPosition.getColumn() + 1;
-
-                //base case if it goes too far left or too high up
-                if(newRow > 8 || colLeft < 1) {
-                    newPosition = myPosition;
-                    break;
-                }
-
-                //new chess piece position it can maybe go to
-                ChessPosition upPosition = new ChessPosition(newRow, colLeft);
-
-                //new moves
-                ChessMove moves = new ChessMove(myPosition, upPosition,null);
-
-
-                //add if null or empty square
-                if (board.getPiece(upPosition) == null) {
-                    listMoves.add(moves);
-                }
-
-                //break if a piece is the same color of a piece is on that square on the chess board
-                else if (board.getPiece(upPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
-                    newPosition = myPosition;
-                    break;
-                }
-                //add if null or empty square
-                else if (board.getPiece(upPosition) == null) {
-                    listMoves.add(moves);
-                }
-                //add possibe move and then break
-                else if(board.getPiece(upPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
-                    listMoves.add(moves);
-                    newPosition = myPosition;
-                    break;
-                }
-                //update new or copy to the left
-                newPosition = upPosition;
-            }
-            while(rightUp == true){
-                int newRow = newPosition.getRow() + 1;
-//                int colLeft = newPosition.getColumn() - 1;
-                int colRight = newPosition.getColumn() + 1;
-
-                //base case if it goes to far right or up
-                if(newRow > 8 || colRight > 8) {
-                    newPosition = myPosition;
-                    break;
-                }
-
-                //new chess piece position it can maybe go to
-                ChessPosition upPosition = new ChessPosition(newRow, colRight);
-
-                //new moves
-                ChessMove moves = new ChessMove(myPosition, upPosition,null);
-
-                //add if null or empty square
-                if (board.getPiece(upPosition) == null) {
-                    listMoves.add(moves);
-                }
-
-                //break if a piece is the same color of a piece is on that square on the chess board
-                else if (board.getPiece(upPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
-                    newPosition = myPosition;
-                    break;
-                }
-
-                //add possibe move and then break
-                else if(board.getPiece(upPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
-                    listMoves.add(moves);
-                    newPosition = myPosition;
-                    break;
-                }
-                //update new or copy to the left
-                newPosition = upPosition;
-            }
+            howRookMoves(myPosition,board,listMoves);
+            howBishopMoves(myPosition,board,listMoves);
         }
         return listMoves;
         //return new ArrayList<>();

@@ -227,16 +227,11 @@ public class ChessGame {
             if(isInCheckKing(newPiece.getTeamColor(), copyOfBoard)) {
                 throw new InvalidMoveException();
             }
-            //throw new InvalidMoveException();
         }
         if(newPiece.getTeamColor() != currentColor){
             throw new InvalidMoveException();
         }
 
-        //pawn promotion
-//        if(move.getPromotionPiece() != null) {
-//
-//        }
         // Handle the special case of pawn promotion
         if (newPiece.getPieceType() == ChessPiece.PieceType.PAWN) {
             int finalRow = newPiece.getTeamColor() == TeamColor.WHITE ? 8 : 1;
@@ -257,7 +252,6 @@ public class ChessGame {
 
 
         //delete piece whether null or not, remove it. Then add piece to board
-       // board.removePiece(endingPosition);
         board.addPiece(endingPosition, newPiece);
         flipSetTeamTurn(newPiece.getTeamColor());
         //delete the piece where it was at before
@@ -275,7 +269,6 @@ public class ChessGame {
         ChessPiece newPiece = copyOfBoard.getPiece(startingPosition);
         //delete piece whether null or not, remove it. Then add piece to board
         copyOfBoard.addPiece(endingPosition, newPiece);
-        //copyOfBoard.removePiece(endingPosition);
         //delete the piece where it was at before
         copyOfBoard.removePiece(startingPosition);
 
