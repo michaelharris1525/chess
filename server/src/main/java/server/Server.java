@@ -156,8 +156,8 @@ public class Server {
                 //extract game name to add to change
                 Map<String, String> requestBody =
                         serializer.fromJson(req.body(), Map.class);
-                String nameofGameFromUser = requestBody.get("gameName");
-                int gameId = serviceobj.createGame(authToken, authTokenData, gameData, nameofGameFromUser);
+                String nameOfGameFromUser = requestBody.get("gameName");
+                int gameId = serviceobj.createGame(authToken, authTokenData, gameData, nameOfGameFromUser);
                 GameResponse gameResponse = new GameResponse(gameId);
                 // If create game succeeds
                 res.status(200);

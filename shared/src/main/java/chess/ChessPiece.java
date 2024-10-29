@@ -272,24 +272,16 @@ public class ChessPiece {
                     if (board.getPiece(newPosition) == null) {
                         if(pawnWhitePromotionCheck(newPosition.getRow()) == true){
                             createAllPromotionalPieces(myPosition,newPosition,listMoves);
-                            newPosition = myPosition;
                             continue;
                         }
                         listMoves.add(moves);
-                        newPosition = myPosition;
-                        continue;
                     }
-                    // If the square has a piece of the same color, stop further checks in this direction
-                    else if (board.getPiece(newPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
-                        newPosition = myPosition;
-                        continue;
-                    } else if (board.getPiece(newPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                     else if (board.getPiece(newPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
                         if (i==1) {
                             continue;
                         }
                         listMoves.add(moves);
-                        newPosition = myPosition;
-                        continue;
+
                     }
 
                 }
@@ -336,32 +328,24 @@ public class ChessPiece {
                             continue;
                         }
                     }
-                    ChessPosition newPosition = new ChessPosition(newRow - 1, newCol + (i - 1));
+                    ChessPosition pnewPosition = new ChessPosition(newRow - 1, newCol + (i - 1));
                     //new move
-                    ChessMove moves = new ChessMove(myPosition, newPosition, null);
-                    if (board.getPiece(newPosition) == null) {
-                        if(pawnWhitePromotionCheck(newPosition.getRow()) == true){
-                            createAllPromotionalPieces(myPosition,newPosition,listMoves);
-                            newPosition = myPosition;
+                    ChessMove moves = new ChessMove(myPosition, pnewPosition, null);
+                    if (board.getPiece(pnewPosition) == null) {
+                        if(pawnWhitePromotionCheck(pnewPosition.getRow()) == true){
+                            createAllPromotionalPieces(myPosition,pnewPosition,listMoves);
                             continue;
                         }
                         listMoves.add(moves);
-                        newPosition = myPosition;
-                        continue;
                     }
-                    // If the square has a piece of the same color, stop further checks in this direction
-                    else if (board.getPiece(newPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
-                        newPosition = myPosition;
-                        continue;
-                    }
-                    else if (board.getPiece(newPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+
+                    else if (board.getPiece(pnewPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
                         //if pawn is trying to go vertical color doesn't matter, skip
                         if (i==1) {
                             continue;
                         }
                         listMoves.add(moves);
-                        newPosition = myPosition;
-                        continue;
+
                     }
 
                 }
