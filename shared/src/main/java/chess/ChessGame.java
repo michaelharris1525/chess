@@ -404,11 +404,8 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        //if there is no moves for king and all other pieces can't move, you are in stalemate
         ChessPosition kingsPosition = findKing(teamColor,board);
-        //Collection<ChessMove> kingMoves = validMoves(kingsPosition);
-        //List<ChessMove>listKingMoves = new ArrayList<>(kingMoves);
-        //for(ChessMove move: listKingMoves){
+
         Collection<ChessMove> kingMoves = validMoves(kingsPosition);
         List<ChessMove>listKingMoves = new ArrayList<>(kingMoves);
         if(listKingMoves.size() == 0){

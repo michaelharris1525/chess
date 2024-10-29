@@ -52,8 +52,8 @@ public class ChessPiece {
     @Override
     public boolean equals(Object o) {
         //if my address matches default equals
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {return true;}
+        if (o == null || getClass() != o.getClass()){ return false;}
         //make a new object called THAT; CASTING
         ChessPiece that = (ChessPiece) o;
         return pieceColor == that.pieceColor && pieceType == that.pieceType;
@@ -187,16 +187,14 @@ public class ChessPiece {
 
             //base case if it goes out of bounds, only have to worry about 1 since its only going left
             if(newRow < 1) {
-                newPosition = myPosition;
                 break;
             }
 
-            //new chess move
-            ChessMove moves = new ChessMove(myPosition, upPosition,null);
+            ChessMove cMoves = new ChessMove(myPosition, upPosition,null);
 
             //break if the board is out of bounds when a piece that is the same color of a piece is on that square on the chess board
             if (board.getPiece(upPosition) == null) {
-                listMoves.add(moves);
+                listMoves.add(cMoves);
             }
             else if (board.getPiece(upPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
                 newPosition = myPosition;
@@ -204,7 +202,7 @@ public class ChessPiece {
             }
 
             else if(board.getPiece(upPosition).getTeamColor()!=board.getPiece(myPosition).getTeamColor()){
-                listMoves.add(moves);
+                listMoves.add(cMoves);
                 newPosition = myPosition;
                 break;
             }
@@ -213,11 +211,6 @@ public class ChessPiece {
         }
     }
     public void howKnightMoves(ChessPosition myPosition, ChessBoard board, Collection<ChessMove>listMoves){
-        boolean leftUp = true;
-        boolean rightUp = true;
-        boolean downLeft = true;
-        boolean downRight = true;
-
         ChessPosition newPosition = myPosition;
         ChessMove move;
         int j = 1;
@@ -271,7 +264,6 @@ public class ChessPiece {
         for (int i = 2; i > 0; i--){
             int newRow = newPosition.getRow() + j;
             int colRight = newPosition.getColumn() + i;
-            //int colRight = newPosition.getColumn() + 1;
 
             //base case if it goes too far right or too high up
             if(newRow > 8 || colRight > 8) {
@@ -360,7 +352,6 @@ public class ChessPiece {
         for (int i = 2; i > 0; i--){
             int newRow = newPosition.getRow() - j;
             int colLeft = newPosition.getColumn() - i;
-            //int colRight = newPosition.getColumn() + 1;
 
             //base case if it goes too far left or too high up
             if(newRow < 1 || colLeft < 1) {
@@ -399,6 +390,7 @@ public class ChessPiece {
             newPosition = myPosition;
         }
     }
+
     public void howBishopMoves(ChessPosition myPosition, ChessBoard board, Collection<ChessMove>listMoves ){
         //moves diagonal so +1 to the row and +1 or -1 for column if its moving up, if moving down its -1 row and -1 and +1 col
         boolean leftUp = true;
