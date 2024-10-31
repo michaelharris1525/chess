@@ -54,7 +54,7 @@ public class Server {
                 // Call service layer to register the user
                 AuthData authData = serviceobj.register(userObj, userDataobj, authTokenData);
 
-
+                UserSQLDao.addUser(userObj);
                 // If registration succeeds
                 res.status(200);
                 return serializer.toJson(authData);
@@ -96,6 +96,7 @@ public class Server {
 
 
                 // If login succeeds
+
                 res.status(200);
                 return serializer.toJson(authData);
 
