@@ -1,9 +1,11 @@
 package dataaccess;
 
+import model.CreateTablesException;
+
 import java.sql.*;
 import java.util.Properties;
 
-public class DatabaseManager {
+public class DatabaseManager{
     private static final String DATABASE_NAME;
     private static final String USER;
     private static final String PASSWORD;
@@ -36,7 +38,7 @@ public class DatabaseManager {
     /**
      * Creates the database if it does not already exist.
      */
-    static void createDatabase() throws DataAccessException {
+    public static void createDatabase() throws DataAccessException {
         try {
             var statement = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME;
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
@@ -69,4 +71,38 @@ public class DatabaseManager {
             throw new DataAccessException(e.getMessage());
         }
     }
+
+    //added stuff starts here
+    // Method to create the users table
+    public static void createTables() {
+        String createUsersTableSQL = "CREATE TABLE IF NOT EXISTS users ("
+                + "id INT AUTO_INCREMENT PRIMARY KEY,"
+                + "username VARCHAR(255) UNIQUE NOT NULL,"
+                + "password VARCHAR(255) NOT NULL,"
+                + "email VARCHAR(255) UNIQUE NOT NULL)";
+
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/your_database_name", "username", "password");
+             Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate(createUsersTableSQL);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+//    static void createTables() throws DataAccessException {
+//        String sql = "CREATE TABLE IF NOT EXISTS users (" +
+//                "username VARCHAR(255) PRIMARY KEY, " +
+//                "password VARCHAR(255) NOT NULL, " +
+//                "email VARCHAR(255) NOT NULL" +
+//                ")";
+//        try (Connection conn = getConnection();
+//             PreparedStatement stmt = conn.prepareStatement(sql)) {
+//            stmt.executeUpdate();
+//        } catch (SQLException e) {
+//            throw new DataAccessException("Error creating users table: " + e.getMessage());
+//        }
+//    }
+//    public void initializeDatabase() throws DataAccessException {
+//        createDatabase();
+//        createTables();
+//    }
 }

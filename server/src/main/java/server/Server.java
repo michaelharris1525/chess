@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import dataaccess.DatabaseManager;
+import dataaccess.UserSQLDao;
+
 
 public class Server {
     private final UserMemorydao userDataobj = new UserMemorydao();
@@ -17,13 +20,22 @@ public class Server {
     private final AuthTokenDataAcess authTokenData = new AuthTokenStorage();
     private final GameDataAccess gameData = new GameStorage();
 
+    public void runServer() {
+        try {
+            DatabaseManager.createDatabase();
+            // Create tables if they don't exist
+            DatabaseManager.createTables();
+            // Start your services/endpoints
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public int run(int desiredPort) {
+        runServer();
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
-
-        //Service serviceobj = new Service();
         //registration
         Spark.post("/user", (Request req, Response res) -> {
             Gson serializer = new Gson();
@@ -291,6 +303,7 @@ public class Server {
         Spark.awaitInitialization();
         return Spark.port();
     }
+
 
 
     public void stop() {
