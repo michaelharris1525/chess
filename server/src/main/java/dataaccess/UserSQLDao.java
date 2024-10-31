@@ -24,7 +24,7 @@ public class UserSQLDao {
         }
     }
 
-    public UserData getUserByUsername(String username) throws DataAccessException {
+    public static UserData getUserByUsername(String username) throws DataAccessException {
         String sql = "SELECT * FROM users WHERE username = ?";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
