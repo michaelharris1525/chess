@@ -37,15 +37,15 @@ public class AuthSQLTokenClass implements AuthTokenDataAcess{
 
     // Retrieve an auth token by username
     @Override
-    public AuthData getauthtoken(String username) {
-        String query = "SELECT authToken, userName FROM authTokens WHERE userName = ?";
+    public AuthData getauthtoken(String token) {
+        String query = "SELECT authToken, userName FROM authTokens WHERE authToken = ?";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, username);
+            stmt.setString(1, token);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                String authToken = rs.getString("authToken");
-                return new AuthData(authToken, username);
+                String userName = rs.getString("userName");
+                return new AuthData(token, userName);
             }
         } catch (SQLException | DataAccessException e) {
             e.printStackTrace();
@@ -110,7 +110,7 @@ public class AuthSQLTokenClass implements AuthTokenDataAcess{
     //String authToken, String username
     private final String[] createTables =  {
             """
-            CREATE TABLE IF NOT EXISTS authtokens (
+            CREATE TABLE IF NOT EXISTS authTokens (
                 `authToken` VARCHAR(255) PRIMARY KEY,
                 `userName` VARCHAR(255)
             );

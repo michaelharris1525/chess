@@ -18,10 +18,10 @@ import javax.xml.crypto.Data;
 
 
 public class Server {
-    private final UserMemorydao userDataobj = new UserMemorydao();
+    private final UserSQLDao userDataobj = new UserSQLDao();
     private final Service serviceobj = new Service();
-    private final AuthTokenDataAcess authTokenData = new AuthTokenStorage();
-    private final GameDataAccess gameData = new GameStorage();
+    private final AuthSQLTokenClass authTokenData = new AuthSQLTokenClass();
+    private final GameSQLDao gameData = new GameSQLDao();
 
     //SQL Databases
     private final UserSQLDao userSQL = new UserSQLDao();

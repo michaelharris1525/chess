@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class GameSQLDao implements GameDataAccess{
+
     // Method to add a new game
     @Override
     public void addNewGame(int id, String gameName) {

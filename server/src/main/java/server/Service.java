@@ -2,6 +2,7 @@ package server;
 
 import dataaccess.*;
 import model.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.UUID;
 
@@ -35,10 +36,9 @@ public class Service {
             //if user doesn't match throw an exception
             throw new UserNameIsWrong("Error: unauthorized");
         }
-        if(!dataobj.getuserpassword(user.username()).equals(user.password())){
-            //if password does not match throw exception
+        if(!BCrypt.checkpw(user.password(), dataobj.getuserpassword(user.username()))){
             throw new UserPasswordIsWrong("Error: unauthorized");
-        }
+   }
         //create auth data token and add it to database
         authDataAcessobj.addAuthToken(authdata);
         return authdata;
@@ -97,7 +97,7 @@ public class Service {
     }
 
     // CLEAR, make 11 unit tests
-    public void clearAllData(UserMemorydao userd, AuthTokenDataAcess authdata, GameDataAccess gameData){
+    public void clearAllData(UserDataAcess userd, AuthTokenDataAcess authdata, GameDataAccess gameData){
         userd.clearuserdatabase();
         authdata.clearuserdatabase();
         gameData.clearGameData();
