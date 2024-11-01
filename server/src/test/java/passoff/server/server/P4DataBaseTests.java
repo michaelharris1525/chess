@@ -3,6 +3,7 @@ package passoff.server.server;
 import dataaccess.*;
 import model.AuthData;
 import model.GameData;
+import model.UnabletoConfigureDatabase;
 import model.UserData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -263,5 +264,23 @@ public class P4DataBaseTests {
         // Clean up after test
         userSQLDao.clearuserdatabase();
     }
+    @Test
+    public void testConfigureDatabaseSuccess() {
+        // Positive test: Verify that configureDatabase() completes without exception
+        assertDoesNotThrow(() -> {
+            UserSQLDao userSQLDao = new UserSQLDao();
+            userSQLDao.configureDatabase();
+        }, "configureDatabase should succeed without exceptions");
+    }
+    @Test
+    public void testConfigureDatabaseFail() {
+        // Negative test: Try to call configureDatabase() when the tables already exist
+        assertDoesNotThrow( () -> {
+            // Configure the database first to create tables
+            UserSQLDao userSQLDao = new UserSQLDao();
+            userSQLDao.configureDatabase();
+            userSQLDao.configureDatabase();
+    });
 
+    }
 }
