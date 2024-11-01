@@ -82,30 +82,6 @@ public class AuthSQLTokenClass implements AuthTokenDataAcess{
         }
         return false;
     }
-//    @Override
-//    public void addAuthToken(AuthData token) {
-//
-//    }
-//
-//    @Override
-//    public void clearuserdatabase() {
-//
-//    }
-//
-//    @Override
-//    public AuthData getauthtoken(String author) {
-//        return null;
-//    }
-//
-//    @Override
-//    public void deleteauthtoken(String authtoken) {
-//
-//    }
-//
-//    @Override
-//    public boolean containsAuthToken(String authToken) {
-//        return false;
-//    }
 
     //String authToken, String username
     private final String[] createTables =  {

@@ -237,5 +237,31 @@ public class P4DataBaseTests {
         // Clean up after test
         userSQLDao.clearuserdatabase();
     }
+    @Test
+    public void isEmptyUserTest() throws DataAccessException {
+        // Verify that isEmpty() returns true when the database has no users
+        UserSQLDao userSQLDao = new UserSQLDao();
+
+        // Clear the database for a clean start
+        userSQLDao.clearuserdatabase();
+
+        assertTrue(userSQLDao.isEmpty(), "Database should be empty initially");
+    }
+
+    @Test
+    public void testIsEmptyWhenDatabaseIsNotEmpty() throws DataAccessException {
+        // Add a user to the database to make it non-empty
+        UserData testUser = new UserData("testUser", "PeoplePopCorn", "test@example.com");
+        UserSQLDao userSQLDao = new UserSQLDao();
+        // Clear the database for a clean start
+        userSQLDao.clearuserdatabase();
+        userSQLDao.adduserdata(testUser);
+
+        // Verify that isEmpty() returns false when the database has users
+        assertFalse(userSQLDao.isEmpty(), "Database should not be empty after adding a user");
+
+        // Clean up after test
+        userSQLDao.clearuserdatabase();
+    }
 
 }
