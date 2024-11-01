@@ -8,16 +8,6 @@ import model.UserData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-//import java.sql.Connection;
-//import java.sql.DriverManager;
-//import java.sql.SQLException;
-//import java.sql.Statement;
-//import java.util.Collection;
-//
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import dataaccess.DataAccessException;
 import dataaccess.GameSQLDao;
 import org.junit.jupiter.api.*;
@@ -57,6 +47,20 @@ public class P4DataBaseTests {
     }
 
     @Test
+    public void testAddAuthTokenSucceed() throws DataAccessException {
+        String username = "testUser";
+        String token = "sampleAuthToken";
+        AuthData authD = new AuthData(token, username);
+
+        AuthSQLTokenClass authSQLTokenClass = new AuthSQLTokenClass();
+        authSQLTokenClass.clearuserdatabase(); // Clear previous tokens if necessary
+        authSQLTokenClass.addAuthToken(authD); // Add new token
+        AuthData retrievedToken = authSQLTokenClass.getauthtoken(token); // Retrieve the token
+
+        assertNotNull(retrievedToken.authToken());
+    }
+
+    @Test
     public void testAddAuthTokenFail() throws DataAccessException {
         String username = "testUser";
         String token = "sampleAuthToken";
@@ -69,6 +73,7 @@ public class P4DataBaseTests {
 
         assertNull(retrievedToken);
     }
+
 
     @Test
     void testAddNewGame() {
