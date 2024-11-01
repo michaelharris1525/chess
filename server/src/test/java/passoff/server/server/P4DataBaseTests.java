@@ -13,13 +13,14 @@ public class P4DataBaseTests {
 
     @Test
     public void testAddUser() throws DataAccessException {
-        UserData testUser = new UserData("testUser", "testPass", "test@example.com");
+        UserData testUser = new UserData("newbuddy", "testPass", "test@example.com");
         UserSQLDao userSQLDao = new UserSQLDao();
+        userSQLDao.clearuserdatabase();
         userSQLDao.adduserdata(testUser);
-
-        UserData retrievedUser = userSQLDao.getuserdata("testUser");
+        UserData retrievedUser = userSQLDao.getuserdata("newbuddy");
         assertNotNull(retrievedUser);
-        assertEquals("testUser", retrievedUser.username());
+        assertEquals("newbuddy", retrievedUser.username());
         assertEquals("test@example.com", retrievedUser.email());
+        userSQLDao.clearuserdatabase();
     }
 }

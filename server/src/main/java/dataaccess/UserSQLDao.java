@@ -11,8 +11,19 @@ import java.sql.*;
 public class UserSQLDao implements UserDataAcess {
 
     @Override
+    public void clearuserdatabase() {
+        String sql = "DELETE FROM users";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.executeUpdate();
+        } catch (SQLException | DataAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public UserData getuserdata(String username) {
-        String query = "SELECT username, hashedPassword FROM users WHERE username = ?";
+        String query = "SELECT username, password, email FROM users WHERE username = ?";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
@@ -21,8 +32,8 @@ public class UserSQLDao implements UserDataAcess {
 
             if (rs.next()) {
                 String retrievedUsername = rs.getString("username");
-                String hashedPassword = rs.getString("hashedPassword");
-                String gMail = rs.getString("gMail");
+                String hashedPassword = rs.getString("password");
+                String gMail = rs.getString("email");
                 return new UserData(retrievedUsername, hashedPassword, gMail);
             }
         } catch (SQLException | DataAccessException e) {
@@ -69,7 +80,8 @@ public class UserSQLDao implements UserDataAcess {
 
     @Override
     public String getuserpassword(String username) {
-        String query = "SELECT hashedPassword FROM users WHERE username = ?";
+        //this column does not exist
+        String query = "SELECT Password FROM users WHERE username = ?";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
@@ -77,7 +89,7 @@ public class UserSQLDao implements UserDataAcess {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return rs.getString("hashedPassword");
+                return rs.getString("password");
             }
         } catch (SQLException | DataAccessException e) {
             e.printStackTrace();
@@ -105,9 +117,9 @@ public class UserSQLDao implements UserDataAcess {
     private final String[] createTables =  {
         """
             CREATE TABLE IF NOT EXISTS users (
-                'username' VARCHAR(255) PRIMARY KEY,
-                'password' VARCHAR(255) NOT NULL,
-                'email' VARCHAR(255) UNIQUE NOT NULL
+                `username` VARCHAR(255) PRIMARY KEY,
+                `password` VARCHAR(255) NOT NULL,
+                `email` VARCHAR(255) UNIQUE NOT NULL
             );
             """};
 
