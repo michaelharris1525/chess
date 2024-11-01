@@ -197,5 +197,45 @@ public class P4DataBaseTests {
         // Clean up after test
         userSQLDao.clearuserdatabase();
     }
+    @Test
+    public void testGetUserPasswordSuccess() throws DataAccessException {
+        UserData testUser = new UserData("testUser", "testPass", "test@example.com");
+        UserSQLDao userSQLDao = new UserSQLDao();
+
+        // Clear the database for a clean start
+        userSQLDao.clearuserdatabase();
+
+        // Add the test user to the database
+        userSQLDao.adduserdata(testUser);
+
+        // Retrieve the password by username
+        String retrievedPassword = userSQLDao.getuserpassword("testUser");
+
+        // Verify that the retrieved password matches the inserted password
+        assertNotNull(retrievedPassword, "Retrieved password should not be null");
+
+        // Clean up after test
+        userSQLDao.clearuserdatabase();
+    }
+    @Test
+    public void testGetUserPasswordFail() throws DataAccessException {
+        UserData testUser = new UserData("testUser", "testPass", "test@example.com");
+        UserSQLDao userSQLDao = new UserSQLDao();
+
+        // Clear the database for a clean start
+        userSQLDao.clearuserdatabase();
+
+        // Add the test user to the database
+        userSQLDao.adduserdata(testUser);
+
+        // Retrieve the password by username
+        String retrievedPassword = userSQLDao.getuserpassword("testUser");
+
+        // Verify that the retrieved password matches the inserted password
+        assertNotNull(retrievedPassword, "Retrieved password should not be null");
+        assertNotEquals(testUser.password(), retrievedPassword);
+        // Clean up after test
+        userSQLDao.clearuserdatabase();
+    }
 
 }
