@@ -15,8 +15,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class P3ServiceTests {
     private Service serviceObj = new Service();
 
-    void badCreateUserAndLoginAndJoinGameWhite(UserData newUser20, UserDataAcess dataObja, AuthTokenDataAcess authTData201,
-                                       GameDataAccess gStorage, String nameOfGame) throws UserNameIsWrong, UserNameIsNullinMemoryDao, UserPasswordIsWrong, UserAlreadyExistsException, BadRequestsException, DataAccessException, PlayerColorException {
+    void badCreateUserAndLoginAndJoinGameWhite(UserData newUser20, UserDataAcess dataObja,
+                                               AuthTokenDataAcess authTData201,
+                                       GameDataAccess gStorage, String nameOfGame)
+            throws UserNameIsWrong, UserNameIsNullinMemoryDao, UserPasswordIsWrong,
+            UserAlreadyExistsException, BadRequestsException,
+            DataAccessException, PlayerColorException {
         //register
         serviceObj.register(newUser20, dataObja, authTData201);
         AuthData token = serviceObj.loginuser(newUser20,
@@ -98,7 +102,8 @@ public class P3ServiceTests {
         }, "Expected UserAlreadyExistsException to be thrown when registering an existing user.");
     }
     @Test
-    public void loginUserNormal() throws UserAlreadyExistsException, UserNameIsWrong,UserPasswordIsWrong,UserNameIsNullinMemoryDao {
+    public void loginUserNormal() throws UserAlreadyExistsException,
+            UserNameIsWrong,UserPasswordIsWrong,UserNameIsNullinMemoryDao {
         UserData newUser = new UserData("Mr. PoopyButtHole", "Poppy0",  "JustBasicJosephatgmail.com");
         UserDataAcess dataObj = new UserSQLDao();
         AuthTokenDataAcess authTData = new AuthSQLTokenClass();
@@ -111,7 +116,7 @@ public class P3ServiceTests {
 
     }
     @Test
-    public void loginUserDoesNotExist() throws UserAlreadyExistsException, UserNameIsWrong,UserPasswordIsWrong,UserNameIsNullinMemoryDao {
+    public void loginUserDoesNotExist()  {
         UserData newUser5 = new UserData("Mr. PoopyButtHole", "Poppy0",  "JustBasicJosephatgmail.com");
         UserDataAcess dataObje = new UserSQLDao();
         AuthTokenDataAcess authTData1 = new AuthSQLTokenClass();
@@ -121,7 +126,8 @@ public class P3ServiceTests {
         }, "Expected UserNameIsNull or doesnt exist  to be thrown when registering an existing user.");
     }
     @Test
-    public void loggingoutNormal() throws DataAccessException,UserAlreadyExistsException, UserNameIsWrong,UserPasswordIsWrong,UserNameIsNullinMemoryDao{
+    public void loggingoutNormal() throws DataAccessException,UserAlreadyExistsException,
+            UserNameIsWrong,UserPasswordIsWrong,UserNameIsNullinMemoryDao{
         UserData newUser4 = new UserData("Mr. PoopyButtHole", "Poppy0",  "JustBasicJosephatgmail.com");
         UserDataAcess dataObject = new UserSQLDao();
         AuthTokenDataAcess authTData2 = new AuthSQLTokenClass();
@@ -134,8 +140,14 @@ public class P3ServiceTests {
         Assertions.assertTrue(true);
     }
     @Test
-    public void logOutTwice() throws DataAccessException,UserAlreadyExistsException, UserNameIsWrong,UserPasswordIsWrong,UserNameIsNullinMemoryDao{
-        UserData newUser3 = new UserData("Mr. PoopyButtHole", "Poppy0",  "JustBasicJosephatgmail.com");
+    public void logOutTwice() throws
+            DataAccessException,
+            UserAlreadyExistsException,
+            UserNameIsWrong,
+            UserPasswordIsWrong,
+            UserNameIsNullinMemoryDao{
+        UserData newUser3 = new UserData("Mr. PoopyButtHole",
+                "Poppy0",  "JustBasicJosephatgmail.com");
         UserDataAcess dataObjc = new UserSQLDao();
         AuthTokenDataAcess authTData3 = new AuthSQLTokenClass();
         //register
@@ -150,8 +162,14 @@ public class P3ServiceTests {
     }
 
     @Test
-    public void createGame() throws DataAccessException, UserAlreadyExistsException, UserNameIsWrong, UserNameIsNullinMemoryDao, UserPasswordIsWrong {
-        UserData newUser20 = new UserData("Mr. PoopyButtHole", "Poppy0",  "JustBasicJosephatgmail.com");
+    public void createGame() throws
+            DataAccessException,
+            UserAlreadyExistsException,
+            UserNameIsWrong,
+            UserNameIsNullinMemoryDao,
+            UserPasswordIsWrong {
+        UserData newUser20 = new UserData("Mr. PoopyButtHole",
+                "Poppy0",  "JustBasicJosephatgmail.com");
         UserDataAcess dataObja = new UserSQLDao();
         AuthTokenDataAcess authTData20 = new AuthSQLTokenClass();
         GameDataAccess gStorage = new GameStorage();
@@ -165,7 +183,11 @@ public class P3ServiceTests {
     }
 
     @Test
-    public void createGameWrong() throws DataAccessException, UserAlreadyExistsException, UserNameIsWrong, UserNameIsNullinMemoryDao, UserPasswordIsWrong {
+    public void createGameWrong() throws
+            UserAlreadyExistsException,
+            UserNameIsWrong,
+            UserNameIsNullinMemoryDao,
+            UserPasswordIsWrong {
         UserData newUser20 = new UserData("Mr. PoopyButtHole", "Poppy0",  "JustBasicJosephatgmail.com");
         UserDataAcess dataObjae = new UserSQLDao();
         AuthTokenDataAcess authTData20 = new AuthSQLTokenClass();
@@ -182,7 +204,13 @@ public class P3ServiceTests {
 
     }
     @Test
-    public void joinGameNormal() throws DataAccessException, UserAlreadyExistsException, UserNameIsWrong, UserNameIsNullinMemoryDao, UserPasswordIsWrong, BadRequestsException, PlayerColorException {
+    public void joinGameNormal() throws DataAccessException,
+            UserAlreadyExistsException,
+            UserNameIsWrong,
+            UserNameIsNullinMemoryDao,
+            UserPasswordIsWrong,
+            BadRequestsException,
+            PlayerColorException {
 
         UserData newUser12 = new UserData("Mr", "Poppy0", "lilTimmy.com");
         UserDataAcess dataO = new UserSQLDao();
@@ -203,11 +231,12 @@ public class P3ServiceTests {
         joinRequest.changeIdForTesting(gameId);
         joinRequest.updatePlayerWhite();
 
-        serviceObj.joinGame(token.authToken(), authTData201, gStorage12, gameDataFromRequest,joinRequest);
+        serviceObj.joinGame(token.authToken(), authTData201,
+                gStorage12, gameDataFromRequest,joinRequest);
         assertEquals(nameOfGame, gameDataFromRequest.gameName());
     }
     @Test
-    public void badAuthJoin() throws DataAccessException, UserAlreadyExistsException, UserNameIsWrong, UserNameIsNullinMemoryDao, UserPasswordIsWrong, BadRequestsException, PlayerColorException {
+    public void badAuthJoin() {
         UserData newUser2002 = new UserData("Mr. PoopyButtHole", "Poppy0", "JustBasicJosephatgmail.com");
         UserData newUser1902 = new UserData("beans", "Poppy0", "JustBasicJosephatgmail.com");
 
