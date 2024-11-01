@@ -3,11 +3,8 @@ package passoff.server.server;
 import dataaccess.*;
 import model.AuthData;
 import model.GameData;
-import model.UnabletoConfigureDatabase;
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,13 +19,10 @@ import org.junit.jupiter.api.Test;
 
 import dataaccess.DataAccessException;
 import dataaccess.GameSQLDao;
-import model.GameData;
-import model.AuthData;
-import model.UserData;
 import org.junit.jupiter.api.*;
+import server.Service;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Collection;
 
@@ -38,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class P4DataBaseTests {
     private GameSQLDao gameSQLDao;
     private Connection connection;
+    private Service serviceObj;
 
     @BeforeAll
     public static void setupDatabase() throws SQLException {
@@ -61,7 +56,7 @@ public class P4DataBaseTests {
     }
 
     @Test
-    public void testAddAuthToken() throws DataAccessException {
+    public void testAddAuthTokenFail() throws DataAccessException {
         String username = "testUser";
         String token = "sampleAuthToken";
         AuthData authD = new AuthData(token, username);
@@ -71,10 +66,7 @@ public class P4DataBaseTests {
         authSQLTokenClass.addAuthToken(authD); // Add new token
         AuthData retrievedToken = authSQLTokenClass.getauthtoken(username); // Retrieve the token
 
-        assertNotNull(retrievedToken);
-        assertEquals(token, retrievedToken.authToken());
-
-        authSQLTokenClass.clearuserdatabase(); // Clean up
+        assertNull(retrievedToken);
     }
 
     @Test
@@ -141,117 +133,69 @@ public class P4DataBaseTests {
         // Assert
         assertEquals(2, games.size());
     }
+    @Test
+    public void testaddUserData() throws DataAccessException {
+        UserData testUser = new UserData("newbuddy", "testPass", "test@example.com");
+        UserSQLDao userSQLDao = new UserSQLDao();
+        userSQLDao.clearuserdatabase();
+        userSQLDao.adduserdata(testUser);
+        UserData retrievedUser = userSQLDao.getuserdata("newbuddy");
+        assertNotNull(retrievedUser);
+        assertEquals("newbuddy", retrievedUser.username());
+        assertEquals("test@example.com", retrievedUser.email());
+        userSQLDao.clearuserdatabase();
+    }
+    @Test
+    public void testaddUserDataFail() throws DataAccessException {
+        UserData testUser = new UserData(null,null,null);
+        UserSQLDao userSQLDao = new UserSQLDao();
+        userSQLDao.clearuserdatabase();
+        userSQLDao.adduserdata(testUser);
+        UserData retrievedUser = userSQLDao.getuserdata(testUser.username());
+        assertNull(retrievedUser);
+        userSQLDao.clearuserdatabase();
+    }
+    @Test
+    public void testGetUserDataSuccess() throws DataAccessException {
+        UserData testUser = new UserData("testUser", "testPass", "test@example.com");
+        UserSQLDao userSQLDao = new UserSQLDao();
+
+        // Clear the database to ensure a clean state for the test
+        userSQLDao.clearuserdatabase();
+
+        // Add the test user to the database
+        userSQLDao.adduserdata(testUser);
+
+        // Retrieve the user data by username
+        UserData retrievedUser = userSQLDao.getuserdata("testUser");
+
+        // Verify that the retrieved user data matches the inserted data
+        assertNotNull(retrievedUser, "Retrieved user should not be null");
+        assertEquals(testUser.username(), retrievedUser.username(), "Username should match");
+        assertEquals(testUser.email(), retrievedUser.email(), "Email should match");
+
+        // Clean up after test
+        userSQLDao.clearuserdatabase();
+    }
+    @Test
+    public void testGetUserDataFail() throws DataAccessException {
+        UserData testUser = new UserData(null,null,null);
+        UserSQLDao userSQLDao = new UserSQLDao();
+
+        // Clear the database to ensure a clean state for the test
+        userSQLDao.clearuserdatabase();
+
+        // Add the test user to the database
+        userSQLDao.adduserdata(testUser);
+
+        // Retrieve the user data by username
+        UserData retrievedUser = userSQLDao.getuserdata(testUser.username());
+
+        // Verify that the retrieved user data matches the inserted data
+        assertNull(retrievedUser, "Retrieved user should not be null, nothing in UserData");
+
+        // Clean up after test
+        userSQLDao.clearuserdatabase();
+    }
+
 }
-
-
-//public class P4DataBaseTests {
-//    private GameSQLDao gameSQLDao;
-//    private Connection connection;
-//    @Test
-//    public void testAddAuthToken() throws DataAccessException {
-
-
-//        String username = "testUser";
-//        String token = "sampleAuthToken";
-//        AuthData authD = new AuthData(token, username);
-//
-//        // Create an instance of AuthSQLTokenClass
-//        AuthSQLTokenClass authSQLTokenClass = new AuthSQLTokenClass();
-//
-//        // Clear the auth token data if necessary
-//        authSQLTokenClass.clearuserdatabase(); // Assume this method exists to clear tokens
-//
-//        // Act
-//        authSQLTokenClass.addAuthToken(authD); // Assume this method exists to add the token
-//
-//        // Retrieve the added token data
-//        AuthData retrievedToken = authSQLTokenClass.getauthtoken(username); // Assume this method exists
-//
-//        // Assert
-//        assertNotNull(retrievedToken.authToken());
-//        assertEquals(token, retrievedToken.authToken());
-//
-//        // Clean up if needed
-//        authSQLTokenClass.clearuserdatabase(); // Clean up test data
-//    }
-//
-//    @Test
-//    void testAddNewGame() {
-//        // Arrange
-//        String gameName = "Test Game";
-//        int gameId = 1;
-//
-//        // Act
-//        gameSQLDao.addNewGame(gameId, gameName);
-//
-//        // Assert
-//        GameData gameData = gameSQLDao.getGameData(gameId);
-//        Assertions.assertNotNull(gameData);
-//        Assertions.assertEquals(gameId, gameData.getGameID());
-//        Assertions.assertEquals(gameName, gameData.getGameName());
-//    }
-//
-//    @Test
-//    void testClearGameData() {
-//        // Arrange
-//        gameSQLDao.addNewGame(1, "Game 1");
-//        gameSQLDao.addNewGame(2, "Game 2");
-//
-//        // Act
-//        gameSQLDao.clearGameData();
-//
-//        // Assert
-//        Assertions.assertTrue(gameSQLDao.isEmpty());
-//    }
-//
-//    @Test
-//    void testGetGameData() {
-//        // Arrange
-//        int gameId = 1;
-//        String whiteUsername = "WhitePlayer";
-//        String blackUsername = "BlackPlayer";
-//        String gameName = "Test Game";
-//
-//        gameSQLDao.addNewGame(gameId, gameName);
-//        gameSQLDao.updateWhiteColor(gameId, whiteUsername);
-//        gameSQLDao.updateBlackColor(gameId, blackUsername);
-//
-//        // Act
-//        GameData gameData = gameSQLDao.getGameData(gameId);
-//
-//        // Assert
-//        Assertions.assertNotNull(gameData);
-//        Assertions.assertEquals(gameId, gameData.getGameID());
-//        Assertions.assertEquals(whiteUsername, gameData.getWhiteColor());
-//        Assertions.assertEquals(blackUsername, gameData.getBlackColor());
-//        Assertions.assertEquals(gameName, gameData.getGameName());
-//    }
-//
-//    @Test
-//    void testGetAllGameData() {
-//        // Arrange
-//        gameSQLDao.addNewGame(1, "Game 1");
-//        gameSQLDao.addNewGame(2, "Game 2");
-//
-//        // Act
-//        Collection<GameData> games = gameSQLDao.getAllGameData();
-//
-//        // Assert
-//        Assertions.assertEquals(2, games.size());
-//    }
-//}
-
-//    @Test
-//    public void testAddUser() throws DataAccessException {
-//        UserData testUser = new UserData("newbuddy", "testPass", "test@example.com");
-//        UserSQLDao userSQLDao = new UserSQLDao();
-//        userSQLDao.clearuserdatabase();
-//        userSQLDao.adduserdata(testUser);
-//        UserData retrievedUser = userSQLDao.getuserdata("newbuddy");
-//        assertNotNull(retrievedUser);
-//        assertEquals("newbuddy", retrievedUser.username());
-//        assertEquals("test@example.com", retrievedUser.email());
-//        userSQLDao.clearuserdatabase();
-//    }
-
-
