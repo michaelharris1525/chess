@@ -28,7 +28,10 @@ public class Service {
 
     //LOGIN
     //if you have a problem, change useralreadyexistsexcpetion by adding a new exception super class
-    public AuthData loginuser(UserData user, UserDataAcess dataobj,AuthTokenDataAcess authDataAcessobj) throws UserNameIsWrong, UserPasswordIsWrong, UserNameIsNullinMemoryDao {
+    public AuthData loginuser(UserData user,
+                              UserDataAcess dataobj,
+                              AuthTokenDataAcess authDataAcessobj) throws UserNameIsWrong,
+            UserPasswordIsWrong, UserNameIsNullinMemoryDao {
         //on your handler do some checking in handler on server for registering
         AuthData authdata = new AuthData(UUID.randomUUID().toString(), user.username());
 
@@ -67,8 +70,13 @@ public class Service {
 
         return newGameId;
     }
-    public void joinGame(String authToken, AuthTokenDataAcess authdataac,
-                  GameDataAccess gameStoraged, GameData gameDATAFROMREQUEST, JoinGameRequest joinRequest) throws DataAccessException, PlayerColorException, BadRequestsException {
+    public void joinGame(String authToken,
+                         AuthTokenDataAcess authdataac,
+                  GameDataAccess gameStoraged,
+                         GameData gameDATAFROMREQUEST,
+                         JoinGameRequest joinRequest)
+            throws DataAccessException, PlayerColorException,
+            BadRequestsException {
         if(authdataac.getauthtoken(authToken) == null){
             throw new DataAccessException("you screwed up");
         }

@@ -7,8 +7,5 @@ public class UnabletoConfigureDatabase extends Exception {
         this.statuscode = statusCode;
 
     }
-    public int StatusCode() {
-        return statuscode;
-    }
 }
 
