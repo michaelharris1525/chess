@@ -29,6 +29,8 @@ public class DatabaseManager{
                 var host = props.getProperty("db.host");
                 var port = Integer.parseInt(props.getProperty("db.port"));
                 CONNECTION_URL = String.format("jdbc:mysql://%s:%d", host, port);
+
+//                CONNECTION_URL = String.format("jdbc:mysql://%s:%d", host, port);
             }
         } catch (Exception ex) {
             throw new RuntimeException("unable to process db.properties. " + ex.getMessage());
@@ -74,20 +76,42 @@ public class DatabaseManager{
 
     //added stuff starts here
     // Method to create the users table
-    public static void createTables() {
-        String createUsersTableSQL = "CREATE TABLE IF NOT EXISTS users ("
-                + "id INT AUTO_INCREMENT PRIMARY KEY,"
-                + "username VARCHAR(255) UNIQUE NOT NULL,"
-                + "password VARCHAR(255) NOT NULL,"
-                + "email VARCHAR(255) UNIQUE NOT NULL)";
+    // Method to create the users table
 
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/your_database_name", "username", "password");
-             Statement stmt = conn.createStatement()) {
-            stmt.executeUpdate(createUsersTableSQL);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void createTables(Statement stmt) throws DataAccessException, SQLException {
+//        System.out.println("Creating tables...");
+//        String createUsersTableSQL = """
+//            CREATE TABLE IF NOT EXISTS users (
+//                username VARCHAR(255) PRIMARY KEY,
+//                password VARCHAR(255) NOT NULL,
+//                email VARCHAR(255) UNIQUE NOT NULL
+//            );
+//            """;
+//            stmt.executeUpdate(createUsersTableSQL);
+//
+//    }
+
+
+
+
+
+//    public static void initializeDatabase() throws DataAccessException {
+//        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", USER, PASSWORD);
+//             Statement stmt = conn.createStatement()) {
+//
+//            // Create the database if it doesn't exist
+//            stmt.executeUpdate("CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME);
+//            // Switch to the created database
+//            conn.setCatalog(DATABASE_NAME);
+//            createDatabase();
+//            // Create tables
+//            createTables(stmt);
+//
+//        } catch (SQLException e) {
+//            throw new DataAccessException("Failed to initialize the database: " + e.getMessage());
+//        }
+//    }
+
 //    static void createTables() throws DataAccessException {
 //        String sql = "CREATE TABLE IF NOT EXISTS users (" +
 //                "username VARCHAR(255) PRIMARY KEY, " +
@@ -104,5 +128,25 @@ public class DatabaseManager{
 //    public void initializeDatabase() throws DataAccessException {
 //        createDatabase();
 //        createTables();
+//    }
+
+
+//    public static void createTables() throws DataAccessException {
+//        String createUsersTableSQL = """
+//            CREATE TABLE IF NOT EXISTS users (
+//                id INT AUTO_INCREMENT PRIMARY KEY,
+//                username VARCHAR(255) UNIQUE NOT NULL,
+//                password VARCHAR(255) NOT NULL,
+//                email VARCHAR(255) UNIQUE NOT NULL
+//            );
+//            """;
+//
+//        try (Connection conn = getConnection();
+//             Statement stmt = conn.createStatement()) {
+//            stmt.executeUpdate(createUsersTableSQL);
+//            System.out.println("Users table created or already exists.");
+//        } catch (SQLException e) {
+//            throw new DataAccessException("Error creating users table: " + e.getMessage());
+//        }
 //    }
 }

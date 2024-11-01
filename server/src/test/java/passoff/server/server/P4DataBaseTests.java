@@ -3,6 +3,7 @@ package passoff.server.server;
 import dataaccess.DataAccessException;
 import dataaccess.UserSQLDao;
 import model.UserData;
+import org.eclipse.jetty.server.Authentication;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,8 +14,10 @@ public class P4DataBaseTests {
     @Test
     public void testAddUser() throws DataAccessException {
         UserData testUser = new UserData("testUser", "testPass", "test@example.com");
-        UserSQLDao.addUser(testUser);
-        UserData retrievedUser = UserSQLDao.getUserByUsername("testUser");
+        UserSQLDao userSQLDao = new UserSQLDao();
+        userSQLDao.adduserdata(testUser);
+
+        UserData retrievedUser = userSQLDao.getuserdata("testUser");
         assertNotNull(retrievedUser);
         assertEquals("testUser", retrievedUser.username());
         assertEquals("test@example.com", retrievedUser.email());

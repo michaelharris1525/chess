@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.*;
 import model.*;
+import org.eclipse.jetty.server.Authentication;
 import spark.*;
 
 import java.util.Collection;
@@ -13,6 +14,8 @@ import java.util.stream.Collectors;
 import dataaccess.DatabaseManager;
 import dataaccess.UserSQLDao;
 
+import javax.xml.crypto.Data;
+
 
 public class Server {
     private final UserMemorydao userDataobj = new UserMemorydao();
@@ -20,19 +23,26 @@ public class Server {
     private final AuthTokenDataAcess authTokenData = new AuthTokenStorage();
     private final GameDataAccess gameData = new GameStorage();
 
-    public void runServer() {
+    //SQL Databases
+    private final UserSQLDao userSQL = new UserSQLDao();
+    private final GameSQLDao gameSQLDAO = new GameSQLDao();
+    private final AuthSQLTokenClass authSQL = new AuthSQLTokenClass();
+
+    public void setUpServer() {
         try {
-            DatabaseManager.createDatabase();
+            //DatabaseManager.createDatabase();
             // Create tables if they don't exist
-            DatabaseManager.createTables();
-            // Start your services/endpoints
+            userSQL.configureDatabase();
+            gameSQLDAO.configureDatabase();
+            authSQL.configureDatabase();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public int run(int desiredPort) {
-        runServer();
+        setUpServer();
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
@@ -54,7 +64,7 @@ public class Server {
                 // Call service layer to register the user
                 AuthData authData = serviceobj.register(userObj, userDataobj, authTokenData);
 
-                UserSQLDao.addUser(userObj);
+                //UserSQLDao.addUser(userObj);
                 // If registration succeeds
                 res.status(200);
                 return serializer.toJson(authData);

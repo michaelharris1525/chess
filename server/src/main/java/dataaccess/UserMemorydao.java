@@ -13,7 +13,7 @@ public class UserMemorydao implements UserDataAcess {
     @Override
     public UserData getuserdata(String username) {
         //UserData user = new UserData(username)
-        UserData usersss= totalUsers.get(username);
+        UserData usersss = totalUsers.get(username);
         return usersss;
     }
 
