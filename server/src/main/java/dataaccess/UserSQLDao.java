@@ -3,7 +3,6 @@ package dataaccess;
 import model.UnabletoConfigureDatabase;
 import model.UserData;
 import model.UserNameIsNullinMemoryDao;
-import org.eclipse.jetty.server.Authentication;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.*;

@@ -3,18 +3,12 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.*;
 import model.*;
-import org.eclipse.jetty.server.Authentication;
+import requestextension.JoinRequestIsNull;
 import spark.*;
-
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import dataaccess.DatabaseManager;
 import dataaccess.UserSQLDao;
-
-import javax.xml.crypto.Data;
 
 
 public class Server {
