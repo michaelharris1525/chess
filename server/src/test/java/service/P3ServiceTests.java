@@ -4,6 +4,8 @@ package service;
 import dataaccess.*;
 import model.*;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.Service;
 
@@ -32,6 +34,15 @@ public class P3ServiceTests {
         serviceObj.joinGame(null, authTData201, gStorage, gameDataFromRequest,joinRequest);
 
     }
+    @BeforeEach
+    public void clearDatabases(){
+        UserDataAcess dataObj = new UserSQLDao();
+        AuthTokenDataAcess authTData = new AuthSQLTokenClass();
+        GameDataAccess gStorage = new GameSQLDao();
+        dataObj.clearuserdatabase();
+        authTData.clearuserdatabase();
+        gStorage.clearGameData();
+    }
     @Test
     public void testsClear(){
         /*get storage from each data bas
@@ -42,9 +53,9 @@ public class P3ServiceTests {
         int id = 1;
         String gameName = "ILIKETRAINS";
 
-        AuthTokenDataAcess atStorage = new AuthTokenStorage();
-        GameDataAccess gStorage = new GameStorage();
-        UserMemorydao userStorage = new UserMemorydao();
+        AuthTokenDataAcess atStorage = new AuthSQLTokenClass();
+        GameDataAccess gStorage = new GameSQLDao();
+        UserSQLDao userStorage = new UserSQLDao();
 
 
         atStorage.addAuthToken(token);
@@ -65,8 +76,8 @@ public class P3ServiceTests {
     @Test
     public void registerNormal() throws UserAlreadyExistsException {
         UserData newUser2 = new UserData("PoopyButtHole", "Poppy0",  "JustBasicJosephatgmail.com");
-        UserDataAcess dataObj = new UserMemorydao();
-        AuthTokenDataAcess authTData = new AuthTokenStorage();
+        UserDataAcess dataObj = new UserSQLDao();
+        AuthTokenDataAcess authTData = new AuthSQLTokenClass();
         boolean passorfail = false;
         serviceObj.register(newUser2, dataObj, authTData);
         if(!dataObj.isEmpty()){
@@ -78,8 +89,8 @@ public class P3ServiceTests {
     @Test
     public void userNameIsAlreadyInThere() throws UserAlreadyExistsException {
         UserData newUser2 = new UserData("Mr. PoopyButtHole", "Poppy0",  "JustBasicJosephatgmail.com");
-        UserDataAcess dataObj = new UserMemorydao();
-        AuthTokenDataAcess authTData = new AuthTokenStorage();
+        UserDataAcess dataObj = new UserSQLDao();
+        AuthTokenDataAcess authTData = new AuthSQLTokenClass();
         serviceObj.register(newUser2, dataObj, authTData);
 
         Assertions.assertThrows(UserAlreadyExistsException.class, () -> {
@@ -89,9 +100,9 @@ public class P3ServiceTests {
     @Test
     public void loginUserNormal() throws UserAlreadyExistsException, UserNameIsWrong,UserPasswordIsWrong,UserNameIsNullinMemoryDao {
         UserData newUser = new UserData("Mr. PoopyButtHole", "Poppy0",  "JustBasicJosephatgmail.com");
-        UserDataAcess dataObj = new UserMemorydao();
-        AuthTokenDataAcess authTData = new AuthTokenStorage();
-        //register
+        UserDataAcess dataObj = new UserSQLDao();
+        AuthTokenDataAcess authTData = new AuthSQLTokenClass();
+
         serviceObj.register(newUser, dataObj, authTData);
         serviceObj.loginuser(newUser, dataObj, authTData);
 
@@ -102,8 +113,8 @@ public class P3ServiceTests {
     @Test
     public void loginUserDoesNotExist() throws UserAlreadyExistsException, UserNameIsWrong,UserPasswordIsWrong,UserNameIsNullinMemoryDao {
         UserData newUser5 = new UserData("Mr. PoopyButtHole", "Poppy0",  "JustBasicJosephatgmail.com");
-        UserDataAcess dataObje = new UserMemorydao();
-        AuthTokenDataAcess authTData1 = new AuthTokenStorage();
+        UserDataAcess dataObje = new UserSQLDao();
+        AuthTokenDataAcess authTData1 = new AuthSQLTokenClass();
 
         Assertions.assertThrows(UserNameIsNullinMemoryDao.class, () -> {
             serviceObj.loginuser(newUser5, dataObje, authTData1);
@@ -112,8 +123,8 @@ public class P3ServiceTests {
     @Test
     public void loggingoutNormal() throws DataAccessException,UserAlreadyExistsException, UserNameIsWrong,UserPasswordIsWrong,UserNameIsNullinMemoryDao{
         UserData newUser4 = new UserData("Mr. PoopyButtHole", "Poppy0",  "JustBasicJosephatgmail.com");
-        UserDataAcess dataObject = new UserMemorydao();
-        AuthTokenDataAcess authTData2 = new AuthTokenStorage();
+        UserDataAcess dataObject = new UserSQLDao();
+        AuthTokenDataAcess authTData2 = new AuthSQLTokenClass();
         //register
         serviceObj.register(newUser4, dataObject, authTData2);
         AuthData token = serviceObj.loginuser(newUser4, dataObject, authTData2);
@@ -125,8 +136,8 @@ public class P3ServiceTests {
     @Test
     public void logOutTwice() throws DataAccessException,UserAlreadyExistsException, UserNameIsWrong,UserPasswordIsWrong,UserNameIsNullinMemoryDao{
         UserData newUser3 = new UserData("Mr. PoopyButtHole", "Poppy0",  "JustBasicJosephatgmail.com");
-        UserDataAcess dataObjc = new UserMemorydao();
-        AuthTokenDataAcess authTData3 = new AuthTokenStorage();
+        UserDataAcess dataObjc = new UserSQLDao();
+        AuthTokenDataAcess authTData3 = new AuthSQLTokenClass();
         //register
         serviceObj.register(newUser3, dataObjc, authTData3);
         AuthData token = serviceObj.loginuser(newUser3, dataObjc, authTData3);
@@ -141,8 +152,8 @@ public class P3ServiceTests {
     @Test
     public void createGame() throws DataAccessException, UserAlreadyExistsException, UserNameIsWrong, UserNameIsNullinMemoryDao, UserPasswordIsWrong {
         UserData newUser20 = new UserData("Mr. PoopyButtHole", "Poppy0",  "JustBasicJosephatgmail.com");
-        UserDataAcess dataObja = new UserMemorydao();
-        AuthTokenDataAcess authTData20 = new AuthTokenStorage();
+        UserDataAcess dataObja = new UserSQLDao();
+        AuthTokenDataAcess authTData20 = new AuthSQLTokenClass();
         GameDataAccess gStorage = new GameStorage();
         String nameOfGame = "MR POOOPY BUTTHOLES ARENA";
         //register
@@ -156,8 +167,8 @@ public class P3ServiceTests {
     @Test
     public void createGameWrong() throws DataAccessException, UserAlreadyExistsException, UserNameIsWrong, UserNameIsNullinMemoryDao, UserPasswordIsWrong {
         UserData newUser20 = new UserData("Mr. PoopyButtHole", "Poppy0",  "JustBasicJosephatgmail.com");
-        UserDataAcess dataObjae = new UserMemorydao();
-        AuthTokenDataAcess authTData20 = new AuthTokenStorage();
+        UserDataAcess dataObjae = new UserSQLDao();
+        AuthTokenDataAcess authTData20 = new AuthSQLTokenClass();
         GameDataAccess gStorage = new GameStorage();
         String nameOfGame = "MR POOOPY BUTTHOLES ARENA";
         //register
@@ -174,8 +185,8 @@ public class P3ServiceTests {
     public void joinGameNormal() throws DataAccessException, UserAlreadyExistsException, UserNameIsWrong, UserNameIsNullinMemoryDao, UserPasswordIsWrong, BadRequestsException, PlayerColorException {
 
         UserData newUser12 = new UserData("Mr", "Poppy0", "lilTimmy.com");
-        UserDataAcess dataO = new UserMemorydao();
-        AuthTokenDataAcess authTData201 = new AuthTokenStorage();
+        UserDataAcess dataO = new UserSQLDao();
+        AuthTokenDataAcess authTData201 = new AuthSQLTokenClass();
         GameDataAccess gStorage12 = new GameStorage();
         String nameOfGame = "MR POOOPY BUTTHOLES ARENA";
         //register
@@ -200,8 +211,8 @@ public class P3ServiceTests {
         UserData newUser2002 = new UserData("Mr. PoopyButtHole", "Poppy0", "JustBasicJosephatgmail.com");
         UserData newUser1902 = new UserData("beans", "Poppy0", "JustBasicJosephatgmail.com");
 
-        UserDataAcess dataObja = new UserMemorydao();
-        AuthTokenDataAcess authTData201 = new AuthTokenStorage();
+        UserDataAcess dataObja = new UserSQLDao();
+        AuthTokenDataAcess authTData201 = new AuthSQLTokenClass();
         GameDataAccess gStorage = new GameStorage();
         String nameOfGame = "MR POOOPY BUTTHOLES ARENA";
 

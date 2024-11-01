@@ -135,6 +135,16 @@ public class P4DataBaseTests {
         assertEquals(2, games.size());
     }
     @Test
+    public void testclearuserdatabase(){
+        UserData testUser = new UserData("newbuddy", "testPass", "test@example.com");
+        UserSQLDao userSQLDao = new UserSQLDao();
+        userSQLDao.clearuserdatabase();
+        userSQLDao.adduserdata(testUser);
+        userSQLDao.clearuserdatabase();
+        assertTrue(userSQLDao.isEmpty(), "Database should be empty after called clear");
+    }
+
+    @Test
     public void testaddUserData() throws DataAccessException {
         UserData testUser = new UserData("newbuddy", "testPass", "test@example.com");
         UserSQLDao userSQLDao = new UserSQLDao();
