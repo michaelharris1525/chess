@@ -22,6 +22,16 @@ public class Server {
     private final GameSQLDao gameSQLDAO = new GameSQLDao();
     private final AuthSQLTokenClass authSQL = new AuthSQLTokenClass();
 
+    private String handleException(Exception ex, Response res, Gson serializer) {
+        if (ex instanceof com.google.gson.JsonSyntaxException) {
+            res.status(400); // Bad request for invalid JSON
+            return serializer.toJson(new ErrorData("Invalid JSON format."));
+        } else {
+            res.status(500); // Internal Server Error
+            return serializer.toJson(new ErrorData("Error: (description of error)"));
+        }
+    }
+
     public void setUpServer() {
         try {
             //DatabaseManager.createDatabase();
@@ -71,14 +81,7 @@ public class Server {
             }
             catch (Exception e) {
                 // Handle generic exception for bad JSON format or other errors, no need for this but its alright
-                if (e instanceof com.google.gson.JsonSyntaxException) {
-                    res.status(400); // Bad request for invalid JSON
-                    return serializer.toJson(new ErrorData("Invalid JSON format."));
-                } else {
-                    // Handle any other server-side error
-                    res.status(500); // Internal Server Error
-                    return serializer.toJson(new ErrorData("Error: (description of error)"));
-                }
+                return handleException(e,res,serializer);
             }
         });
 
@@ -120,16 +123,9 @@ public class Server {
                 res.status(401); // Forbidden
                 return serializer.toJson(new ErrorData("Error: UserPassword is wrong"));
             }
-            catch (Exception e) {
+            catch (Exception ex) {
                 // Handle generic exception for bad JSON format or other errors, no need for this but its alright
-                if (e instanceof com.google.gson.JsonSyntaxException) {
-                    res.status(400); // Bad request for invalid JSON
-                    return serializer.toJson(new ErrorData("Invalid JSON format."));
-                } else {
-                    // Handle any other server-side error
-                    res.status(500); // Internal Server Error
-                    return serializer.toJson(new ErrorData("Error: (description of error)"));
-                }
+               return handleException(ex, res, serializer);
             }
         });
         //logout
