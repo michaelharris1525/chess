@@ -8,7 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class AuthSQLTokenClass implements AuthTokenDataAcess{
+public class AuthSQLTokenClass implements AuthTokenDataAcess {
     // Add a new auth token to the database
     @Override
     public void addAuthToken(AuthData token) {
@@ -84,7 +84,7 @@ public class AuthSQLTokenClass implements AuthTokenDataAcess{
     }
 
     //String authToken, String username
-    private final String[] createTables =  {
+    private final String[] createTables = {
             """
             CREATE TABLE IF NOT EXISTS authTokens (
                 `authToken` VARCHAR(255) PRIMARY KEY,
@@ -93,17 +93,7 @@ public class AuthSQLTokenClass implements AuthTokenDataAcess{
             """};
 
 
-
-    public void configureDatabase() throws UnabletoConfigureDatabase, DataAccessException {
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createTables) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new UnabletoConfigureDatabase(500, String.format("Unable to configure database: %s", ex.getMessage()));
-        }
+    public void authconfigureDatabase() throws UnabletoConfigureDatabase, DataAccessException {
+        DatabaseManager.configureDatabase(createTables);
     }
 }

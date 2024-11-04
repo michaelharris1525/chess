@@ -1,6 +1,7 @@
 package dataaccess;
 
 import model.CreateTablesException;
+import model.UnabletoConfigureDatabase;
 
 import java.sql.*;
 import java.util.Properties;
@@ -73,4 +74,17 @@ public class DatabaseManager{
             throw new DataAccessException(e.getMessage());
         }
     }
+    public static void configureDatabase(String[] createTables) throws UnabletoConfigureDatabase, DataAccessException {
+        DatabaseManager.createDatabase();
+        try (var conn = DatabaseManager.getConnection()) {
+            for (var statement : createTables) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException ex) {
+            throw new UnabletoConfigureDatabase(500, String.format("Unable to configure database: %s", ex.getMessage()));
+        }
+    }
 }
+

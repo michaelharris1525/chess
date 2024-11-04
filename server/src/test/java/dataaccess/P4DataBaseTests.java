@@ -277,7 +277,7 @@ public class P4DataBaseTests {
         // Positive test: Verify that configureDatabase() completes without exception
         assertDoesNotThrow(() -> {
             UserSQLDao userSQLDao = new UserSQLDao();
-            userSQLDao.configureDatabase();
+            userSQLDao.userconfigureDatabase();
         }, "configureDatabase should succeed without exceptions");
     }
     @Test
@@ -286,8 +286,8 @@ public class P4DataBaseTests {
         assertDoesNotThrow( () -> {
             // Configure the database first to create tables
             UserSQLDao userSQLDao = new UserSQLDao();
-            userSQLDao.configureDatabase();
-            userSQLDao.configureDatabase();
+            userSQLDao.userconfigureDatabase();
+            userSQLDao.userconfigureDatabase();
     });
 
     }

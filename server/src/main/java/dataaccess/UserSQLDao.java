@@ -124,16 +124,7 @@ public class UserSQLDao implements UserDataAcess {
 
 
 
-    public void configureDatabase() throws UnabletoConfigureDatabase, DataAccessException {
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createTables) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new UnabletoConfigureDatabase(500, String.format("Unable to configure database: %s", ex.getMessage()));
-        }
+    public void userconfigureDatabase() throws UnabletoConfigureDatabase, DataAccessException {
+        DatabaseManager.configureDatabase(createTables);
     }
 }

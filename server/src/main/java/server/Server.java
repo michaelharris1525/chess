@@ -26,9 +26,9 @@ public class Server {
         try {
             //DatabaseManager.createDatabase();
             // Create tables if they don't exist
-            userSQL.configureDatabase();
-            gameSQLDAO.configureDatabase();
-            authSQL.configureDatabase();
+            userSQL.userconfigureDatabase();
+            gameSQLDAO.gameconfigureDatabase();
+            authSQL.authconfigureDatabase();
 
         } catch (Exception e) {
             e.printStackTrace();
