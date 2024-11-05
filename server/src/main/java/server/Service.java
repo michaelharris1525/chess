@@ -27,7 +27,6 @@ public class Service {
     }
 
     //LOGIN
-    //if you have a problem, change useralreadyexistsexcpetion by adding a new exception super class
     public AuthData loginuser(UserData user,
                               UserDataAcess dataobj,
                               AuthTokenDataAcess authDataAcessobj) throws UserNameIsWrong,
@@ -112,5 +111,3 @@ public class Service {
     }
 
 }
-
-
