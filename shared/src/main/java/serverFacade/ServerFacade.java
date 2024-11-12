@@ -1,6 +1,7 @@
 package serverFacade;
 
 import com.google.gson.Gson;
+import model.GameData;
 import requestextension.ResponseException;
 
 import java.io.IOException;
@@ -18,6 +19,12 @@ public class ServerFacade {
     public ServerFacade(String url) {
         serverUrl = url;
     }
+
+    public void clientuserCreateGame(GameData gameName) throws ResponseException {
+        var path = "/game";
+        this.makeRequest("POST", path, gameName, GameData.class);
+    }
+
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
         try {
