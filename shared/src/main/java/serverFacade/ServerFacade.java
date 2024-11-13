@@ -20,6 +20,16 @@ public class ServerFacade {
         serverUrl = url;
     }
 
+    public boolean login(String username, String password) throws ResponseException {
+        var path = "/session"; // Server endpoint for login
+        // Create a request object to send to the server
+        var loginRequest = new LoginRequest(username, password);
+        // Make a POST request to the server
+        var response = this.makeRequest("POST", path, loginRequest, LoginResponse.class);
+        // Check if the login response indicates success (e.g., a boolean or status message)
+        return response != null && response.success();
+    }
+
     public void clientuserCreateGame(GameData gameName) throws ResponseException {
         var path = "/game";
         this.makeRequest("POST", path, gameName, GameData.class);
