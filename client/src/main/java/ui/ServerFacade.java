@@ -1,4 +1,4 @@
-package serverFacade;
+package ui;
 
 import com.google.gson.Gson;
 import model.GameData;
@@ -28,6 +28,13 @@ public class ServerFacade {
         var response = this.makeRequest("POST", path, loginRequest, LoginResponse.class);
         // Check if the login response indicates success (e.g., a boolean or status message)
         return response != null && response.success();
+    }
+    public void logout(){
+        var path = "/session";
+
+        try {
+            this.makeRequest("DELETE", path, )
+        }
     }
 
     public void clientuserCreateGame(GameData gameName) throws ResponseException {

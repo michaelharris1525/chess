@@ -1,4 +1,4 @@
-package serverFacade;
+package ui;
 
 public class LoginResponse {
     private boolean success;

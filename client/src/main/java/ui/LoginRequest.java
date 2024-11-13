@@ -1,4 +1,4 @@
-package serverFacade;
+package ui;
 
 public class LoginRequest {
     private final String realUsername;
