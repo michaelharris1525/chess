@@ -31,7 +31,7 @@ public class Repl {
                 String result = preloginUi.eval(command);
                 // Check for transition to Postlogin UI
                 if (result.equals("postlogin")) {
-                    transitionToPostLogin();
+                    transitionToPostLogin(preloginUi);
                     break; // Exit the loop after switching to Postlogin UI
                 } else if (result.equals("quit")) {
                     System.out.println("Goodbye!");
@@ -49,8 +49,8 @@ public class Repl {
         System.out.println("Goodbye!");
     }
 
-    private void transitionToPostLogin() {
-        PostloginUi postloginUi = new PostloginUi(serverUrl);
+    private void transitionToPostLogin(PreloginUi prelog) {
+        PostloginUi postloginUi = new PostloginUi(prelog.getServerFacade());
         postloginUi.run(); // Call the main functionality of Postlogin UI
     }
 

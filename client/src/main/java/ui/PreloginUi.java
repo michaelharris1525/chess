@@ -5,17 +5,23 @@ import requestextension.ResponseException;
 import java.util.Arrays;
 
 public class PreloginUi {
-    private String visitorName = null;
+//    private String visitorName = null;
     private final ServerFacade server;
     private final String serverUrl;
-    private final ClientNotificationHandler notificationHandler;
+    //private final ClientNotificationHandler notificationHandler;
 
-    public PreloginUi(ServerFacade server, String serverUrl,
-                      ClientNotificationHandler notificationHandler) {
-        this.server = server;
+    public PreloginUi(String serverUrl) {
         this.serverUrl = serverUrl;
-        this.notificationHandler = notificationHandler;
+        this.server = new ServerFacade(serverUrl);
     }
+
+
+    //    public PreloginUi(ServerFacade server, String serverUrl,
+//                      ClientNotificationHandler notificationHandler) {
+//        this.server = server;
+//        this.serverUrl = serverUrl;
+//        this.notificationHandler = notificationHandler;
+//    }
     public String eval(String input) throws ResponseException {
         var tokens = input.toLowerCase().split(" ");
         var cmd = (tokens.length > 0) ? tokens[0] : "help";
@@ -51,11 +57,15 @@ public class PreloginUi {
 
         if (success) {
             // If login is successful, notify the user and return a signal to transition to the Postlogin UI
-            notificationHandler.notify("Register successful!");
+            //notificationHandler.notify("Register successful!");
+            System.out.println("Register successful!");
+
             return "postlogin"; // Signal to transition to Postlogin UI
         } else {
             // If login fails, notify the user and return an error message
-            notificationHandler.notify("Error: Invalid username or password.");
+            //notificationHandler.notify("Error: Invalid username or password.");
+            System.out.println("FAILED TRY AGAIN LOSER!");
+
             return "prelogin"; // Stay in the Prelogin UI (optional, can be customized)
         }
 
@@ -73,13 +83,17 @@ public class PreloginUi {
 
         if (success) {
             // If login is successful, notify the user and return a signal to transition to the Postlogin UI
-            notificationHandler.notify("Login successful!");
+            System.out.println("LOGIN successful!");
             return "postlogin"; // Signal to transition to Postlogin UI
         } else {
             // If login fails, notify the user and return an error message
-            notificationHandler.notify("Error: Invalid username or password.");
+            //notificationHandler.notify("Error: Invalid username or password.");
+            System.out.println("LOSER! Error: Invalid username or password.");
             return "prelogin"; // Stay in the Prelogin UI (optional, can be customized)
         }
 
+    }
+    public ServerFacade getServerFacade(){
+        return this.server;
     }
 }

@@ -7,12 +7,12 @@ import java.util.Scanner;
 
 public class PostloginUi {
     private final ServerFacade server;
-    private final ClientNotificationHandler notificationHandler;
+    //private final ClientNotificationHandler notificationHandler;
 
 
-    public PostloginUi(ServerFacade server, ClientNotificationHandler notificationHandler) {
+    public PostloginUi(ServerFacade server) {
         this.server = server;
-        this.notificationHandler = notificationHandler;
+        //this.notificationHandler = notificationHandler;
     }
 
     public String eval(String input) {
@@ -42,13 +42,14 @@ public class PostloginUi {
         // Implement logout logic (e.g., call the server's logout API)
         // If login is successful, notify the user and return a signal to transition to the Postlogin UI
         server.logout();
-        notificationHandler.notify("Logout successful!");
+        System.out.println("Logout successful!");
         return "prelogin"; // Signal to transition to Postlogin UI
     }
 
     private String createGame(String[] params) {
         // Implement game creation logic (e.g., call the server's create game API)
-        return "Game created successfully!";
+        System.out.println("CREATED GAME successful!");
+        return "postlogin";
     }
 
     public void run() {
