@@ -1,6 +1,6 @@
 package ui;
 
-public class LoginResponse {
+public class ResponseSuccess {
     private boolean success;
     private String message; // Optional, in case you want a message from the server
 

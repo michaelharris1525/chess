@@ -3,6 +3,7 @@ package ui;
 import com.google.gson.Gson;
 import model.GameData;
 import requestextension.ResponseException;
+import ui.serverFacade.RegisterRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,20 +21,36 @@ public class ServerFacade {
         serverUrl = url;
     }
 
+    //Part 1
+
     public boolean login(String username, String password) throws ResponseException {
         var path = "/session"; // Server endpoint for login
         // Create a request object to send to the server
         var loginRequest = new LoginRequest(username, password);
         // Make a POST request to the server
-        var response = this.makeRequest("POST", path, loginRequest, LoginResponse.class);
+        var response = this.makeRequest("POST", path, loginRequest, ResponseSuccess.class);
         // Check if the login response indicates success (e.g., a boolean or status message)
         return response != null && response.success();
     }
+    public boolean register(String username, String password, String email) throws ResponseException {
+        var path = "/session"; // Server endpoint for login
+        // Create a request object to send to the server
+        var registerRequest = new RegisterRequest(username, password, email);
+        // Make a POST request to the server
+        var response = this.makeRequest("POST", path, registerRequest, ResponseSuccess.class);
+        // Check if the login response indicates success (e.g., a boolean or status message)
+        return response != null && response.success();
+    }
+
+    //part 2
     public void logout(){
         var path = "/session";
 
         try {
-            this.makeRequest("DELETE", path, )
+            this.makeRequest("DELETE", path, null, null);
+        }
+        catch (ResponseException e) {
+            throw new RuntimeException(e);
         }
     }
 

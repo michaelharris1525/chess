@@ -1,6 +1,9 @@
 package ui;
 
+import requestextension.ResponseException;
+
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class PostloginUi {
     private final ServerFacade server;
@@ -28,6 +31,8 @@ public class PostloginUi {
         return """
                 logout - log out of your account
                 create game <game_name> - create a new game
+                join <ID> [WHITE|BLACK] - a game
+                observe <ID> a game
                 list games - list all existing games
                 help - display this help text
                 """;
@@ -44,5 +49,35 @@ public class PostloginUi {
     private String createGame(String[] params) {
         // Implement game creation logic (e.g., call the server's create game API)
         return "Game created successfully!";
+    }
+
+    public void run() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Welcome to the Post-login interface! You can start playing now.");
+        help();
+
+        while (true) {
+            System.out.print("postlogin>>> ");
+            String input = scanner.nextLine();
+
+            String result = eval(input);
+
+            if (result.equals("logout")) {
+                System.out.println("Logged out successfully.");
+                break; // Exit the Postlogin UI to return to Prelogin
+            }
+            else if (result.equals("quit")) {
+                System.out.println("Goodbye!");
+                System.exit(0); // Exit the application
+            }
+            //make a lot more if statements like joining game or observing game
+            else{
+                System.out.println("Error: not a real response try again");
+            }
+
+
+        }
+
+
     }
 }
