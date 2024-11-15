@@ -55,7 +55,7 @@ public class PostloginUi {
         Collection<GameData>games = listofAllGames.get("games");
         if(games != null) {
             for (GameData game : games) {
-                System.out.println(game);
+                System.out.println(game.gameID() + ":" + game.gameName());
             }
         }
 
@@ -104,5 +104,5 @@ public class PostloginUi {
         }
 
 
-     }
+    }
 }
