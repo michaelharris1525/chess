@@ -15,13 +15,6 @@ public class PreloginUi {
         this.server = new ServerFacade(serverUrl);
     }
 
-
-    //    public PreloginUi(ServerFacade server, String serverUrl,
-//                      ClientNotificationHandler notificationHandler) {
-//        this.server = server;
-//        this.serverUrl = serverUrl;
-//        this.notificationHandler = notificationHandler;
-//    }
     public String eval(String input) throws ResponseException {
         var tokens = input.toLowerCase().split(" ");
         var cmd = (tokens.length > 0) ? tokens[0] : "help";

@@ -1,15 +1,15 @@
 package ui;
 
 public class LoginRequest {
-    private final String realUsername;
+    private final String username;
     private final String password;
     public LoginRequest(String username, String password) {
-        this.realUsername = username;
+        this.username = username;
         this.password = password;
     }
     // Getters (no setters needed for this example)
     public String getUsername() {
-        return realUsername;
+        return username;
     }
 
     public String getPassword() {
