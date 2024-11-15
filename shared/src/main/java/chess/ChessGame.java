@@ -57,6 +57,14 @@ public class ChessGame {
         WHITE,
         BLACK
     }
+    public boolean fixError(ChessPiece opponentPiece, ChessBoard simulatedBoard, ChessPosition pos, TeamColor teamColor){
+        for (ChessMove opponentMove : opponentPiece.pieceMoves(simulatedBoard,  pos)) {
+            if (isInCheckKing(teamColor, simulatedBoard)) {
+               return true;
+            }
+        }
+        return false;
+    }
     public Collection<ChessMove> findValidMoves(TeamColor teamColor, ChessPiece piece, Collection<ChessMove> potentialMoves) {
         TeamColor opponentColor = flipColors(teamColor);
         Collection<ChessMove> validMoves = new ArrayList<>();
@@ -77,13 +85,14 @@ public class ChessGame {
 
                     if (opponentPiece != null && opponentPiece.getTeamColor() == opponentColor) {
                         // Check each potential move of the opponent's piece
-                        for (ChessMove opponentMove : opponentPiece.pieceMoves(simulatedBoard, pos)) {
-                            if (isInCheckKing(teamColor, simulatedBoard)) {
-                                kingIsInCheck = true;
-                                break outerLoop;  // Stop further checks if king is in check
-                            }
+                        kingIsInCheck = fixError(opponentPiece,simulatedBoard,pos,teamColor);
+                        if(kingIsInCheck){
+                            break;
                         }
                     }
+                }
+                if(kingIsInCheck){
+                    break;
                 }
             }
 
@@ -117,24 +126,12 @@ public class ChessGame {
         if (newPiece != null) {
            listMoves = newPiece.pieceMoves(board,startPosition);
 
-            if(newPiece.getPieceType().equals(ChessPiece.PieceType.KING)) {
-            //if piece has not moved and is not in check go in here
-            if (isInCheck(newPiece.getTeamColor()) == false) {
-                //if piece moves and is not in check do this
-                ChessBoard copyOfBoards = board.copyOfBoard();
-                listMoves = newPiece.pieceMoves(copyOfBoards, startPosition);
-                List<ChessMove>listMovesBeforeChange = new ArrayList<>(listMoves);
-                for(int s = 0; s< listMovesBeforeChange.size(); s++){
-                    ChessMove kingMove = listMovesBeforeChange.get(s);
-                    makeMoveCopy(listMovesBeforeChange.get(s), copyOfBoards);
-                    if(!isInCheckKing(newPiece.getTeamColor(), copyOfBoards)) {
-                        kingListMoves.add(listMovesBeforeChange.get(s));
-                        copyOfBoards = board.copyOfBoard();
-                    }
-                    copyOfBoards = board.copyOfBoard();
+            if(newPiece.getPieceType().equals(ChessPiece.PieceType.KING) && isInCheck(newPiece.getTeamColor()) == false) {
+                //if piece has not moved and is not in check go in here
+                if (isInCheck(newPiece.getTeamColor()) == false) {
+                    //if piece moves and is not in check do this
+                    return getChessMoves(startPosition, newPiece, kingListMoves);
                 }
-                return kingListMoves;
-            }
             else {
                 listMoves = findValidMoves(newPiece.getTeamColor(), newPiece, listMoves);
                 return listMoves;
@@ -170,6 +167,23 @@ public class ChessGame {
         }
         }
         return listMoves;
+    }
+
+    private Collection<ChessMove> getChessMoves(ChessPosition startPosition, ChessPiece newPiece, Collection<ChessMove> kingListMoves) {
+        Collection<ChessMove> listMoves;
+        ChessBoard copyOfBoards = board.copyOfBoard();
+        listMoves = newPiece.pieceMoves(copyOfBoards, startPosition);
+        List<ChessMove>listMovesBeforeChange = new ArrayList<>(listMoves);
+        for(int s = 0; s< listMovesBeforeChange.size(); s++){
+            ChessMove kingMove = listMovesBeforeChange.get(s);
+            makeMoveCopy(listMovesBeforeChange.get(s), copyOfBoards);
+            if(!isInCheckKing(newPiece.getTeamColor(), copyOfBoards)) {
+                kingListMoves.add(listMovesBeforeChange.get(s));
+                copyOfBoards = board.copyOfBoard();
+            }
+            copyOfBoards = board.copyOfBoard();
+        }
+        return kingListMoves;
     }
 
     /**
