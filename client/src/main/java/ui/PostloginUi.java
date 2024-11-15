@@ -55,7 +55,19 @@ public class PostloginUi {
         Collection<GameData>games = listofAllGames.get("games");
         if(games != null) {
             for (GameData game : games) {
-                System.out.println(game.gameID() + ":" + game.gameName());
+                if(game.whiteUsername() != null && game.blackUsername() != null) {
+                    System.out.println(game.gameID() + ": " + game.gameName() + "Only can Observe");
+                }
+                else if (game.whiteUsername() == null && game.blackUsername() != null) {
+                    System.out.println(game.gameID() + ": " + game.gameName() + "White Available");
+                }
+                else if(game.blackUsername() == null && game.whiteUsername() != null){
+                    System.out.println(game.gameID() + ": " + game.gameName() + "Black Available");
+                }
+                else if(game.blackUsername() == null && game.whiteUsername() == null){
+                    System.out.println(game.gameID() + ": " + game.gameName() + "White|Black");
+
+                }
             }
         }
 
