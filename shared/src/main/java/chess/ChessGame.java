@@ -109,7 +109,15 @@ public class ChessGame {
         }
         return kingIsInCheck;
     }
-
+    void fixerrortwo(List<ChessMove>listMovesBeforeChange, ChessBoard copyOfBoards,  List<ChessMove>newListMoves, ChessPiece newPiece){
+        for(int s = 0; s< listMovesBeforeChange.size(); s++){
+            makeMoveCopy(listMovesBeforeChange.get(s), copyOfBoards);
+            if(!isInCheckKing(newPiece.getTeamColor(), copyOfBoards)) {
+                newListMoves.add(listMovesBeforeChange.get(s));
+            }
+            copyOfBoards = board.copyOfBoard();
+        }
+    }
 
     /**
      * Gets a valid moves for a piece at the given location
@@ -151,16 +159,7 @@ public class ChessGame {
                 List<ChessMove>newListMoves = new ArrayList<>();
                 listMoves = newPiece.pieceMoves(copyOfBoards, startPosition);
                 List<ChessMove>listMovesBeforeChange = new ArrayList<>(listMoves);
-
-                for(int s = 0; s< listMovesBeforeChange.size(); s++){
-                    makeMoveCopy(listMovesBeforeChange.get(s), copyOfBoards);
-                    if(!isInCheckKing(newPiece.getTeamColor(), copyOfBoards)) {
-                        //since in check, is there a move that takes a piece?
-                        // if so is the king still in check after piece is taken
-                        newListMoves.add(listMovesBeforeChange.get(s));
-                    }
-                    copyOfBoards = board.copyOfBoard();
-                }
+                fixerrortwo(listMovesBeforeChange, copyOfBoards,  newListMoves, newPiece);
                 return newListMoves;
             }
             else {
