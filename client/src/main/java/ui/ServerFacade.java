@@ -3,6 +3,7 @@ package ui;
 import com.google.gson.Gson;
 import model.GameData;
 import requestextension.ResponseException;
+import ui.serverFacade.CreateGameReq;
 import ui.serverFacade.RegisterRequest;
 
 import java.io.IOException;
@@ -56,7 +57,9 @@ public class ServerFacade {
 
     public void clientuserCreateGame(String gameName) throws ResponseException {
         var path = "/game";
-        this.makeRequest("POST", path, gameName, GameData.class);
+        // Create a request object to send to the server
+        var createGameRequest = new CreateGameReq(gameName);
+        this.makeRequest("POST", path, createGameRequest, GameData.class);
     }
 
 
@@ -65,6 +68,8 @@ public class ServerFacade {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
+            //everything but login and register
+            http.addRequestProperty("authorization", authtoken);
             http.setDoOutput(true);
             String reqData = new Gson().toJson(request);
 

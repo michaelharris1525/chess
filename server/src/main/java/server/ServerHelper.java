@@ -194,6 +194,7 @@ public class ServerHelper {
             AuthData authData = serviceobj.loginuser(userObj, userDataobj, authTokenData);
             // If login succeeds
             res.status(200);
+            String toSee = serializer.toJson(authData);
             return serializer.toJson(authData);
         }
         catch (UserNameIsNullinMemoryDao e) {

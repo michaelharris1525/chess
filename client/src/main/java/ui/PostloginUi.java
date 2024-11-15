@@ -51,7 +51,7 @@ public class PostloginUi {
         System.out.println("CREATED GAME successful!");
         String gameName = params[0];
         server.clientuserCreateGame(gameName);
-        return "String";
+        return "creategame";
     }
 
     public void run() throws ResponseException {
