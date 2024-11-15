@@ -309,9 +309,18 @@ public class ChessGame {
         }
         return false;
     }
-
+    private boolean extrafcted(List<ChessMove> cMovesList,ChessPosition kingsPosition){
+        for (int num = 0; num < cMovesList.size(); num++) {
+            ChessMove cMove = cMovesList.get(num);
+            if (cMove.getEndPosition().equals(kingsPosition)) {
+                return true;
+            }
+        }
+        return false;
+    }
     private boolean extracted(int row, TeamColor oppositeColor, ChessPosition kingsPosition) {
-        for(int col = 1; col <=8; col++) {
+        boolean iftrue = false;
+            for(int col = 1; col <=8; col++) {
             ChessPosition positionUlookingAt = new ChessPosition(row, col);
             //section on github of copying objects
             ChessBoard copyOfBoards = board;
@@ -324,16 +333,12 @@ public class ChessGame {
                     pizzaLookAt.pieceMoves(copyOfBoards, positionUlookingAt);
                     Collection<ChessMove> listMoves = pizzaLookAt.pieceMoves(copyOfBoards, positionUlookingAt);
                     List<ChessMove> cMovesList = new ArrayList<>(listMoves);
-                    for (int num = 0; num < cMovesList.size(); num++) {
-                        ChessMove cMove = cMovesList.get(num);
-                        if (cMove.getEndPosition().equals(kingsPosition)) {
-                            return true;
-                        }
-                    }
+                    iftrue = extrafcted(cMovesList,kingsPosition);
+                    if(iftrue == true){return true;}
                 }
             }
         }
-        return false;
+        return iftrue;
     }
 
     /**
