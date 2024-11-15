@@ -8,6 +8,7 @@ public class PreloginUi {
 //    private String visitorName = null;
     private final ServerFacade server;
     private final String serverUrl;
+    private ResponseSuccess resAuthToken;
     //private final ClientNotificationHandler notificationHandler;
 
     public PreloginUi(String serverUrl) {
@@ -47,7 +48,10 @@ public class PreloginUi {
         String email = params[2];
 
         // Call the ServerFacade to attempt login
-        boolean success = server.register(userName, passWord,email);
+        ResponseSuccess responseAuth = server.register(userName, passWord,email);
+        keepAuthToken(responseAuth);
+
+        boolean success = true;
 
         if (success) {
             // If login is successful, notify the user and return a signal to transition to the Postlogin UI
@@ -65,6 +69,13 @@ public class PreloginUi {
 
     }
 
+    private void keepAuthToken(ResponseSuccess res){
+        this.resAuthToken = res;
+    }
+    public ResponseSuccess getAuthToken(){
+        return resAuthToken;
+    }
+
     private String signIn(String[] params) throws ResponseException {
         if (params.length < 2) {
             return "Error: You must provide both username and password to login.";
@@ -73,8 +84,9 @@ public class PreloginUi {
         String passWord = params[1];
 
         // Call the ServerFacade to attempt login
-        boolean success = server.login(userName, passWord);
-
+        ResponseSuccess response = server.login(userName, passWord);
+        keepAuthToken(response);
+        boolean success = true;
         if (success) {
             // If login is successful, notify the user and return a signal to transition to the Postlogin UI
             System.out.println("LOGIN successful!");

@@ -1,6 +1,7 @@
 package ui;
 
 import com.google.gson.Gson;
+import model.AuthData;
 import model.GameData;
 import requestextension.ResponseException;
 import ui.serverFacade.CreateGameReq;
@@ -17,30 +18,40 @@ import java.net.URL;
 public class ServerFacade {
 
     private final String serverUrl;
-
+    private ResponseSuccess resAuthToken;
     public ServerFacade(String url) {
         serverUrl = url;
     }
 
-    //Part 1
 
-    public boolean login(String username, String password) throws ResponseException {
+    private void keepAuthToken(ResponseSuccess res){
+        this.resAuthToken = res;
+    }
+    public ResponseSuccess getAuth(){
+        return this.resAuthToken;
+    }
+    //part 1
+    public ResponseSuccess login(String username, String password) throws ResponseException {
         var path = "/session"; // Server endpoint for login
         // Create a request object to send to the server
         var loginRequest = new LoginRequest(username, password);
         // Make a POST request to the server
-        var response = this.makeRequest("POST", path, loginRequest, ResponseSuccess.class);
+        ResponseSuccess response = this.makeRequest("POST", path, loginRequest, ResponseSuccess.class);
+        keepAuthToken(response);
+        return response;
         // Check if the login response indicates success (e.g., a boolean or status message)
-        return response != null && response.success();
+        //return response != null && response.success();
     }
-    public boolean register(String username, String password, String email) throws ResponseException {
+    public ResponseSuccess register(String username, String password, String email) throws ResponseException {
         var path = "/user"; // Server endpoint for login
         // Create a request object to send to the server
         var registerRequest = new RegisterRequest(username, password, email);
         // Make a POST request to the server
-        var response = this.makeRequest("POST", path, registerRequest, ResponseSuccess.class);
+        ResponseSuccess response = this.makeRequest("POST", path, registerRequest, ResponseSuccess.class);
+        keepAuthToken(response);
+        return response;
         // Check if the login response indicates success (e.g., a boolean or status message)
-        return response != null && response.success();
+        //return response != null && response.success();
     }
 
     //part 2
@@ -68,8 +79,11 @@ public class ServerFacade {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
+            ResponseSuccess getAuth = getAuth();
             //everything but login and register
-            http.addRequestProperty("authorization", authtoken);
+            if(getAuth != null) {
+                http.addRequestProperty("authorization", getAuth.getAuthToken());
+            }
             http.setDoOutput(true);
             String reqData = new Gson().toJson(request);
 

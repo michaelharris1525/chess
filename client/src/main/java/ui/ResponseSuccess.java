@@ -9,6 +9,12 @@ public class ResponseSuccess {
         this.authToken = authToken;
         this.user = user;
     }
+    public String getAuthToken(){
+        return this.authToken;
+    }
+    public String getUser(){
+        return this.user;
+    }
 
     // Getter for success
     public boolean success() {
