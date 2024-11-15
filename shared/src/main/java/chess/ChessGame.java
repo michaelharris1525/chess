@@ -79,18 +79,7 @@ public class ChessGame {
             // Loop over all squares to find opponent pieces
             outerLoop:
             for (int row = 1; row <= 8; row++) {
-                for (int col = 1; col <= 8; col++) {
-                    ChessPosition pos = new ChessPosition(row, col);
-                    ChessPiece opponentPiece = simulatedBoard.getPiece(pos);
-
-                    if (opponentPiece != null && opponentPiece.getTeamColor() == opponentColor) {
-                        // Check each potential move of the opponent's piece
-                        kingIsInCheck = fixError(opponentPiece,simulatedBoard,pos,teamColor);
-                        if(kingIsInCheck){
-                            break;
-                        }
-                    }
-                }
+                kingIsInCheck = isKingIsInCheck(teamColor, row, simulatedBoard, opponentColor, kingIsInCheck);
                 if(kingIsInCheck){
                     break;
                 }
@@ -105,6 +94,21 @@ public class ChessGame {
         return validMoves;
     }
 
+    private boolean isKingIsInCheck(TeamColor teamColor, int row, ChessBoard simulatedBoard, TeamColor opponentColor, boolean kingIsInCheck) {
+        for (int col = 1; col <= 8; col++) {
+            ChessPosition pos = new ChessPosition(row, col);
+            ChessPiece opponentPiece = simulatedBoard.getPiece(pos);
+
+            if (opponentPiece != null && opponentPiece.getTeamColor() == opponentColor) {
+                // Check each potential move of the opponent's piece
+                kingIsInCheck = fixError(opponentPiece, simulatedBoard,pos, teamColor);
+                if(kingIsInCheck){
+                    break;
+                }
+            }
+        }
+        return kingIsInCheck;
+    }
 
 
     /**
