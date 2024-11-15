@@ -28,16 +28,23 @@ public class ServerFacade {
 
     private final String serverUrl;
     private ResponseSuccess resAuthToken;
+    private Collection<GameData> collect;
     public ServerFacade(String url) {
         serverUrl = url;
     }
 
-
+    //storage
     private void keepAuthToken(ResponseSuccess res){
         this.resAuthToken = res;
     }
     public ResponseSuccess getAuth(){
         return this.resAuthToken;
+    }
+    private void keepMap(Collection<GameData> c){
+        this.collect = c;
+    }
+    private Collection<GameData> keepMap(){
+        return this.collect;
     }
     //part 1
     public ResponseSuccess login(String username, String password) throws ResponseException {
@@ -74,7 +81,6 @@ public class ServerFacade {
             throw new RuntimeException(e);
         }
     }
-    //var createGameRequest = new ListGameReq(gameName);
     public void clientuserCreateGame(String gameName) throws ResponseException {
         var path = "/game";
         // Create a request object to send to the server
@@ -83,14 +89,15 @@ public class ServerFacade {
     }
     public Map<String, Collection<GameData>>  flistAllGames() throws ResponseException {
         var path = "/game";
-
         Map<String, Collection<GameData>> responseMap = this.makeRequest("GET", path, null, new TypeToken<Map<String, Collection<GameData>>>(){}.getType());
-
-        // Extract the 'games' collection from the response map
         return responseMap;
-        //return responseMap.get("games");
     }
+    public void observeID(int intyID) throws ResponseException {
+        var path = "/game";
+        //GameData observedGame = this.makeRequest("PUT", path, null, GameData.class);
+        //return observedGame;
 
+    }
 
     private <T> T makeRequest(String method, String path,
                               Object request, Type responseClass) throws ResponseException {
@@ -110,12 +117,8 @@ public class ServerFacade {
             System.out.println("Request URL: " + (serverUrl + path));
             System.out.println("Request Body: " + reqData);
             http.connect();
-//            if(method == "DELETE")
-//            {
-//                return null;
-//
-//            }
             throwIfNotSuccessful(http);
+
             return readBody(http, responseClass);
         } catch (Exception ex) {
             throw new ResponseException(500, ex.getMessage());

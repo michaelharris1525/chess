@@ -53,7 +53,6 @@ public class ServerHelper {
     public String userJoinGame(Request req, Response res){
         Gson serializer = new Gson();
         try {
-            //AuthData auth = new AuthData(req.headers("authorization"), null);
             String authToken = req.headers("authorization");
             if (authToken == null || !authTokenData.containsAuthToken(authToken)) {
                 throw new BadRequestsException("Bad request exception");

@@ -11,12 +11,21 @@ import java.util.Scanner;
 public class PostloginUi {
     private final ServerFacade server;
     //private final ClientNotificationHandler notificationHandler;
+    private Collection<GameData> collect;
 
 
     public PostloginUi(ServerFacade server) {
         this.server = server;
         //this.notificationHandler = notificationHandler;
     }
+    //storage
+    private void keepMap(Collection<GameData> c){
+        this.collect = c;
+    }
+    private Collection<GameData> keepMap(){
+        return this.collect;
+    }
+
 
     public String eval(String input) throws ResponseException {
         var tokens = input.toLowerCase().split(" ");
@@ -27,15 +36,16 @@ public class PostloginUi {
             case "help" -> help();
             case "creategame" -> createGame(params);
             case "listgames" -> listAllGames();
+            case "observegame" ->observeGame(params);
             default -> "Unknown command.";
         };
     }
 
     private String help() {
+        // implement later: join <ID> [WHITE|BLACK] - a game
         return """
                 logout - log out of your account
                 creategame <game_name> - create a new game
-                join <ID> [WHITE|BLACK] - a game
                 observe <ID> a game
                 listGames - list all existing games
                 help - display this help text
@@ -53,6 +63,7 @@ public class PostloginUi {
     private String listAllGames() throws ResponseException {
         Map<String, Collection<GameData>> listofAllGames = server.flistAllGames();
         Collection<GameData>games = listofAllGames.get("games");
+        keepMap(games);
         if(games != null) {
             for (GameData game : games) {
                 if(game.whiteUsername() != null && game.blackUsername() != null) {
@@ -66,11 +77,9 @@ public class PostloginUi {
                 }
                 else if(game.blackUsername() == null && game.whiteUsername() == null){
                     System.out.println(game.gameID() + ": " + game.gameName() + "White|Black");
-
                 }
             }
         }
-
         return "listgames";
     }
 
@@ -80,6 +89,21 @@ public class PostloginUi {
         String gameName = params[0];
         server.clientuserCreateGame(gameName);
         return "creategame";
+    }
+    private String observeGame(String[] params) throws ResponseException {
+        String iD = params[0];
+        String whiteorblack = params[1];
+        int intyID = Integer.parseInt(iD);
+        ChessBoard chessBoard = new ChessBoard();
+        if(whiteorblack == "white" || whiteorblack == "White"){
+            chessBoard.renderBoardPerspective(false);
+        }
+        else {
+            chessBoard.renderBoardPerspective(true);
+        }
+        //do Websocket don't do http request
+        server.observeID(intyID);
+        return "observe game";
     }
 
     public void run() throws ResponseException {
@@ -107,6 +131,9 @@ public class PostloginUi {
             }
             else if (result.equals("listgames")) {
                 System.out.println("Join A GAME!");
+            }
+            else if(result.equals("observe game")){
+                System.out.println("You are now observing game!");
             }
             //make a lot more if statements like joining game or observing game
             else{
