@@ -1,8 +1,11 @@
 package ui;
 
+import model.GameData;
 import requestextension.ResponseException;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Scanner;
 
 public class PostloginUi {
@@ -23,6 +26,7 @@ public class PostloginUi {
             case "logout" -> logout();
             case "help" -> help();
             case "creategame" -> createGame(params);
+            case "listgames" -> listAllGames();
             default -> "Unknown command.";
         };
     }
@@ -33,7 +37,7 @@ public class PostloginUi {
                 creategame <game_name> - create a new game
                 join <ID> [WHITE|BLACK] - a game
                 observe <ID> a game
-                list games - list all existing games
+                listGames - list all existing games
                 help - display this help text
                 """;
     }
@@ -44,6 +48,11 @@ public class PostloginUi {
         server.logout();
         System.out.println("Logout successful!");
         return "prelogin"; // Signal to transition to Postlogin UI
+    }
+
+    private String listAllGames() throws ResponseException {
+        Map<String, Collection<GameData>> listofAllGames = server.flistAllGames();
+        return "listallgames";
     }
 
     private String createGame(String[] params) throws ResponseException {
@@ -58,12 +67,13 @@ public class PostloginUi {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to the Post-login interface! You can start playing now.");
         help();
-
-        while (true) {
+        String trueornot = " ";
+        while (!trueornot.equals("quit")) {
             System.out.print("postlogin>>> ");
             String input = scanner.nextLine();
 
             String result = eval(input);
+            trueornot = result;
 
             if (result.equals("logout")) {
                 System.out.println("Logged out successfully.");
@@ -75,6 +85,9 @@ public class PostloginUi {
             }
             else if (result.equals("creategame")) {
                 System.out.println("made game successful!");
+            }
+            else if (result.equals("listgames")) {
+                System.out.println("Join A GAME!");
             }
             //make a lot more if statements like joining game or observing game
             else{

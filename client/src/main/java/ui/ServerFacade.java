@@ -1,10 +1,12 @@
 package ui;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import model.AuthData;
 import model.GameData;
 import requestextension.ResponseException;
 import ui.serverFacade.CreateGameReq;
+import ui.serverFacade.ListGameReq;
 import ui.serverFacade.RegisterRequest;
 
 import java.io.IOException;
@@ -14,6 +16,11 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 public class ServerFacade {
 
@@ -65,7 +72,19 @@ public class ServerFacade {
             throw new RuntimeException(e);
         }
     }
+    public  Map<String, Collection<GameData>>  flistAllGames() throws ResponseException {
+        var path ="/game";
+        Map<String, Collection<GameData>> responseObj = new HashMap<>();
 
+        //var response = this.makeRequest("GET", path, null, responseObj);
+
+        // Make a GET request to the server and deserialize the response
+        String jsonResponse = this.makeRequest("GET", path, null, String.class);
+
+        // Deserialize the JSON response into the map structure
+        return new Gson().fromJson(jsonResponse,new TypeToken<Map<String, Collection<GameData>>>() {}.getType());
+    }
+    //var createGameRequest = new ListGameReq(gameName);
     public void clientuserCreateGame(String gameName) throws ResponseException {
         var path = "/game";
         // Create a request object to send to the server
