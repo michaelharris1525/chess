@@ -1,6 +1,8 @@
 package ui;
 
 
+import requestextension.ResponseException;
+
 import java.util.Scanner;
 
 import java.util.Scanner;
@@ -50,7 +52,7 @@ public class Repl {
         System.out.println("Goodbye!");
     }
 
-    private void transitionToPostLogin(PreloginUi prelog) {
+    private void transitionToPostLogin(PreloginUi prelog) throws ResponseException {
         PostloginUi postloginUi = new PostloginUi(prelog.getServerFacade());
         postloginUi.run(); // Call the main functionality of Postlogin UI
     }

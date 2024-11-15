@@ -15,14 +15,14 @@ public class PostloginUi {
         //this.notificationHandler = notificationHandler;
     }
 
-    public String eval(String input) {
+    public String eval(String input) throws ResponseException {
         var tokens = input.toLowerCase().split(" ");
         var cmd = (tokens.length > 0) ? tokens[0] : "help";
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
         return switch (cmd) {
             case "logout" -> logout();
             case "help" -> help();
-            case "create game" -> createGame(params);
+            case "creategame" -> createGame(params);
             default -> "Unknown command.";
         };
     }
@@ -30,7 +30,7 @@ public class PostloginUi {
     private String help() {
         return """
                 logout - log out of your account
-                create game <game_name> - create a new game
+                creategame <game_name> - create a new game
                 join <ID> [WHITE|BLACK] - a game
                 observe <ID> a game
                 list games - list all existing games
@@ -46,14 +46,15 @@ public class PostloginUi {
         return "prelogin"; // Signal to transition to Postlogin UI
     }
 
-    private String createGame(String[] params) {
+    private String createGame(String[] params) throws ResponseException {
         // Implement game creation logic (e.g., call the server's create game API)
         System.out.println("CREATED GAME successful!");
         String gameName = params[0];
+        server.clientuserCreateGame(gameName);
         return "String";
     }
 
-    public void run() {
+    public void run() throws ResponseException {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to the Post-login interface! You can start playing now.");
         help();
@@ -72,13 +73,14 @@ public class PostloginUi {
                 System.out.println("Goodbye!");
                 System.exit(0); // Exit the application
             }
+            else if (result.equals("creategame")) {
+                System.out.println("made game successful!");
+            }
             //make a lot more if statements like joining game or observing game
             else{
                 System.out.println(help());
-                System.out.println("Error: not a real response try again");
+                System.out.println("need help? hit any key and hit enter");
             }
-
-
         }
 
 

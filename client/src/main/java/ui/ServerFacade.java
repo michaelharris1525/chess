@@ -54,7 +54,7 @@ public class ServerFacade {
         }
     }
 
-    public void clientuserCreateGame(GameData gameName) throws ResponseException {
+    public void clientuserCreateGame(String gameName) throws ResponseException {
         var path = "/game";
         this.makeRequest("POST", path, gameName, GameData.class);
     }
@@ -72,6 +72,11 @@ public class ServerFacade {
             System.out.println("Request URL: " + (serverUrl + path));
             System.out.println("Request Body: " + reqData);
             http.connect();
+//            if(method == "DELETE")
+//            {
+//                return null;
+//
+//            }
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);
         } catch (Exception ex) {
