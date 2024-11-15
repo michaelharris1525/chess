@@ -2,12 +2,9 @@ package ui;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import model.AuthData;
 import model.GameData;
-import model.GameResponse;
 import requestextension.ResponseException;
 import ui.serverFacade.CreateGameReq;
-import ui.serverFacade.ListGameReq;
 import ui.serverFacade.RegisterRequest;
 
 import java.io.IOException;
@@ -19,8 +16,6 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -154,6 +149,15 @@ public class ServerFacade {
     }
     private boolean isSuccessful(int status) {
         return status / 100 == 2;
+    }
+
+    public void clearDatabase() throws ResponseException {
+        var path = "/clear";  // Assume this is the endpoint to clear the database
+        try {
+            this.makeRequest("DELETE", path, null, null);  // Use DELETE or whatever method is required
+        } catch (ResponseException e) {
+            throw new ResponseException(500, "Failed to clear the database: " + e.getMessage());
+        }
     }
 
 
