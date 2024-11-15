@@ -95,7 +95,7 @@ public class PostloginUi {
         String whiteorblack = params[1];
         int intyID = Integer.parseInt(iD);
         ChessBoard chessBoard = new ChessBoard();
-        if(whiteorblack == "white" || whiteorblack == "White"){
+        if(whiteorblack.equals("white")  || whiteorblack.equals("White")){
             chessBoard.renderBoardPerspective(false);
         }
         else {
