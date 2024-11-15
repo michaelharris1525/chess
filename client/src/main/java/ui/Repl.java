@@ -60,37 +60,4 @@ public class Repl {
     private void printPrompt() {
         System.out.print(">>> ");
     }
-
-//    private String evaluateCommand(String command) {
-//        // Split the command into parts to identify the main command and parameters
-//        String[] tokens = command.split(" ");
-//        String cmd = tokens[0].toLowerCase();
-//        String[] params = (tokens.length > 1) ? Arrays.copyOfRange(tokens, 1, tokens.length) : new String[0];
-//
-//        return switch (cmd) {
-//            case "help" -> displayHelp();
-//            case "register" -> client.register(params);
-//            case "login" -> client.login(params);
-//            case "create" -> client.createGame(params);
-//            case "list" -> client.listGames();
-//            case "play" -> client.playGame(params);
-//            case "logout" -> client.logout();
-//            case "quit" -> "quit";
-//            default -> "Unknown command. Type 'help' to see available commands.";
-//        };
-//    }
-
-//    private String displayHelp() {
-//        return """
-//                Available commands:
-//                help - Display this help text
-//                register <username> <password> - Register a new account
-//                login <username> <password> - Log in to your account
-//                create <gameName> - Create a new game
-//                list - List all available games
-//                play <gameNumber> <color> - Join a game as white or black
-//                logout - Log out of your account
-//                quit - Exit the application
-//                """;
-//    }
 }

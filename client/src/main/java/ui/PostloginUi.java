@@ -52,7 +52,14 @@ public class PostloginUi {
 
     private String listAllGames() throws ResponseException {
         Map<String, Collection<GameData>> listofAllGames = server.flistAllGames();
-        return "listallgames";
+        Collection<GameData>games = listofAllGames.get("games");
+        if(games != null) {
+            for (GameData game : games) {
+                System.out.println(game);
+            }
+        }
+
+        return "listgames";
     }
 
     private String createGame(String[] params) throws ResponseException {

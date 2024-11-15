@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import model.AuthData;
 import model.GameData;
+import model.GameResponse;
 import requestextension.ResponseException;
 import ui.serverFacade.CreateGameReq;
 import ui.serverFacade.ListGameReq;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
@@ -72,18 +74,6 @@ public class ServerFacade {
             throw new RuntimeException(e);
         }
     }
-    public  Map<String, Collection<GameData>>  flistAllGames() throws ResponseException {
-        var path ="/game";
-        Map<String, Collection<GameData>> responseObj = new HashMap<>();
-
-        //var response = this.makeRequest("GET", path, null, responseObj);
-
-        // Make a GET request to the server and deserialize the response
-        String jsonResponse = this.makeRequest("GET", path, null, String.class);
-
-        // Deserialize the JSON response into the map structure
-        return new Gson().fromJson(jsonResponse,new TypeToken<Map<String, Collection<GameData>>>() {}.getType());
-    }
     //var createGameRequest = new ListGameReq(gameName);
     public void clientuserCreateGame(String gameName) throws ResponseException {
         var path = "/game";
@@ -91,9 +81,19 @@ public class ServerFacade {
         var createGameRequest = new CreateGameReq(gameName);
         this.makeRequest("POST", path, createGameRequest, GameData.class);
     }
+    public Map<String, Collection<GameData>>  flistAllGames() throws ResponseException {
+        var path = "/game";
+
+        Map<String, Collection<GameData>> responseMap = this.makeRequest("GET", path, null, new TypeToken<Map<String, Collection<GameData>>>(){}.getType());
+
+        // Extract the 'games' collection from the response map
+        return responseMap;
+        //return responseMap.get("games");
+    }
 
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+    private <T> T makeRequest(String method, String path,
+                              Object request, Type responseClass) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
@@ -105,8 +105,8 @@ public class ServerFacade {
             }
             http.setDoOutput(true);
             String reqData = new Gson().toJson(request);
-
             writeBody(request, http);
+
             System.out.println("Request URL: " + (serverUrl + path));
             System.out.println("Request Body: " + reqData);
             http.connect();
@@ -121,7 +121,7 @@ public class ServerFacade {
             throw new ResponseException(500, ex.getMessage());
         }
     }
-    private static <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
+    private static <T> T readBody(HttpURLConnection http, Type responseClass) throws IOException {
         T response = null;
         if (http.getContentLength() < 0) {
             try (InputStream respBody = http.getInputStream()) {
