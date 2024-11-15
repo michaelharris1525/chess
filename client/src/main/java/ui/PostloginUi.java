@@ -74,6 +74,7 @@ public class PostloginUi {
             }
             //make a lot more if statements like joining game or observing game
             else{
+                System.out.println(help());
                 System.out.println("Error: not a real response try again");
             }
 
