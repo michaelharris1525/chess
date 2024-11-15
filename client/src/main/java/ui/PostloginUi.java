@@ -49,7 +49,8 @@ public class PostloginUi {
     private String createGame(String[] params) {
         // Implement game creation logic (e.g., call the server's create game API)
         System.out.println("CREATED GAME successful!");
-        return "postlogin";
+        String gameName = params[0];
+        return "String";
     }
 
     public void run() {

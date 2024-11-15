@@ -19,6 +19,7 @@ public class Repl {
 
     public void run() {
         System.out.println("♔ Welcome to the Chess game! Sign in or register to start.");
+        System.out.println("If you need help click enter or type help");
         PreloginUi preloginUi = new PreloginUi(serverUrl);
         Scanner scanner = new Scanner(System.in);
         String command = "";
@@ -38,7 +39,7 @@ public class Repl {
                     break; // Exit the loop to quit the application
                 } else {
                     System.out.println(result);
-                    System.out.println(" TRY AGAIN");
+                    System.out.println("If you need help click enter or type help");
                 }
 
             } catch (Exception e) {

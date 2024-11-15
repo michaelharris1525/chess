@@ -30,6 +30,7 @@ public class PreloginUi {
             case "register" -> register(params);
             case "login" -> signIn(params);
             case "quit" -> "quit";
+            case "help" -> help();
             default -> help();
         };
     }

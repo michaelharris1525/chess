@@ -33,7 +33,7 @@ public class ServerFacade {
         return response != null && response.success();
     }
     public boolean register(String username, String password, String email) throws ResponseException {
-        var path = "/session"; // Server endpoint for login
+        var path = "/user"; // Server endpoint for login
         // Create a request object to send to the server
         var registerRequest = new RegisterRequest(username, password, email);
         // Make a POST request to the server
@@ -66,8 +66,11 @@ public class ServerFacade {
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
+            String reqData = new Gson().toJson(request);
 
             writeBody(request, http);
+            System.out.println("Request URL: " + (serverUrl + path));
+            System.out.println("Request Body: " + reqData);
             http.connect();
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);

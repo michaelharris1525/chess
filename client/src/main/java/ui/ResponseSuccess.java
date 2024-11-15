@@ -1,16 +1,11 @@
 package ui;
 
 public class ResponseSuccess {
-    private boolean success;
-    private String message; // Optional, in case you want a message from the server
+    private final boolean success = true;
 
     // Getter for success
     public boolean success() {
-        return success;
+        return this.success;
     }
 
-    // Optional: Getter for the message
-    public String getMessage() {
-        return message;
-    }
 }
