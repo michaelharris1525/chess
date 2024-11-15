@@ -106,11 +106,12 @@ public class ServerFacade {
                 http.addRequestProperty("authorization", getAuth.getAuthToken());
             }
             http.setDoOutput(true);
-            String reqData = new Gson().toJson(request);
+            //String reqData = new Gson().toJson(request);
+
             writeBody(request, http);
 
             System.out.println("Request URL: " + (serverUrl + path));
-            System.out.println("Request Body: " + reqData);
+            //System.out.println("Request Body: " + reqData);
             http.connect();
             throwIfNotSuccessful(http);
 
@@ -152,7 +153,7 @@ public class ServerFacade {
     }
 
     public void clearDatabase() throws ResponseException {
-        var path = "/clear";  // Assume this is the endpoint to clear the database
+        var path = "/db";  // Assume this is the endpoint to clear the database
         try {
             this.makeRequest("DELETE", path, null, null);  // Use DELETE or whatever method is required
         } catch (ResponseException e) {

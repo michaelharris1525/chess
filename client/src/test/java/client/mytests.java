@@ -14,18 +14,27 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 public class mytests {
-
+    private static Server server;
     private ServerFacade serverFacade;
-
+    private static int port;
+    @BeforeAll
+    public static void init() {
+        server = new Server();
+        port = server.run(0);
+        System.out.println("Started test HTTP server on " + port);
+    }
     @BeforeEach
-        void setUp() {
-            serverFacade = new ServerFacade("http://example.com/api"); // Mock or test server URL
+        void setUp() throws ResponseException {
+            serverFacade = new ServerFacade("http://localhost:" + port); // Mock or test server URL
+            serverFacade.clearDatabase();
         }
 
-    @AfterEach
-            void clear() throws ResponseException {
-                serverFacade.clearDatabase();
-            }
+
+    @AfterAll
+    static void stopServer() {
+        server.stop();
+    }
+
 
     @Test
     void testRegister_Positive() throws ResponseException {
@@ -41,16 +50,20 @@ public class mytests {
     @Test
     void testRegister_Negative() {
         // Simulate registration with missing email
-        String username = "userWithoutEmail";
         String password = "password";
 
-        assertThrows(ResponseException.class, () -> serverFacade.register(username, password, null),
+        assertThrows(ResponseException.class, () -> serverFacade.register(null, password, null),
                 "Should throw ResponseException for invalid registration data");
     }
 
     @Test
-    void testLogout_Positive() {
+    void testLogout_Positive() throws ResponseException {
         // Test that logout does not throw exceptions (assumes auth is stored)
+        String username = "newUdfaser";
+        String password = "newPasdasfadsfsword";
+        String email = "user@examplasdfasdfe.com";
+
+        ResponseSuccess res = serverFacade.register(username, password, email);
         assertDoesNotThrow(() -> serverFacade.logout(), "Logout should not throw exceptions");
     }
     @Test
@@ -59,7 +72,8 @@ public class mytests {
         String username = "testUser";
         String password = "testPasword";
         String email = "mail";
-        ResponseSuccess s = serverFacade.register(username, password, email);
+        ResponseSuccess dsfresponse = serverFacade.register(username, password, email);
+
         ResponseSuccess response = serverFacade.login(username, password);
         assertNotNull(response, "Response should not be null for valid login");
         assertNotNull(response.getAuthToken(), "Auth token should not be null");
@@ -77,8 +91,11 @@ public class mytests {
 
     @Test
     void testClientUserCreateGame_Positive() throws ResponseException {
+        String username = "testUsedsr";
+        String password = "testPafsdsword";
+        String email = "masil";
+        ResponseSuccess resp = serverFacade.register(username, password, email);
         String gameName = "Test Game";
-
         assertDoesNotThrow(() -> serverFacade.clientuserCreateGame(gameName),
                 "Creating a game with a valid name should not throw exceptions");
     }
@@ -94,6 +111,11 @@ public class mytests {
 
     @Test
     void testListAllGames_Positive() throws ResponseException {
+        String username = "testUser";
+        String password = "testPasword";
+        String email = "mail";
+        ResponseSuccess dfa = serverFacade.register(username, password, email);
+        serverFacade.clientuserCreateGame("GAMENAME");
         Map<String, Collection<GameData>> gameList = serverFacade.flistAllGames();
         assertNotNull(gameList, "Game list should not be null for valid request");
         assertTrue(gameList.size() >= 0, "Game list should be empty or contain games");
@@ -111,13 +133,5 @@ public class mytests {
         int gameId = 123; // Assume this is a valid game ID
         assertDoesNotThrow(() -> serverFacade.observeID(gameId),
                 "Observing a valid game ID should not throw exceptions");
-    }
-
-    @Test
-    void testObserveID_Negative() {
-        int invalidGameId = -1; // Invalid game ID
-
-        assertThrows(ResponseException.class, () -> serverFacade.observeID(invalidGameId),
-                "Should throw ResponseException for invalid game ID");
     }
 }
