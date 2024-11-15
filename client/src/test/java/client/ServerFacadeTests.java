@@ -4,7 +4,7 @@ import model.GameData;
 import org.junit.jupiter.api.*;
 import requestextension.ResponseException;
 import server.Server;
-import ui.ResponseSuccess; //
+import ui.ResponseSuccess;
 import ui.ServerFacade;
 
 import java.util.Collection;
