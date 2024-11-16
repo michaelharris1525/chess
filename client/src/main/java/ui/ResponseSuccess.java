@@ -12,13 +12,5 @@ public class ResponseSuccess {
     public String getAuthToken(){
         return this.authToken;
     }
-    public String getUser(){
-        return this.user;
-    }
-
-    // Getter for success
-    public boolean success() {
-        return this.success;
-    }
 
 }
