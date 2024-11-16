@@ -348,49 +348,56 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        //throw new RuntimeException("Not implemented");
+        // Ensure the king is in check
+        if (!isInCheckKing(teamColor, board)) {
+            return false;
+        }
+        // Check if the king has valid moves
+        if (kingHasValidMoves(teamColor)) {
+            return false;
+        }
+        // Check if any piece of the same team can protect the king
+        if (canProtectKing(teamColor)) {
+            return false;
+        }
+        return true; // King is in checkmate
+    }
+    private boolean kingHasValidMoves(TeamColor teamColor) {
         ChessPiece king = new ChessPiece(teamColor, ChessPiece.PieceType.KING);
-        Collection<ChessMove>emptyMoves = new ArrayList<>();
-        Collection<ChessMove>editedMoves = new ArrayList<>();
-        ChessBoard copyOfBoard = board.copyOfBoard();
+        ChessPosition kingPosition = findKing(teamColor, board);
+        Collection<ChessMove> kingsMoves = king.pieceMoves(board, kingPosition);
 
-        if(isInCheckKing(teamColor, board)) {
-            Collection<ChessMove> kingsMoves = king.pieceMoves(board, findKing(teamColor, board));
-            List<ChessMove>kingsList = new ArrayList<>(kingsMoves);
-            //all possible moves king can move
-            for(int i = 0; i<1;i++) {
-                ChessMove cMove = kingsList.get(i);
-                editedMoves = validMoves(cMove.getStartPosition());
-            }
-            //if list is empty, go through all of same colors moves and see if king is in check
-            //if king is not in check after move in copy board return false
-            if(editedMoves.equals(emptyMoves)){
-                for(int row = 1; row <=8; row++) {
-                    for (int col = 1; col <= 8; col++) {
-                        ChessPosition newPosition = new ChessPosition(row, col);
-                        ChessPiece yourPiece = board.getPiece(newPosition);
-
-                        if (yourPiece != null) {
-                            if (yourPiece.getTeamColor().equals(teamColor)) {
-                                Collection<ChessMove> yourCollection = yourPiece.pieceMoves(board, newPosition);
-                                List<ChessMove> listUrPromotionalMoves = new ArrayList<>(yourCollection);
-                                for (ChessMove yourMove : listUrPromotionalMoves) {
-                                    makeMoveCopy(yourMove, copyOfBoard);
-                                    if (!isInCheckKing(teamColor, copyOfBoard)) {
-                                        return false;
-                                    }
-                                    copyOfBoard = board.copyOfBoard();
-                                }
-                            }
-                        }
-                    }
-                }
-                return true;
+        for (ChessMove move : kingsMoves) {
+            ChessBoard copyOfBoard = board.copyOfBoard();
+            makeMoveCopy(move, copyOfBoard);
+            if (!isInCheckKing(teamColor, copyOfBoard)) {
+                return true; // King can escape
             }
         }
+        return false; // No valid moves for the king
+    }
+    private boolean canProtectKing(TeamColor teamColor) {
+        ChessBoard copyOfBoard = board.copyOfBoard();
 
-        return false;
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
 
+                if (piece != null && piece.getTeamColor().equals(teamColor)) {
+                    Collection<ChessMove> moves = piece.pieceMoves(board, position);
+
+                    for (ChessMove move : moves) {
+                        makeMoveCopy(move, copyOfBoard);
+                        if (!isInCheckKing(teamColor, copyOfBoard)) {
+                            return true; // A move exists to protect the king
+                        }
+                        copyOfBoard = board.copyOfBoard(); // Reset the board
+                    }
+                }
+            }
+        }
+        return false; // No piece can protect the king
     }
 
     /**
