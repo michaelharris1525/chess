@@ -188,12 +188,6 @@ public class ChessGame {
         return kingListMoves;
     }
 
-    /**
-     * Makes a move in a chess game
-     *
-     * @param move chess move to preform
-     * @throws InvalidMoveException if move is invalid
-     */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessBoard copyOfBoard = board.copyOfBoard();
         ChessPosition startingPosition = move.getStartPosition();
@@ -218,7 +212,6 @@ public class ChessGame {
         if(newPiece.getTeamColor() != currentColor){
             throw new InvalidMoveException();
         }
-
         // Handle the special case of pawn promotion
         if (newPiece.getPieceType() == ChessPiece.PieceType.PAWN) {
             int finalRow = newPiece.getTeamColor() == TeamColor.WHITE ? 8 : 1;
@@ -233,20 +226,9 @@ public class ChessGame {
             // If a promotion type is provided for a non-pawn piece, it's an invalid move
             throw new InvalidMoveException("Only pawns can be promoted.");
         }
-
-
-
-
-
-        //delete piece whether null or not, remove it. Then add piece to board
         board.addPiece(endingPosition, newPiece);
         flipSetTeamTurn(newPiece.getTeamColor());
-        //delete the piece where it was at before
         board.removePiece(startingPosition);
-
-
-
-
     }
     public void makeMoveCopy(ChessMove move, ChessBoard copyOfBoard)  {
         //throw new RuntimeException("Not implemented");
@@ -260,14 +242,12 @@ public class ChessGame {
         copyOfBoard.removePiece(startingPosition);
 
     }
-
     public TeamColor flipColors(TeamColor teamColor) {
         if (teamColor == wColor) {
             return bColor;
         }
         return wColor;
     }
-
     public ChessPosition findKing(TeamColor teamColor, ChessBoard copyOrOg){
         ChessPiece whatImLookingFor = new ChessPiece(teamColor, ChessPiece.PieceType.KING);
         ChessPosition kingsPosition = new ChessPosition(1,1);
@@ -284,26 +264,9 @@ public class ChessGame {
         }
         return kingsPosition;
     }
-
-
-
-    /**
-     * Determines if the given team is in check
-     *
-     * @param teamColor which team to check for check
-     * @return True if the specified team is in check
-     */
-
-
         public boolean isInCheck(TeamColor teamColor) {
-        //throw new RuntimeException("Not implemented");
-        //run all possible pieces on opposite color of teamColor and see if any piece specifically hits the king, and if it does, return true
         ChessPosition kingsPosition = findKing(teamColor, board);
-        //opposite color
         TeamColor oppositeColor = flipColors(teamColor);
-        //all moves that lead to check
-        //Collection<ChessMove> all_moves_in_check = new ArrayList<>();
-        //
         for(int row = 1; row <=8; row++) {
             if (extracted(row, oppositeColor, kingsPosition)) return true;
         }
@@ -484,9 +447,10 @@ public class ChessGame {
                 ChessPosition positionUlookingAt = new ChessPosition(row, col);
                 ChessPiece pieceUlookingAt = copyOfBoards.getPiece(positionUlookingAt);
 
-                if (fourextracted(copyOfBoards, pieceUlookingAt, oppositeColor, positionUlookingAt, kingsPosition))
+                if (fourextracted(copyOfBoards, pieceUlookingAt,
+                        oppositeColor, positionUlookingAt, kingsPosition))
                     return true;
-            }
+                }
         }
         return false;
     }
