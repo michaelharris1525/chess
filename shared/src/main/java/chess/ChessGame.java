@@ -419,17 +419,7 @@ public class ChessGame {
                 for(int col =1; col <=8; col++) {
                     ChessPosition currentPosition = new ChessPosition(row, col);
                     ChessPiece curPiece = board.getPiece(currentPosition);
-                    if (curPiece != null) {
-                        if (curPiece.getTeamColor().equals(TeamColor.WHITE)) {
-                            Collection<ChessMove> whitePieceMoves = validMoves(currentPosition);
-                            if(whitePieceMoves.size()!=0) {
-                                for (ChessMove move : whitePieceMoves) {
-                                    listWhitePieceMove.add(move);
-                                }
-                            }
-                            //listWhitePieceMove.add();
-                        }
-                    }
+                    treeextracted(curPiece, currentPosition, listWhitePieceMove);
                 }
             }
             if (listWhitePieceMove.size() == (0)) {
@@ -438,6 +428,20 @@ public class ChessGame {
         }
         return false;
         //}
+    }
+
+    private void treeextracted(ChessPiece curPiece, ChessPosition currentPosition, Collection<ChessMove> listWhitePieceMove) {
+        if (curPiece != null) {
+            if (curPiece.getTeamColor().equals(TeamColor.WHITE)) {
+                Collection<ChessMove> whitePieceMoves = validMoves(currentPosition);
+                if(whitePieceMoves.size()!=0) {
+                    for (ChessMove move : whitePieceMoves) {
+                        listWhitePieceMove.add(move);
+                    }
+                }
+                //listWhitePieceMove.add();
+            }
+        }
     }
 
     /**
@@ -471,17 +475,23 @@ public class ChessGame {
                 ChessPosition positionUlookingAt = new ChessPosition(row, col);
                 ChessPiece pieceUlookingAt = copyOfBoards.getPiece(positionUlookingAt);
 
-                if (pieceUlookingAt != null) {
-                    if (pieceUlookingAt.getTeamColor().equals(oppositeColor)) {
-                        pieceUlookingAt.pieceMoves(copyOfBoards, positionUlookingAt);
-                        Collection<ChessMove> listMoves = pieceUlookingAt.pieceMoves(copyOfBoards, positionUlookingAt);
-                        List<ChessMove> movesList = new ArrayList<>(listMoves);
-                        for (int num = 0; num < movesList.size(); num++) {
-                            ChessMove cMove = movesList.get(num);
-                            if (cMove.getEndPosition().equals(kingsPosition)) {
-                                return true;
-                            }
-                        }
+                if (fourextracted(copyOfBoards, pieceUlookingAt, oppositeColor, positionUlookingAt, kingsPosition))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean fourextracted(ChessBoard copyOfBoards, ChessPiece pieceUlookingAt, TeamColor oppositeColor, ChessPosition positionUlookingAt, ChessPosition kingsPosition) {
+        if (pieceUlookingAt != null) {
+            if (pieceUlookingAt.getTeamColor().equals(oppositeColor)) {
+                pieceUlookingAt.pieceMoves(copyOfBoards, positionUlookingAt);
+                Collection<ChessMove> listMoves = pieceUlookingAt.pieceMoves(copyOfBoards, positionUlookingAt);
+                List<ChessMove> movesList = new ArrayList<>(listMoves);
+                for (int num = 0; num < movesList.size(); num++) {
+                    ChessMove cMove = movesList.get(num);
+                    if (cMove.getEndPosition().equals(kingsPosition)) {
+                        return true;
                     }
                 }
             }
