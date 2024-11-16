@@ -378,26 +378,35 @@ public class ChessGame {
     }
     private boolean canProtectKing(TeamColor teamColor) {
         ChessBoard copyOfBoard = board.copyOfBoard();
-
+        boolean tf = false;
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
                 ChessPosition position = new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(position);
-
-                if (piece != null && piece.getTeamColor().equals(teamColor)) {
-                    Collection<ChessMove> moves = piece.pieceMoves(board, position);
-
-                    for (ChessMove move : moves) {
-                        makeMoveCopy(move, copyOfBoard);
-                        if (!isInCheckKing(teamColor, copyOfBoard)) {
-                            return true; // A move exists to protect the king
-                        }
-                        copyOfBoard = board.copyOfBoard(); // Reset the board
-                    }
+                tf = trueOrFalse(piece, teamColor,
+                        position, copyOfBoard);
+                copyOfBoard = board.copyOfBoard();
+                if(tf == true){
+                    return true;
                 }
             }
         }
         return false; // No piece can protect the king
+    }
+    boolean trueOrFalse(ChessPiece piece, TeamColor teamColor,
+                        ChessPosition position, ChessBoard copyOfBoard) {
+        if (piece != null && piece.getTeamColor().equals(teamColor)) {
+            Collection<ChessMove> moves = piece.pieceMoves(board, position);
+
+            for (ChessMove move : moves) {
+                makeMoveCopy(move, copyOfBoard);
+                if (!isInCheckKing(teamColor, copyOfBoard)) {
+                    return true; // A move exists to protect the king
+                }
+                copyOfBoard = board.copyOfBoard(); // Reset the board
+            }
+        }
+        return false;
     }
 
     /**
