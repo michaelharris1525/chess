@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import model.GameData;
 import requestextension.ResponseException;
-import ui.serverFacade.CreateGameReq;
-import ui.serverFacade.RegisterRequest;
+import ui.serverfacade.CreateGameReq;
+import ui.serverfacade.RegisterRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +27,7 @@ public class ServerFacade {
     public ServerFacade(String url) {
         serverUrl = url;
     }
-    
+
     private void keepAuthToken(ResponseSuccess res){
         this.resAuthToken = res;
     }

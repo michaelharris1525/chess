@@ -1,4 +1,4 @@
-package ui.serverFacade;
+package ui.serverfacade;
 
 public class RegisterRequest {
     private final String username;

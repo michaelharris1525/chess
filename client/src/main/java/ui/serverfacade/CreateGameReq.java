@@ -1,4 +1,4 @@
-package ui.serverFacade;
+package ui.serverfacade;
 
 public class CreateGameReq {
     private String gameName;

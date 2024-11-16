@@ -1,4 +1,4 @@
-package ui.serverFacade;
+package ui.serverfacade;
 
 import model.GameData;
 
@@ -6,11 +6,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class listGameReq {
+public class ListGameReq {
     private String gameName;
     private Map<String, Collection<GameData>> responseObj = new HashMap<>();
 
-    public listGameReq(String name) {
+    public ListGameReq(String name) {
         this.gameName = name;
     }
 
