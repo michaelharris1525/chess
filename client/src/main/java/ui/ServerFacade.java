@@ -80,7 +80,10 @@ public class ServerFacade {
     }
     public Map<String, Collection<GameData>>  flistAllGames() throws ResponseException {
         var path = "/game";
-        Map<String, Collection<GameData>> responseMap = this.makeRequest("GET", path, null, new TypeToken<Map<String, Collection<GameData>>>(){}.getType());
+        Map<String, Collection<GameData>>
+                responseMap = this.makeRequest("GET", path,
+                null, new TypeToken<Map<String,
+                        Collection<GameData>>>(){}.getType());
         return responseMap;
     }
     public void observeID(int intyID) throws ResponseException {

@@ -268,7 +268,7 @@ public class ChessGame {
         ChessPosition kingsPosition = findKing(teamColor, board);
         TeamColor oppositeColor = flipColors(teamColor);
         for(int row = 1; row <=8; row++) {
-            if (extracted(row, oppositeColor, kingsPosition)) return true;
+            if (extracted(row, oppositeColor, kingsPosition))  {return true;}
         }
         return false;
     }
@@ -449,14 +449,17 @@ public class ChessGame {
 
                 if (fourextracted(copyOfBoards, pieceUlookingAt,
                         oppositeColor, positionUlookingAt, kingsPosition))
-                    return true;
+                {return true;}
                 }
         }
         return false;
     }
 
     private static boolean fourextracted(ChessBoard copyOfBoards,
-                                         ChessPiece pieceUlookingAt, TeamColor oppositeColor, ChessPosition positionUlookingAt, ChessPosition kingsPosition) {
+                                         ChessPiece pieceUlookingAt,
+                                         TeamColor oppositeColor,
+                                         ChessPosition positionUlookingAt,
+                                         ChessPosition kingsPosition) {
         if (pieceUlookingAt != null) {
             if (pieceUlookingAt.getTeamColor().equals(oppositeColor)) {
                 pieceUlookingAt.pieceMoves(copyOfBoards, positionUlookingAt);
