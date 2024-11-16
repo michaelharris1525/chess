@@ -38,7 +38,7 @@ public class ServerFacadeTests {
 
 
     @Test
-    void testRegister_Positive() throws ResponseException {
+    void testRegisterPositive() throws ResponseException {
         String username = "newUser";
         String password = "newPassword";
         String email = "user@example.com";
@@ -49,16 +49,32 @@ public class ServerFacadeTests {
     }
 
     @Test
-    void testRegister_Negative() {
+    void testRegisterNegative() {
         // Simulate registration with missing email
         String password = "password";
 
         assertThrows(ResponseException.class, () -> serverFacade.register(null, password, null),
                 "Should throw ResponseException for invalid registration data");
     }
+    @Test
+    void testRegisterNegativeTwo() {
+        // Simulate registration with missing email
+        String username = "sadf";
+
+        assertThrows(ResponseException.class, () -> serverFacade.register(username, null, null),
+                "Should throw ResponseException for invalid registration data");
+    }
+    @Test
+    void testRegisterNegativeThree() {
+        // Simulate registration with missing email
+        String email = "sadasdfasdff";
+
+        assertThrows(ResponseException.class, () -> serverFacade.register(null, null, email),
+                "Should throw ResponseException for invalid registration data");
+    }
 
     @Test
-    void testLogout_Positive() throws ResponseException {
+    void testLogoutPositive() throws ResponseException {
         // Test that logout does not throw exceptions (assumes auth is stored)
         String username = "newUdfaser";
         String password = "newPasdasfadsfsword";
@@ -68,7 +84,7 @@ public class ServerFacadeTests {
         assertDoesNotThrow(() -> serverFacade.logout(), "Logout should not throw exceptions");
     }
     @Test
-    void testLogin_Positive() throws ResponseException {
+    void testLoginPositive() throws ResponseException {
         // Simulate valid login credentials
         String username = "testUser";
         String password = "testPasword";
@@ -81,7 +97,7 @@ public class ServerFacadeTests {
     }
 
     @Test
-    void testLogin_Negative() {
+    void testLoginNegative() {
         // Simulate invalid login credentials
         String username = "invalidUser";
         String password = "invalidPassword";
@@ -90,8 +106,10 @@ public class ServerFacadeTests {
                 "Should throw ResponseException for invalid login credentials");
     }
 
+
+
     @Test
-    void testClientUserCreateGame_Positive() throws ResponseException {
+    void testClientUserCreateGamePositive() throws ResponseException {
         String username = "testUsedsr";
         String password = "testPafsdsword";
         String email = "masil";
@@ -102,7 +120,7 @@ public class ServerFacadeTests {
     }
 
     @Test
-    void testClientUserCreateGame_Negative() {
+    void testClientUserCreateGameNegative() {
         // Simulate creating a game without a name
         String invalidGameName = "";
 
@@ -111,7 +129,7 @@ public class ServerFacadeTests {
     }
 
     @Test
-    void testListAllGames_Positive() throws ResponseException {
+    void testListAllGamesPositive() throws ResponseException {
         String username = "testUser";
         String password = "testPasword";
         String email = "mail";
@@ -123,15 +141,21 @@ public class ServerFacadeTests {
     }
 
     @Test
-    void testListAllGames_Negative() {
+    void testListAllGamesNegative() {
         // Simulate a server failure
         assertThrows(ResponseException.class, serverFacade::flistAllGames,
                 "Should throw ResponseException for server failure or invalid request");
     }
 
     @Test
-    void testObserveID_Positive() throws ResponseException {
+    void testObserveIDPositive() throws ResponseException {
         int gameId = 123; // Assume this is a valid game ID
+        assertDoesNotThrow(() -> serverFacade.observeID(gameId),
+                "Observing a valid game ID should not throw exceptions");
+    }
+    @Test
+    void testObserveIDPositiveTwo() throws ResponseException {
+        int gameId = 412314215; // Assume this is a valid game ID
         assertDoesNotThrow(() -> serverFacade.observeID(gameId),
                 "Observing a valid game ID should not throw exceptions");
     }

@@ -455,11 +455,13 @@ public class ChessGame {
         return false;
     }
 
-    private static boolean fourextracted(ChessBoard copyOfBoards, ChessPiece pieceUlookingAt, TeamColor oppositeColor, ChessPosition positionUlookingAt, ChessPosition kingsPosition) {
+    private static boolean fourextracted(ChessBoard copyOfBoards,
+                                         ChessPiece pieceUlookingAt, TeamColor oppositeColor, ChessPosition positionUlookingAt, ChessPosition kingsPosition) {
         if (pieceUlookingAt != null) {
             if (pieceUlookingAt.getTeamColor().equals(oppositeColor)) {
                 pieceUlookingAt.pieceMoves(copyOfBoards, positionUlookingAt);
-                Collection<ChessMove> listMoves = pieceUlookingAt.pieceMoves(copyOfBoards, positionUlookingAt);
+                Collection<ChessMove> listMoves =
+                        pieceUlookingAt.pieceMoves(copyOfBoards, positionUlookingAt);
                 List<ChessMove> movesList = new ArrayList<>(listMoves);
                 for (int num = 0; num < movesList.size(); num++) {
                     ChessMove cMove = movesList.get(num);

@@ -27,8 +27,7 @@ public class ServerFacade {
     public ServerFacade(String url) {
         serverUrl = url;
     }
-
-    //storage
+    
     private void keepAuthToken(ResponseSuccess res){
         this.resAuthToken = res;
     }
@@ -41,7 +40,6 @@ public class ServerFacade {
     private Collection<GameData> keepMap(){
         return this.collect;
     }
-    //part 1
     public ResponseSuccess login(String username, String password) throws ResponseException {
         var path = "/session"; // Server endpoint for login
         // Create a request object to send to the server
@@ -64,8 +62,6 @@ public class ServerFacade {
         // Check if the login response indicates success (e.g., a boolean or status message)
         //return response != null && response.success();
     }
-
-    //part 2
     public void logout(){
         var path = "/session";
 
@@ -89,11 +85,7 @@ public class ServerFacade {
     }
     public void observeID(int intyID) throws ResponseException {
         var path = "/game";
-        //GameData observedGame = this.makeRequest("PUT", path, null, GameData.class);
-        //return observedGame;
-
     }
-
     private <T> T makeRequest(String method, String path,
                               Object request, Type responseClass) throws ResponseException {
         try {
@@ -101,20 +93,14 @@ public class ServerFacade {
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             ResponseSuccess getAuth = getAuth();
-            //everything but login and register
             if(getAuth != null) {
                 http.addRequestProperty("authorization", getAuth.getAuthToken());
             }
             http.setDoOutput(true);
-            //String reqData = new Gson().toJson(request);
-
             writeBody(request, http);
-
             System.out.println("Request URL: " + (serverUrl + path));
-            //System.out.println("Request Body: " + reqData);
             http.connect();
             throwIfNotSuccessful(http);
-
             return readBody(http, responseClass);
         } catch (Exception ex) {
             throw new ResponseException(500, ex.getMessage());
@@ -132,7 +118,6 @@ public class ServerFacade {
         }
         return response;
     }
-
     private static void writeBody(Object request, HttpURLConnection http) throws IOException {
         if (request != null) {
             http.addRequestProperty("Content-Type", "application/json");
@@ -151,7 +136,6 @@ public class ServerFacade {
     private boolean isSuccessful(int status) {
         return status / 100 == 2;
     }
-
     public void clearDatabase() throws ResponseException {
         var path = "/db";  // Assume this is the endpoint to clear the database
         try {
@@ -160,7 +144,4 @@ public class ServerFacade {
             throw new ResponseException(500, "Failed to clear the database: " + e.getMessage());
         }
     }
-
-
-
 }
