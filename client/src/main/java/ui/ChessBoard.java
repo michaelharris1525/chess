@@ -46,7 +46,15 @@ public class ChessBoard {
 
     public void renderBoardPerspective(boolean isBlackPerspective) {
         System.out.println(EscapeSequences.ERASE_SCREEN);
+        //System.out.print("a b c d e f g h");
         for (int row = 0; row < 8; row++) {
+            if(!isBlackPerspective){
+                System.out.print(8 - row);//added
+            }
+            else{
+                System.out.print(row + 1);//added
+            }
+
             int actualRow = isBlackPerspective ? 7 - row : row; // Flip rows for Black's perspective
             for (int col = 0; col < 8; col++) {
                 int actualCol = isBlackPerspective ? 7 - col : col; // Flip columns for Black's perspective
@@ -55,8 +63,11 @@ public class ChessBoard {
 
                 String piece = squares[actualRow][actualCol];
                 String pieceColor = isBlackPiece(piece) ? EscapeSequences.SET_TEXT_COLOR_GREEN : EscapeSequences.SET_TEXT_COLOR_WHITE;
-
                 System.out.print(squareColor + pieceColor + piece + EscapeSequences.RESET_TEXT_COLOR + RESET_COLOR);
+                if(col == 7) {
+                    if(!isBlackPerspective)  {System.out.print(8 - row); }//added
+                    else{System.out.print(row+1);}
+                }
             }
             System.out.println();
         }
