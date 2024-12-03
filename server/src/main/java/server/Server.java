@@ -5,6 +5,7 @@ import dataaccess.*;
 import model.*;
 import spark.*;
 import dataaccess.UserSQLDao;
+import server.websocket.WebSocketHandler;
 
 public class Server {
     //SQL Databases
@@ -14,6 +15,9 @@ public class Server {
 
     //Service Helper
     private final ServerHelper serverFunctions = new ServerHelper();
+    //websockets
+    private final WebSocketHandler webSocketHandler;
+    webSocketHandler = new WebSocketHandler();
 
     public void setUpServer() {
         try {
@@ -34,6 +38,8 @@ public class Server {
             Gson serializer = new Gson();
             return serverFunctions.userRegistrationHelp(req,res,serializer);
         });
+        //Websocket
+        Spark.webSocket("/ws", webSocketHandler);
         //Login in User
         Spark.post("/session", serverFunctions::userLogin);
 
