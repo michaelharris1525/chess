@@ -19,6 +19,10 @@ public class Server {
     private final WebSocketHandler webSocketHandler;
     webSocketHandler = new WebSocketHandler();
 
+    public Server(WebSocketHandler webSocketHandler) {
+        this.webSocketHandler = webSocketHandler;
+    }
+
     public void setUpServer() {
         try {
             // Create tables if they don't exist
