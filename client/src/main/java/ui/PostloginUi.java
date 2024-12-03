@@ -37,6 +37,7 @@ public class PostloginUi {
             case "creategame" -> createGame(params);
             case "listgames" -> listAllGames();
             case "observegame" ->observeGame(params);
+            //case "join" -> joingame(params);
             default -> "Unknown command.";
         };
     }
@@ -46,11 +47,17 @@ public class PostloginUi {
         return """
                 logout - log out of your account
                 creategame <game_name> - create a new game
-                observe <ID> a game
+                join <ID> <White|Black> - a game
+                observegame <ID> <white|black> - a game
                 listGames - list all existing games
                 help - display this help text
                 """;
     }
+//    private String joinGame(int id, String whiteBlack) {
+//        //is it the correct gameID? Does it match with the DatabasesID?
+//
+//        //white or black available? if so, call server for websocket connection with params
+//    }
 
     private String logout() {
         // Implement logout logic (e.g., call the server's logout API)
