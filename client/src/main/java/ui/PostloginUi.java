@@ -54,6 +54,8 @@ public class PostloginUi {
                 """;
     }
 //    private String joinGame(int id, String whiteBlack) {
+    //Call the server join HTTP API to join them to the game.
+    // This step is only done for players. Observers do not need to make the join HTTP API request.
 //        //is it the correct gameID? Does it match with the DatabasesID?
 //
 //        //white or black available? if so, call server for websocket connection with params
@@ -142,6 +144,7 @@ public class PostloginUi {
             else if(result.equals("observe game")){
                 System.out.println("You are now observing game!");
             }
+            //If joingame go to new class, we'll call it InGame with new functions and if statements to do
             //make a lot more if statements like joining game or observing game
             else{
                 System.out.println(help());
