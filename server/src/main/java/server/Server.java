@@ -5,6 +5,7 @@ import dataaccess.*;
 import model.*;
 import spark.*;
 import dataaccess.UserSQLDao;
+
 import server.websocket.WebSocketHandler;
 
 public class Server {
@@ -16,12 +17,7 @@ public class Server {
     //Service Helper
     private final ServerHelper serverFunctions = new ServerHelper();
     //websockets
-    private final WebSocketHandler webSocketHandler;
-    webSocketHandler = new WebSocketHandler();
-
-    public Server(WebSocketHandler webSocketHandler) {
-        this.webSocketHandler = webSocketHandler;
-    }
+    private final WebSocketHandler webSocketHandler = new WebSocketHandler();
 
     public void setUpServer() {
         try {
