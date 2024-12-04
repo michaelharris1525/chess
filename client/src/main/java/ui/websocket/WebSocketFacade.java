@@ -1,6 +1,7 @@
 package ui.websocket;
 
-import chess.DisChessBoard;
+import chess.ChessBoard;
+import ui.DisplayChessBoard;
 import com.google.gson.Gson;
 import requestextension.ResponseException;
 import ui.ResponseSuccess;
@@ -71,13 +72,24 @@ public class WebSocketFacade extends Endpoint {
     }
 
     private void handleServerMessage(ServerMessage notification) {
-        // Logic to handle different types of messages, e.g., moves or board updates
-        if (notification.getServerMessageType() == ServerMessage.ServerMessageType.MAKE_MOVE) {
-            // Update chessboard with the move data
-            DisChessBoard.updateWithMove(notification.getMoveData());
-        } else if (notification.getServerMessageType() == ServerMessage.ServerMessageType.GAME_OVER) {
-            // Handle game over scenario
-            handleGameOver();
+        switch (notification.getServerMessageType()) {
+            case LOAD_GAME:
+                // Deserialize and update the chess board
+                chessBoard.updateBoard(notification.getGame());
+                break;
+
+            case NOTIFICATION:
+                // Handle notifications like player joining or moves
+                notificationHandler.notify(notification);
+                break;
+
+            case ERROR:
+                System.err.println("Error: " + notification.getMessage());
+                break;
+
+            default:
+                System.out.println("Unknown message type.");
+                break;
         }
     }
 
