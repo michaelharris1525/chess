@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessBoard;
 import model.GameData;
 import requestextension.ResponseException;
 import ui.websocket.NotificationHandler;
@@ -112,9 +113,11 @@ public class PostloginUi {
         String iD = params[0];
         String whiteorblack = params[1];
         int intyID = Integer.parseInt(iD);
-        DisplayChessBoard chessBoard = new DisplayChessBoard();
-        ws = new WebSocketFacade(serverUrl, notification);
-        ws.connectToGame(server.getAuth(), intyID);
+        ChessBoard board = new ChessBoard();
+        board.resetBoard();
+        DisplayChessBoard chessBoard = new DisplayChessBoard(board);
+//        ws = new WebSocketFacade(serverUrl, notification);
+//        ws.connectToGame(server.getAuth(), intyID);
 
         //do Websocket don't do http request
         if(whiteorblack.equalsIgnoreCase("white")){

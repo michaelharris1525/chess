@@ -74,8 +74,8 @@ public class WebSocketFacade extends Endpoint {
     private void handleServerMessage(ServerMessage notification) {
         switch (notification.getServerMessageType()) {
             case LOAD_GAME:
-                // Deserialize and update the chess board
-                chessBoard.updateBoard(notification.getGame());
+                //update the chess board
+                //chessBoard.updateBoard();
                 break;
 
             case NOTIFICATION:
@@ -84,7 +84,7 @@ public class WebSocketFacade extends Endpoint {
                 break;
 
             case ERROR:
-                System.err.println("Error: " + notification.getMessage());
+                System.err.println("Error: " + notification);
                 break;
 
             default:
@@ -110,7 +110,8 @@ public class WebSocketFacade extends Endpoint {
 //        } catch (IOException ex) {
 //            throw new ResponseException(500, ex.getMessage());
 //        }
-//    }
+//    } // Deserialize and update the chess board
+//                chessBoard.updateBoard(notification.getGame());
 
 }
 

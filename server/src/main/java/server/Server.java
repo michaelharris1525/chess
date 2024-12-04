@@ -33,13 +33,15 @@ public class Server {
         setUpServer();
         Spark.port(desiredPort);
         Spark.staticFiles.location("web");
+
+        //Websocket
+        Spark.webSocket("/ws", webSocketHandler);
+
         //registration
         Spark.post("/user", (Request req, Response res) -> {
             Gson serializer = new Gson();
             return serverFunctions.userRegistrationHelp(req,res,serializer);
         });
-        //Websocket
-        Spark.webSocket("/ws", webSocketHandler);
         //Login in User
         Spark.post("/session", serverFunctions::userLogin);
 
