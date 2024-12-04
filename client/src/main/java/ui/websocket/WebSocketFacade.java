@@ -1,5 +1,6 @@
 package ui.websocket;
 
+import chess.DisChessBoard;
 import com.google.gson.Gson;
 import requestextension.ResponseException;
 import ui.ResponseSuccess;
@@ -73,7 +74,7 @@ public class WebSocketFacade extends Endpoint {
         // Logic to handle different types of messages, e.g., moves or board updates
         if (notification.getServerMessageType() == ServerMessage.ServerMessageType.MAKE_MOVE) {
             // Update chessboard with the move data
-            ChessBoard.updateWithMove(notification.getMoveData());
+            DisChessBoard.updateWithMove(notification.getMoveData());
         } else if (notification.getServerMessageType() == ServerMessage.ServerMessageType.GAME_OVER) {
             // Handle game over scenario
             handleGameOver();

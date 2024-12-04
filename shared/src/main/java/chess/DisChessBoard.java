@@ -9,14 +9,14 @@ import java.util.Objects;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessBoard {
+public class DisChessBoard {
     //chess piece is the double array or board
     private ChessPiece[][] squares = new ChessPiece[8][8];
-    public ChessBoard() {
+    public DisChessBoard() {
         
     }
 
-    public ChessBoard(ChessBoard other) {
+    public DisChessBoard(DisChessBoard other) {
         // Create a new squares array for the new ChessBoard instance
         this.squares = new ChessPiece[8][8];  // Creates a new, independent array.
 
@@ -32,8 +32,8 @@ public class ChessBoard {
         }
     }
 
-    public ChessBoard copyOfBoard() {
-        return new ChessBoard(this);
+    public DisChessBoard copyOfBoard() {
+        return new DisChessBoard(this);
     }
 
 
@@ -69,7 +69,7 @@ public class ChessBoard {
         if (this == o) { return true;}
         if (o == null || getClass() != o.getClass()) {return false;}
         //Cast
-        ChessBoard that = (ChessBoard) o;
+        DisChessBoard that = (DisChessBoard) o;
         return Objects.deepEquals(squares, that.squares);
     }
 
