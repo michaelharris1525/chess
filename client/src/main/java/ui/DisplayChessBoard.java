@@ -1,13 +1,13 @@
 package ui;
 
-public class ChessBoard {
+public class DisplayChessBoard {
     private static final String LIGHT_SQUARE = EscapeSequences.SET_BG_COLOR_LIGHT_GREY;
     private static final String DARK_SQUARE = EscapeSequences.SET_BG_COLOR_DARK_GREY;
     private static final String RESET_COLOR = EscapeSequences.RESET_BG_COLOR;
 
     private String[][] squares = new String[8][8];
 
-    public ChessBoard() {
+    public DisplayChessBoard() {
         initializeDefaultBoard();
     }
 

@@ -112,7 +112,7 @@ public class PostloginUi {
         String iD = params[0];
         String whiteorblack = params[1];
         int intyID = Integer.parseInt(iD);
-        ChessBoard chessBoard = new ChessBoard();
+        DisplayChessBoard chessBoard = new DisplayChessBoard();
         ws = new WebSocketFacade(serverUrl, notification);
         ws.connectToGame(server.getAuth(), intyID);
 
