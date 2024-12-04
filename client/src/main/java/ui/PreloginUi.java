@@ -1,19 +1,27 @@
 package ui;
 
 import requestextension.ResponseException;
+import ui.websocket.NotificationHandler;
+import ui.websocket.WebSocketFacade;
+
 
 import java.util.Arrays;
 
 public class PreloginUi {
-//    private String visitorName = null;
+    //before WS
     private final ServerFacade server;
     private final String serverUrl;
     private ResponseSuccess resAuthToken;
-    //private final ClientNotificationHandler notificationHandler;
+    //after WS
+    //private WebSocketFacade ws;
+    //private NotificationHandler notification;
 
     public PreloginUi(String serverUrl) {
         this.serverUrl = serverUrl;
         this.server = new ServerFacade(serverUrl);
+    }
+    public String getServerUrl(){
+        return serverUrl;
     }
 
     public String eval(String input) throws ResponseException {
@@ -90,6 +98,9 @@ public class PreloginUi {
         if (success) {
             // If login is successful, notify the user and return a signal to transition to the Postlogin UI
             System.out.println("LOGIN successful!");
+            //no need for ws here...
+            //ws = new WebSocketFacade(serverUrl, notification);
+            //ws.enterPetShop, so probs do ws.enter
             return "postlogin"; // Signal to transition to Postlogin UI
         } else {
             // If login fails, notify the user and return an error message

@@ -2,17 +2,15 @@ package server.websocket;
 
 import com.google.gson.Gson;
 //import dataaccess.DataAccess;
-import requestextension.ResponseException;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 //import webSocketMessages.Action;
 //import webSocketMessages.Notification;
-import websocket.ServerMessage;
-import websocket.UserGameCommand;
+import websocket.messages.ServerMessage;
+import websocket.commands.UserGameCommand;
 
 import java.io.IOException;
-import java.util.Timer;
 
 
 @WebSocket

@@ -1,4 +1,4 @@
-package websocket;
+package websocket.messages;
 
 import com.google.gson.Gson;
 
@@ -17,7 +17,8 @@ public class ServerMessage {
     public enum ServerMessageType {
         LOAD_GAME,
         ERROR,
-        NOTIFICATION
+        NOTIFICATION,
+        GAME_OVER
     }
 
     public ServerMessage(ServerMessageType type, String message) {

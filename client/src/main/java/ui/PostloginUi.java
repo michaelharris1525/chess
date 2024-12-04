@@ -2,20 +2,29 @@ package ui;
 
 import model.GameData;
 import requestextension.ResponseException;
+import ui.websocket.NotificationHandler;
+import ui.websocket.WebSocketFacade;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Scanner;
 
+
 public class PostloginUi {
     private final ServerFacade server;
+    private final String serverUrl;
     //private final ClientNotificationHandler notificationHandler;
     private Collection<GameData> collect;
+    //after ws
+    private WebSocketFacade ws;
+    private NotificationHandler notification;
 
 
-    public PostloginUi(ServerFacade server) {
+    public PostloginUi(ServerFacade server, String serverUrl) {
         this.server = server;
+        this.serverUrl = serverUrl;
+
         //this.notificationHandler = notificationHandler;
     }
     //storage
@@ -104,6 +113,10 @@ public class PostloginUi {
         String whiteorblack = params[1];
         int intyID = Integer.parseInt(iD);
         ChessBoard chessBoard = new ChessBoard();
+        ws = new WebSocketFacade(serverUrl, notification);
+        ws.connectToGame(server.getAuth(), intyID);
+
+        //do Websocket don't do http request
         if(whiteorblack.equalsIgnoreCase("white")){
             chessBoard.renderBoardPerspective(false);
         }

@@ -12,5 +12,8 @@ public class ResponseSuccess {
     public String getAuthToken(){
         return this.authToken;
     }
+    public String getUser(){
+        return this.user;
+    }
 
 }

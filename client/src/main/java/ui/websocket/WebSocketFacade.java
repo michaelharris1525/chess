@@ -1,10 +1,11 @@
-package websocket;
+package ui.websocket;
 
 import com.google.gson.Gson;
 import requestextension.ResponseException;
+import ui.ResponseSuccess;
+import websocket.commands.UserGameCommand;
+import websocket.messages.ServerMessage;
 //actions = game commands, notifications = servermessage
-import websocket.ServerMessage;
-import websocket.UserGameCommand;
 
 import javax.websocket.*;
 import java.io.IOException;
@@ -12,7 +13,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 //need to extend Endpoint for websocket to work properly
-public class   WebSocketFacade extends Endpoint {
+public class WebSocketFacade extends Endpoint {
 
     Session session;
     NotificationHandler notificationHandler;
@@ -35,7 +36,15 @@ public class   WebSocketFacade extends Endpoint {
                     ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
                     notificationHandler.notify(notification);
 
+                    // Handle game updates like moves or board state changes
+                    handleServerMessage(notification);
+
                     //loading THE BOARD MAKING MOVE
+
+
+                    //loading the board if user prompts it
+
+
                 }
             });
         } catch (DeploymentException | IOException | URISyntaxException ex) {
@@ -46,6 +55,29 @@ public class   WebSocketFacade extends Endpoint {
     //Endpoint requires this method, but you don't have to do anything
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
+    }
+
+    public void connectToGame(ResponseSuccess userObj, int gameId) throws ResponseException {
+        try {
+            var action = new UserGameCommand(UserGameCommand.CommandType.
+                    CONNECT, userObj.getAuthToken(), gameId);
+            this.session.getBasicRemote().sendText(new Gson().toJson(action));
+        }
+        catch(IOException ex){
+            throw new ResponseException(500, ex.getMessage());
+        }
+
+    }
+
+    private void handleServerMessage(ServerMessage notification) {
+        // Logic to handle different types of messages, e.g., moves or board updates
+        if (notification.getServerMessageType() == ServerMessage.ServerMessageType.MAKE_MOVE) {
+            // Update chessboard with the move data
+            ChessBoard.updateWithMove(notification.getMoveData());
+        } else if (notification.getServerMessageType() == ServerMessage.ServerMessageType.GAME_OVER) {
+            // Handle game over scenario
+            handleGameOver();
+        }
     }
 
 //    public void enterPetShop(String visitorName) throws ResponseException {

@@ -53,7 +53,7 @@ public class Repl {
     }
 
     private void transitionToPostLogin(PreloginUi prelog) throws ResponseException {
-        PostloginUi postloginUi = new PostloginUi(prelog.getServerFacade());
+        PostloginUi postloginUi = new PostloginUi(prelog.getServerFacade(), prelog.getServerUrl());
         postloginUi.run(); // Call the main functionality of Postlogin UI
     }
 
