@@ -41,11 +41,6 @@ public class WebSocketFacade extends Endpoint {
                     // Handle game updates like moves or board state changes
                     handleServerMessage(notification);
 
-                    //loading THE BOARD MAKING MOVE
-
-
-                    //loading the board if user prompts it
-
 
                 }
             });
@@ -61,21 +56,42 @@ public class WebSocketFacade extends Endpoint {
 
     public void connectToGame(ResponseSuccess userObj, int gameId) throws ResponseException {
         try {
-            var action = new UserGameCommand(UserGameCommand.CommandType.
+            // Validate inputs
+            if (userObj == null || userObj.getAuthToken() == null || gameId <= 0) {
+                throw new ResponseException(400, "Invalid authToken or gameId.");
+            }
+            UserGameCommand action = new UserGameCommand(UserGameCommand.CommandType.
                     CONNECT, userObj.getAuthToken(), gameId);
             this.session.getBasicRemote().sendText(new Gson().toJson(action));
+
+            // Ensure WebSocket session is open before sending
+            if (session.isOpen()) {
+                this.session.getBasicRemote().sendText(new Gson().toJson(action));
+                System.out.println("Connected to game with ID: " + gameId);
+            } else {
+                throw new ResponseException(500, "WebSocket session is not open.");
+            }
         }
         catch(IOException ex){
             throw new ResponseException(500, ex.getMessage());
         }
 
     }
+//    private void updateGameBoard(String boardJson) {
+//        ChessBoard updatedBoard = new Gson().fromJson(boardJson, ChessBoard.class);
+//        displayChessBoard.updateBoard(updatedBoard);
+//        displayChessBoard.renderBoardPerspective(false);  // Example perspective
+//    }
 
     private void handleServerMessage(ServerMessage notification) {
         switch (notification.getServerMessageType()) {
+            case GAME_OVER:
+                System.out.println("CHECKMATE!");
+                break;
             case LOAD_GAME:
                 //update the chess board
-                //chessBoard.updateBoard();
+                //updateGameBoard(notification.getMessage());
+
                 break;
 
             case NOTIFICATION:

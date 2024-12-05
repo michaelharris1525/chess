@@ -113,19 +113,38 @@ public class PostloginUi {
         String iD = params[0];
         String whiteorblack = params[1];
         int intyID = Integer.parseInt(iD);
-        ChessBoard board = new ChessBoard();
-        board.resetBoard();
-        DisplayChessBoard chessBoard = new DisplayChessBoard(board);
-//        ws = new WebSocketFacade(serverUrl, notification);
-//        ws.connectToGame(server.getAuth(), intyID);
+
+        ws = new WebSocketFacade(serverUrl, notification);
+        ws.connectToGame(server.getAuth(), intyID);
+
+        // Fetch initial game state from server
+        ChessBoard currentBoard = fetchGameState(gameIDInt); // Method to get the initial board state from the server
+
+        // Display the board
+        DisplayChessBoard displayBoard = new DisplayChessBoard(currentBoard);
+        if(whiteorblack.equalsIgnoreCase("white")){
+            displayBoard.renderBoardPerspective(false);
+        }
+        else{
+            displayBoard.renderBoardPerspective(true);
+        }
+        // Listen for updates
+        ws.onMessage(message -> {
+            updateBoardState(currentBoard, message); // Update local board based on message
+            displayBoard.renderBoardPerspective(false); // Re-render after update
+        });
+        //delete later
+//        ChessBoard board = new ChessBoard();
+//        board.resetBoard();
+//        DisplayChessBoard chessBoard = new DisplayChessBoard(board);
 
         //do Websocket don't do http request
-        if(whiteorblack.equalsIgnoreCase("white")){
-            chessBoard.renderBoardPerspective(false);
-        }
-        else {
-            chessBoard.renderBoardPerspective(true);
-        }
+//        if(whiteorblack.equalsIgnoreCase("white")){
+//            chessBoard.renderBoardPerspective(false);
+//        }
+//        else {
+//            chessBoard.renderBoardPerspective(true);
+//        }
         //do Websocket don't do http request
         server.observeID(intyID);
         return "observe game";

@@ -26,6 +26,10 @@ public class ServerMessage {
         this.message = message;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
     public ServerMessageType getServerMessageType() {
         return this.serverMessageType;
     }
