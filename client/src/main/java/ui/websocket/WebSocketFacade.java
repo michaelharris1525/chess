@@ -110,6 +110,21 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
+    public void sendMessage(UserGameCommand command) throws ResponseException {
+        try {
+            if (session.isOpen()) {
+                String message = new Gson().toJson(command);
+                this.session.getBasicRemote().sendText(message);
+                System.out.println("Sent message: " + message);
+            } else {
+                throw new ResponseException(500, "WebSocket session is not open.");
+            }
+        } catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
+    }
+
+
 //    public void enterPetShop(String visitorName) throws ResponseException {
 //        try {
 //            var action = new Action(Action.Type.ENTER, visitorName);

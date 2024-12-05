@@ -21,9 +21,10 @@ public class InGame {
     //after ws
     private WebSocketFacade ws;
     private NotificationHandler notification;
-    public InGame(ServerFacade server, String serverUrl) {
+    public InGame(ServerFacade server, String serverUrl) throws ResponseException {
         this.server = server;
         this.serverUrl = serverUrl;
+        this.ws = new WebSocketFacade(serverUrl, notification);
 
         //this.notificationHandler = notificationHandler;
     }
@@ -41,22 +42,26 @@ public class InGame {
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
         return switch (cmd) {
             case "help" -> help();
-            case "Leave" -> "quit";
-            case "Make_Move" -> makeMove(params);
+            case "leave" -> "quit";
+            case "make_move" -> makeMove(params);
             default -> "Unknown command.";
         };
     }
 
-    public String makeMove(String[] params){
+    public String makeMove(String[] params) throws ResponseException {
         String chessMoveStartPos = params[0];
-        String chsssMoveEndPos = params[1];
+        String chessMoveEndPos = params[1];
 
         // Convert chess notation to row-column indices
-        int startCol = 8 - Character.getNumericValue(chessMoveStartPos.charAt(1));  // Rows are 1-8 in reverse
-        int startRow = chessMoveStartPos.charAt(0) - 'A';  // 'A' maps to 0, 'B' to 1, etc.
+        AlphabetToNums abcdefgh = new AlphabetToNums();
+        String startColChar = chessMoveStartPos.substring(1,2);
+        String endColChar = chessMoveEndPos.substring(1,2);
 
-        int endCol = 8 - Character.getNumericValue(chsssMoveEndPos.charAt(1));
-        int endRow = chsssMoveEndPos.charAt(0) - 'A';
+        int startRow = abcdefgh.getIntfromAlph(chessMoveStartPos.substring(0,1));
+        int endRow = abcdefgh.getIntfromAlph(chessMoveEndPos.substring(0,1));
+
+        int startCol = Integer.parseInt(startColChar);
+        int endCol = Integer.parseInt(endColChar);
 
         ChessMove move = new ChessMove(new ChessPosition(startRow, startCol),
                 new ChessPosition(endRow, endCol), null);
@@ -66,6 +71,7 @@ public class InGame {
                 (UserGameCommand.CommandType.MAKE_MOVE,
                         res.getAuthToken(), server.getCurrentGameId());
         //ws.sendMessage(new Gson().toJson(command));
+        ws.sendMessage(command);
 //        this.session.getBasicRemote().sendText(new Gson().toJson(moveCommand));
 //        System.out.println("Move sent: " + startPos + " to " + endPos);
 
@@ -93,6 +99,9 @@ public class InGame {
             else if (result.equals("quit")) {
                 System.out.println("Quit out Room Successfully!");
                 System.exit(0); // Exit the application
+            }
+            else if(result.equals("opponents move")){
+                System.out.println("Move has been made");
             }
             else{
                 System.out.println(help());

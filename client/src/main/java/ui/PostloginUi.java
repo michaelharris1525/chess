@@ -70,7 +70,8 @@ public class PostloginUi {
         int gameId = Integer.parseInt(params[0]);
         String whiteBlack = params[1];
 
-        if (!whiteBlack.equalsIgnoreCase("WHITE") && !whiteBlack.equalsIgnoreCase("BLACK")) {
+        if (!whiteBlack.equalsIgnoreCase("WHITE") &&
+                !whiteBlack.equalsIgnoreCase("BLACK")) {
             throw new ResponseException(400, "Team choice must be either 'White' or 'Black'.");
         }
 
