@@ -47,7 +47,7 @@ public class PostloginUi {
             case "creategame" -> createGame(params);
             case "listgames" -> listAllGames();
             case "observegame" ->observeGame(params);
-            //case "join" -> joingame(params);
+            case "join" -> joinGame(params);
             default -> "Unknown command.";
         };
     }
@@ -63,14 +63,14 @@ public class PostloginUi {
                 help - display this help text
                 """;
     }
-    private String joinGame(String[] params) throws ResponseException {
+    public String joinGame(String[] params) throws ResponseException {
         if (params.length != 2) {
             throw new ResponseException(400, "Invalid input. Use: join <ID> <White|Black>");
         }
         int gameId = Integer.parseInt(params[0]);
         String whiteBlack = params[1];
 
-        if (!whiteBlack.equals("WHITE") && !whiteBlack.equals("BLACK")) {
+        if (!whiteBlack.equalsIgnoreCase("WHITE") && !whiteBlack.equalsIgnoreCase("BLACK")) {
             throw new ResponseException(400, "Team choice must be either 'White' or 'Black'.");
         }
 
