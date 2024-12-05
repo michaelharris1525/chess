@@ -1,9 +1,13 @@
 package ui;
 
+import chess.ChessMove;
+import chess.ChessPosition;
+import com.google.gson.Gson;
 import model.GameData;
 import requestextension.ResponseException;
 import ui.websocket.NotificationHandler;
 import ui.websocket.WebSocketFacade;
+import websocket.commands.UserGameCommand;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,7 +51,26 @@ public class InGame {
         String chessMoveStartPos = params[0];
         String chsssMoveEndPos = params[1];
 
-        return "placeholder";
+        // Convert chess notation to row-column indices
+        int startCol = 8 - Character.getNumericValue(chessMoveStartPos.charAt(1));  // Rows are 1-8 in reverse
+        int startRow = chessMoveStartPos.charAt(0) - 'A';  // 'A' maps to 0, 'B' to 1, etc.
+
+        int endCol = 8 - Character.getNumericValue(chsssMoveEndPos.charAt(1));
+        int endRow = chsssMoveEndPos.charAt(0) - 'A';
+
+        ChessMove move = new ChessMove(new ChessPosition(startRow, startCol),
+                new ChessPosition(endRow, endCol), null);
+        // Prepare and send the UserGameCommand
+        ResponseSuccess res = server.getAuth();
+        UserGameCommand command = new UserGameCommand
+                (UserGameCommand.CommandType.MAKE_MOVE,
+                        res.getAuthToken(), server.getCurrentGameId());
+        //ws.sendMessage(new Gson().toJson(command));
+//        this.session.getBasicRemote().sendText(new Gson().toJson(moveCommand));
+//        System.out.println("Move sent: " + startPos + " to " + endPos);
+
+
+        return "opponents move";
 
     }
 

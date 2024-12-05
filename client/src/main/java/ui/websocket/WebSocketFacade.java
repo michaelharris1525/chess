@@ -62,7 +62,7 @@ public class WebSocketFacade extends Endpoint {
             }
             UserGameCommand action = new UserGameCommand(UserGameCommand.CommandType.
                     CONNECT, userObj.getAuthToken(), gameId);
-            this.session.getBasicRemote().sendText(new Gson().toJson(action));
+            //this.session.getBasicRemote().sendText(new Gson().toJson(action));
 
             // Ensure WebSocket session is open before sending
             if (session.isOpen()) {

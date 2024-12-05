@@ -29,6 +29,7 @@ public class ServerFacade {
     public ServerFacade(String url) {
         serverUrl = url;
     }
+    private int currentGameId;
 
     private void keepAuthToken(ResponseSuccess res){
         this.resAuthToken = res;
@@ -50,8 +51,6 @@ public class ServerFacade {
         ResponseSuccess response = this.makeRequest("POST", path, loginRequest, ResponseSuccess.class);
         keepAuthToken(response);
         return response;
-        // Check if the login response indicates success (e.g., a boolean or status message)
-        //return response != null && response.success();
     }
     public ResponseSuccess register(String username, String password, String email) throws ResponseException {
         var path = "/user"; // Server endpoint for login
@@ -150,9 +149,14 @@ public class ServerFacade {
         }
     }
 
+    public int getCurrentGameId(){
+        return currentGameId;
+    }
+
     public void joinGame(ResponseSuccess auth, int gameId,
                          String whiteBlack) throws ResponseException {
         var path = "/game";
+        this.currentGameId = gameId;
         // Create a request object to send to the server
         //added a constructor here, if files don't work in past probably this change
         var joinR = new JoinGameRequestReal(gameId, whiteBlack);
