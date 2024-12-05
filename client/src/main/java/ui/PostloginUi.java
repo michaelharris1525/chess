@@ -200,7 +200,7 @@ public class PostloginUi {
                 System.out.println("You are now observing game!");
             }
             else if(result.equals("inGame")){
-
+                transitionToInGame();
             }
             //If joingame go to new class, we'll call it InGame with new functions and if statements to do
             //make a lot more if statements like joining game or observing game
