@@ -212,7 +212,7 @@ public class PostloginUi {
     }
 
     private void transitionToInGame() throws ResponseException {
-        InGame ingame = new PostloginUi(server, serverUrl);
-        ingame.run(); // Call the main functionality of Postlogin UI
+        InGame ingame = new InGame(server, serverUrl);
+        ingame.run(); // Call the main functionality of InGame UI
     }
 }

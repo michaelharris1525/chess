@@ -36,7 +36,6 @@ public class InGame {
         var cmd = (tokens.length > 0) ? tokens[0] : "help";
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
         return switch (cmd) {
-            //case "logout" -> logout();
             case "help" -> help();
             case "Leave" -> "quit";
             case "Make_Move" -> makeMove(params);
