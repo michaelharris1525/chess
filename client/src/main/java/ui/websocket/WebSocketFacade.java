@@ -89,6 +89,7 @@ public class WebSocketFacade extends Endpoint {
                 System.out.println("CHECKMATE!");
                 break;
             case LOAD_GAME:
+                //Load the Game here, update the board
                 //update the chess board
                 //updateGameBoard(notification.getMessage());
 

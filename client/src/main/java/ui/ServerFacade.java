@@ -3,6 +3,8 @@ package ui;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import model.GameData;
+import model.JoinGameRequest;
+import model.JoinGameRequestReal;
 import requestextension.ResponseException;
 import ui.serverfacade.CreateGameReq;
 import ui.serverfacade.RegisterRequest;
@@ -146,5 +148,15 @@ public class ServerFacade {
         } catch (ResponseException e) {
             throw new ResponseException(500, "Failed to clear the database: " + e.getMessage());
         }
+    }
+
+    public void joinGame(ResponseSuccess auth, int gameId,
+                         String whiteBlack) throws ResponseException {
+        var path = "/game";
+        // Create a request object to send to the server
+        //added a constructor here, if files don't work in past probably this change
+        var joinR = new JoinGameRequestReal(gameId, whiteBlack);
+        this.makeRequest("PUT", path, joinR, GameData.class);
+
     }
 }
