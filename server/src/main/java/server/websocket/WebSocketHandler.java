@@ -6,13 +6,18 @@ import chess.ChessMove;
 import chess.InvalidMoveException;
 import com.google.gson.Gson;
 //import dataaccess.DataAccess;
+import dataaccess.GameSQLDao;
+import dataaccess.GameStorage;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 //import webSocketMessages.Action;
 //import webSocketMessages.Notification;
 //import websocket.commands.MakeMoveCommand;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGame;
+import websocket.messages.Notifications;
 import websocket.messages.ServerMessage;
 import websocket.commands.UserGameCommand;
 
@@ -23,19 +28,17 @@ import java.io.IOException;
 public class WebSocketHandler {
 
     private final ConnectionManager connections = new ConnectionManager();
-
+    private GameSQLDao getDao = new GameSQLDao();
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, InvalidMoveException {
         UserGameCommand action = new Gson().fromJson(message, UserGameCommand.class);
         switch (action.getCommandType()) {
             case CONNECT -> {
-                if(enterGameAttempt(action.getGameID())){
+                if(enterGameAttempt(action.getGameID()) == true){
                     enterGameSuccesful(action.getAuthToken(), session);
                 }
                 else {
-                    ServerMessage m = new ServerMessage(ServerMessage.ServerMessageType.ERROR,"You messed up the game key Id");
-                    String error = new Gson().toJson(m, ServerMessage.class);
-                    session.getRemote().sendString(error);
+                    sendErrorMessage(session);
                 }
             }
 
@@ -48,22 +51,32 @@ public class WebSocketHandler {
         }
     }
 
+    private void sendErrorMessage(Session session) throws IOException {
+        ErrorMessage m  = new ErrorMessage("Error: You messed up the game key Id");
+        String error = new Gson().toJson(m);
+        session.getRemote().sendString(error);
+    }
+
     private boolean enterGameAttempt(int gameId){
         //check game Id is correct
-            if(gameId)
+            if(getDao.gameExists(gameId)){
+                return true;
+            }
+            else{
+                return false;
+            }
     }
 
     private void enterGameSuccesful(String visitorName, Session session) throws IOException {
         connections.add(visitorName, session);
         var message = String.format("%s is in the shop", visitorName);
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        var notification = new Notifications(message);
         connections.broadcast(visitorName, notification);
         //make a load game object, copy of board, change later to get
         //the actual board that is being played at its current state
         ChessBoard board = new ChessBoard();
         board.resetBoard();
-        LoadGame gameM = new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME,
-                null, board);
+        LoadGame gameM = new LoadGame(board);
         String game = new Gson().toJson(gameM);
         //function to grab board
         session.getRemote().sendString(game);
@@ -72,7 +85,7 @@ public class WebSocketHandler {
     private void exit(String visitorName) throws IOException {
         connections.remove(visitorName);
         var message = String.format("%s left the shop", visitorName);
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        var notification = new Notifications(message);
         connections.broadcast(visitorName, notification);
     }
 
@@ -96,9 +109,8 @@ public class WebSocketHandler {
         game.makeMove(move);
 
         // Broadcast the updated board state to all players
-        LoadGame updateBoardd = new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME,
-                null, board);
-        ServerMessage update = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+        LoadGame updateBoardd = new LoadGame(board);
+        Notifications update = new Notifications(
                 "Move made");
         //send the message of it being updated to the users
         connections.broadcast(action.getAuthToken(), update);

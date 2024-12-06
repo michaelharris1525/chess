@@ -60,6 +60,19 @@ public class GameSQLDao implements GameDataAccess{
         return null;
     }
 
+    public boolean gameExists(int gameId) {
+        String query = "SELECT 1 FROM gameData WHERE gameID = ? LIMIT 1";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, gameId);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next(); // Returns true if the game exists, false otherwise
+        } catch (SQLException | DataAccessException e) {
+            e.printStackTrace();
+        }
+        return false; // In case of error, assume game doesn't exist
+    }
+
     // Method to update the white player username for a game
     @Override
     public void updateWhiteColor(int gameId, String white) {

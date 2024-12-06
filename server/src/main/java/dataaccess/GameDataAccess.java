@@ -15,4 +15,5 @@ public interface GameDataAccess {
     void updateBlackColor(int gameId, String black);
     Collection<GameData> getAllGameData();
     boolean isEmpty();
+    public boolean gameExists(int gameId);
 }

@@ -4,8 +4,8 @@ import chess.ChessBoard;
 
 public class LoadGame extends ServerMessage{
     private ChessBoard game;
-    public LoadGame(ServerMessageType type, String message, ChessBoard game) {
-        super(type, message);
+    public LoadGame(ChessBoard game) {
+        super(ServerMessageType.LOAD_GAME);
         this.game = game;
     }
 
