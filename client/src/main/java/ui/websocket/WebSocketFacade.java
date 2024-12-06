@@ -61,7 +61,7 @@ public class WebSocketFacade extends Endpoint {
                 throw new ResponseException(400, "Invalid authToken or gameId.");
             }
             UserGameCommand action = new UserGameCommand(UserGameCommand.CommandType.
-                    CONNECT, userObj.getAuthToken(), gameId);
+                    CONNECT, userObj.getAuthToken(), gameId, null);
             //this.session.getBasicRemote().sendText(new Gson().toJson(action));
 
             // Ensure WebSocket session is open before sending
@@ -110,11 +110,11 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
-    public void sendMessage(String command) throws ResponseException {
+    public void sendMessage(UserGameCommand command) throws ResponseException {
         try {
             if (session.isOpen()) {
                 String message = new Gson().toJson(command);
-                this.session.getBasicRemote().sendText(command);
+                this.session.getBasicRemote().sendText(message);
                 System.out.println("Sent message: " + message);
             } else {
                 throw new ResponseException(500, "WebSocket session is not open.");
