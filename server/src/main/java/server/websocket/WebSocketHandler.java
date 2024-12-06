@@ -28,7 +28,17 @@ public class WebSocketHandler {
     public void onMessage(Session session, String message) throws IOException, InvalidMoveException {
         UserGameCommand action = new Gson().fromJson(message, UserGameCommand.class);
         switch (action.getCommandType()) {
-            case CONNECT -> enter(action.getAuthToken(), session);
+            case CONNECT -> {
+                if(enterGameAttempt(action.getGameID())){
+                    enterGameSuccesful(action.getAuthToken(), session);
+                }
+                else {
+                    ServerMessage m = new ServerMessage(ServerMessage.ServerMessageType.ERROR,"You messed up the game key Id");
+                    String error = new Gson().toJson(m, ServerMessage.class);
+                    session.getRemote().sendString(error);
+                }
+            }
+
             case LEAVE -> exit(action.getAuthToken());
             //case MAKE_MOVE -> makeMove(action, session);
             case MAKE_MOVE -> {
@@ -38,7 +48,12 @@ public class WebSocketHandler {
         }
     }
 
-    private void enter(String visitorName, Session session) throws IOException {
+    private boolean enterGameAttempt(int gameId){
+        //check game Id is correct
+            if(gameId)
+    }
+
+    private void enterGameSuccesful(String visitorName, Session session) throws IOException {
         connections.add(visitorName, session);
         var message = String.format("%s is in the shop", visitorName);
         var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
@@ -82,7 +97,7 @@ public class WebSocketHandler {
 
         // Broadcast the updated board state to all players
         LoadGame updateBoardd = new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME,
-                "Move Made", board);
+                null, board);
         ServerMessage update = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
                 "Move made");
         //send the message of it being updated to the users

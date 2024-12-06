@@ -75,6 +75,7 @@ public class PostloginUi {
             throw new ResponseException(400, "Team choice must be either 'White' or 'Black'.");
         }
 
+
         // Make the HTTP call to join the game
         server.joinGame(server.getAuth(), gameId, whiteBlack);
 
