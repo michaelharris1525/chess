@@ -7,6 +7,7 @@ import model.GameData;
 import requestextension.ResponseException;
 import ui.websocket.NotificationHandler;
 import ui.websocket.WebSocketFacade;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 
 import java.util.Arrays;
@@ -67,10 +68,9 @@ public class InGame {
                 new ChessPosition(endRow, endCol), null);
         // Prepare and send the UserGameCommand
         ResponseSuccess res = server.getAuth();
-        UserGameCommand command = new UserGameCommand
+        MakeMoveCommand command = new MakeMoveCommand()
                 (UserGameCommand.CommandType.MAKE_MOVE,
-                        res.getAuthToken(), server.getCurrentGameId());
-        //ws.sendMessage(new Gson().toJson(command));
+                        res.getAuthToken(), server.getCurrentGameId(), move);
         ws.sendMessage(command);
 //        this.session.getBasicRemote().sendText(new Gson().toJson(moveCommand));
 //        System.out.println("Move sent: " + startPos + " to " + endPos);

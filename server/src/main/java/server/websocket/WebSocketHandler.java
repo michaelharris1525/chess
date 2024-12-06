@@ -1,5 +1,6 @@
 package server.websocket;
 
+import chess.ChessBoard;
 import com.google.gson.Gson;
 //import dataaccess.DataAccess;
 import org.eclipse.jetty.websocket.api.Session;
@@ -7,6 +8,7 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 //import webSocketMessages.Action;
 //import webSocketMessages.Notification;
+import websocket.messages.LoadGame;
 import websocket.messages.ServerMessage;
 import websocket.commands.UserGameCommand;
 
@@ -32,6 +34,14 @@ public class WebSocketHandler {
         var message = String.format("%s is in the shop", visitorName);
         var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
         connections.broadcast(visitorName, notification);
+        //make a load game object, copy of board,
+        ChessBoard board = new ChessBoard();
+        board.resetBoard();
+        LoadGame gameM = new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME,
+                null,board);
+        String game = new Gson().toJson(gameM);
+        //function to grab board
+        session.getRemote().sendString(game);
     }
 
     private void exit(String visitorName) throws IOException {

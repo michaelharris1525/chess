@@ -110,11 +110,11 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
-    public void sendMessage(UserGameCommand command) throws ResponseException {
+    public void sendMessage(String command) throws ResponseException {
         try {
             if (session.isOpen()) {
                 String message = new Gson().toJson(command);
-                this.session.getBasicRemote().sendText(message);
+                this.session.getBasicRemote().sendText(command);
                 System.out.println("Sent message: " + message);
             } else {
                 throw new ResponseException(500, "WebSocket session is not open.");

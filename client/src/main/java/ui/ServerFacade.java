@@ -102,7 +102,7 @@ public class ServerFacade {
             }
             http.setDoOutput(true);
             writeBody(request, http);
-            System.out.println("Request URL: " + (serverUrl + path));
+            //System.out.println("Request URL: " + (serverUrl + path));
             http.connect();
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);
