@@ -198,6 +198,7 @@ public class ChessGame {
             throw new InvalidMoveException();
         }
         Collection<ChessMove>listPossibleMoves = newPiece.pieceMoves(board,startingPosition);
+        //where the invalid move exception throws in chessgame class
         if(!listPossibleMoves.contains(move)){
             throw new InvalidMoveException();
         }

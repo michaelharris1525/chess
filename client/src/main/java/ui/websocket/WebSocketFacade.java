@@ -39,15 +39,15 @@ public class WebSocketFacade extends Endpoint {
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
+                    //delete later
                     System.out.println("Received message: " + message);
 
-                    //change here from notifications to server message
                     ServerMessage notification = new Gson().
                             fromJson(message, ServerMessage.class);
-                    notificationHandler.notify(notification);
 
                     // Handle game updates like moves or board state changes
                     handleServerMessage(notification);
+                    notificationHandler.notify(notification);
 
 
                 }

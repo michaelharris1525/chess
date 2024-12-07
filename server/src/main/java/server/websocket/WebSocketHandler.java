@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import dataaccess.AuthSQLTokenClass;
 import dataaccess.GameSQLDao;
 import dataaccess.GameStorage;
+import dataaccess.UserSQLDao;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
@@ -31,6 +32,7 @@ public class WebSocketHandler {
     private final ConnectionManager connections = new ConnectionManager();
     private GameSQLDao gameDao = new GameSQLDao();
     private AuthSQLTokenClass authDao = new AuthSQLTokenClass();
+    private UserSQLDao userDao = new UserSQLDao();
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, InvalidMoveException {
         UserGameCommand action = new Gson().fromJson(message, UserGameCommand.class);
@@ -40,7 +42,7 @@ public class WebSocketHandler {
                     enterGameSuccesful(action.getAuthToken(), session, action.getGameID());
                 }
                 else {
-                    sendErrorMessage(session);
+                    sendErrorMessage(session, "gameId or your input is wrong");
                 }
             }
 
@@ -53,8 +55,10 @@ public class WebSocketHandler {
         }
     }
 
-    private void sendErrorMessage(Session session) throws IOException {
-        ErrorMessage m  = new ErrorMessage("Error: You messed up the game key Id");
+    private void sendErrorMessage(Session session, String errorMessage) throws IOException {
+
+        //ErrorMessage m  = new ErrorMessage("Error: You messed up the game key Id");
+        ErrorMessage m  = new ErrorMessage("Error: " + errorMessage);
         String error = new Gson().toJson(m);
         session.getRemote().sendString(error);
     }
@@ -73,6 +77,7 @@ public class WebSocketHandler {
 
     private void enterGameSuccesful(String visitorName, Session session, int gameId) throws IOException {
         connections.add(visitorName, session);
+        //userDao.get
         var message = String.format("%s is in the game auth token for now", visitorName);
         var notification = new Notifications(message);
         connections.broadcast(visitorName, notification);
@@ -95,33 +100,40 @@ public class WebSocketHandler {
 
     private void makeMove(UserGameCommand action, Session session) throws IOException, InvalidMoveException {
         // Extract the realMove from the command
-        GameData gameData = gameDao.getGameData(action.getGameID());
-        if (gameData == null) {
-            System.out.println("Game not found.");
-            return;
+        try {
+            GameData gameData = gameDao.getGameData(action.getGameID());
+            if (gameData == null) {
+                System.out.println("Game not found.");
+                return;
+            }
+            //this where the invalid move exception passes.
+            ChessMove move = action.getRealMove();
+
+            // Fetch the game board associated with the gameID or authToken
+            //ChessBoard board = connections.getBoard(action.getAuthToken());
+            ChessBoard board = gameData.game().getBoard();
+            if (board == null) {
+                System.out.println("Game not found for the given authToken.");
+                return;
+            }
+
+            // Attempt to make the move on the board
+            gameData.game().makeMove(move);
+            board = gameData.game().getBoard();
+
+            // Broadcast the updated board state to all players
+            LoadGame updateBoardd = new LoadGame(board);
+            String toUserBoard = new Gson().toJson(updateBoardd);
+            Notifications update = new Notifications(
+                    "Move made");
+            //send the message of it being updated to the users
+            connections.broadcast(action.getAuthToken(), update);
+            connections.broadcast(null, updateBoardd);
         }
-        ChessMove move = action.getRealMove();
-
-        // Fetch the game board associated with the gameID or authToken
-        //ChessBoard board = connections.getBoard(action.getAuthToken());
-        ChessBoard board = gameData.game().getBoard();
-        if (board == null) {
-            System.out.println("Game not found for the given authToken.");
-            return;
+        catch (InvalidMoveException e) {
+            // Handle invalid move
+            sendErrorMessage(session, "invalid move can't do that JACK!");
         }
-
-        // Attempt to make the move on the board
-        gameData.game().makeMove(move);
-        board = gameData.game().getBoard();
-
-        // Broadcast the updated board state to all players
-        LoadGame updateBoardd = new LoadGame(board);
-        String toUserBoard = new Gson().toJson(updateBoardd);
-        Notifications update = new Notifications(
-                "Move made");
-        //send the message of it being updated to the users
-        connections.broadcast(action.getAuthToken(), update);
-        connections.broadcast(null, updateBoardd);
     }
 
 //    private void makeMove(MakeMoveCommand action, Session session) throws IOException {
