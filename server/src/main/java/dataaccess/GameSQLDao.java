@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import model.GameData;
 import model.UnabletoConfigureDatabase;
 
@@ -52,6 +53,10 @@ public class GameSQLDao implements GameDataAccess{
                 String whiteUsername = rs.getString("whiteUsername");
                 String blackUsername = rs.getString("blackUsername");
                 String gameName = rs.getString("gameName");
+
+                // Initialize or load the ChessGame
+                ChessGame chessGame = loadChessGame(gameId);
+
                 return new GameData(gameId, whiteUsername, blackUsername, gameName, null); // Adjust as needed for `ChessGame`
             }
         } catch (SQLException | DataAccessException e) {

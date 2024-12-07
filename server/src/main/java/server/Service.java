@@ -65,7 +65,6 @@ public class Service {
         int newGameId = gameStoraged.getSize() + 1;
         gameStoraged.addNewGame(newGameId, nameOfGame);
 
-        //also need to check if there is a new name given into it
 
         return newGameId;
     }

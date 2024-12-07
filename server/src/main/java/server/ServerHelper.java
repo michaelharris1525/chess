@@ -18,6 +18,7 @@ public class ServerHelper {
     private final UserSQLDao userDataobj = new UserSQLDao();
     private final Service serviceobj = new Service();
     private final AuthSQLTokenClass authTokenData = new AuthSQLTokenClass();
+    //private final GameSQLDao gameData = new GameSQLDao();
     private final GameSQLDao gameData = new GameSQLDao();
 
     //SQL Databases
