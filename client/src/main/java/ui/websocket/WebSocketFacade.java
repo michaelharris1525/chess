@@ -37,6 +37,8 @@ public class WebSocketFacade extends Endpoint {
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
+                    System.out.println("Received message: " + message);
+
                     //change here from notifications to server message
                     ServerMessage notification = new Gson().
                             fromJson(message, ServerMessage.class);
@@ -89,9 +91,9 @@ public class WebSocketFacade extends Endpoint {
 
     private void handleServerMessage(ServerMessage notification) {
         switch (notification.getServerMessageType()) {
-            case GAME_OVER:
-                System.out.println("CHECKMATE!");
-                break;
+//            case GAME_OVER:
+//                System.out.println("CHECKMATE!");
+//                break; DO NOT NEED GAME OVER JUST GO THROUGH NOTIFICATION
             case LOAD_GAME:
                 //Load the Game here, update the board
                 //update the chess board

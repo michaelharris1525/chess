@@ -73,7 +73,7 @@ public class WebSocketHandler {
 
     private void enterGameSuccesful(String visitorName, Session session, int gameId) throws IOException {
         connections.add(visitorName, session);
-        var message = String.format("%s is in the shop", visitorName);
+        var message = String.format("%s is in the game auth token for now", visitorName);
         var notification = new Notifications(message);
         connections.broadcast(visitorName, notification);
         //make a load game object, copy of board, change later to get
@@ -91,6 +91,10 @@ public class WebSocketHandler {
         var message = String.format("%s left the shop", visitorName);
         var notification = new Notifications(message);
         connections.broadcast(visitorName, notification);
+    }
+
+    private void sendToEveryoneWithClient(){
+
     }
 
     private void makeMove(UserGameCommand action, Session session) throws IOException, InvalidMoveException {
@@ -116,11 +120,12 @@ public class WebSocketHandler {
 
         // Broadcast the updated board state to all players
         LoadGame updateBoardd = new LoadGame(board);
+        String toUserBoard = new Gson().toJson(updateBoardd);
         Notifications update = new Notifications(
                 "Move made");
         //send the message of it being updated to the users
         connections.broadcast(action.getAuthToken(), update);
-        connections.broadcast(action.getAuthToken(),updateBoardd);
+        connections.broadcast(null, updateBoardd);
     }
 
 //    private void makeMove(MakeMoveCommand action, Session session) throws IOException {
