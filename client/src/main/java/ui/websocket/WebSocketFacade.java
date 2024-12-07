@@ -1,11 +1,13 @@
 package ui.websocket;
 
 import chess.ChessBoard;
+import model.GameData;
 import ui.DisplayChessBoard;
 import com.google.gson.Gson;
 import requestextension.ResponseException;
 import ui.ResponseSuccess;
 import websocket.commands.UserGameCommand;
+import websocket.messages.LoadGame;
 import websocket.messages.ServerMessage;
 //actions = game commands, notifications = servermessage
 
@@ -91,14 +93,16 @@ public class WebSocketFacade extends Endpoint {
 
     private void handleServerMessage(ServerMessage notification) {
         switch (notification.getServerMessageType()) {
-//            case GAME_OVER:
-//                System.out.println("CHECKMATE!");
 //                break; DO NOT NEED GAME OVER JUST GO THROUGH NOTIFICATION
             case LOAD_GAME:
                 //Load the Game here, update the board
                 //update the chess board
                 //updateGameBoard(notification.getMessage());
-
+                //DisplayChessBoard displayBoard = new DisplayChessBoard(currentBoard);
+                LoadGame gameMessage = (LoadGame) notification;
+                ChessBoard board = gameMessage.getGame();
+                DisplayChessBoard displayBoard = new DisplayChessBoard(board);
+                displayBoard.renderBoardPerspective(false);
                 break;
 
             case NOTIFICATION:

@@ -93,10 +93,6 @@ public class WebSocketHandler {
         connections.broadcast(visitorName, notification);
     }
 
-    private void sendToEveryoneWithClient(){
-
-    }
-
     private void makeMove(UserGameCommand action, Session session) throws IOException, InvalidMoveException {
         // Extract the realMove from the command
         GameData gameData = gameDao.getGameData(action.getGameID());
