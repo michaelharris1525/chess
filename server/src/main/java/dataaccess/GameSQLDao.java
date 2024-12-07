@@ -55,9 +55,9 @@ public class GameSQLDao implements GameDataAccess{
                 String gameName = rs.getString("gameName");
 
                 // Initialize or load the ChessGame
-                ChessGame chessGame = loadChessGame(gameId);
+                ChessGame chessGame = new ChessGame();
 
-                return new GameData(gameId, whiteUsername, blackUsername, gameName, null); // Adjust as needed for `ChessGame`
+                return new GameData(gameId, whiteUsername, blackUsername, gameName, chessGame); // Adjust as needed for `ChessGame`
             }
         } catch (SQLException | DataAccessException e) {
             e.printStackTrace();
