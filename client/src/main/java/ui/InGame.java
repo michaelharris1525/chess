@@ -45,8 +45,18 @@ public class InGame {
             case "help" -> help();
             case "leave" -> "quit";
             case "make_move" -> makeMove(params);
+            case "load_game" -> loadGame();
             default -> "Unknown command.";
         };
+    }
+
+    public String loadGame() throws ResponseException {
+        // Prepare and send the UserGameCommand
+        ResponseSuccess res = server.getAuth();
+        UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT,
+                res.getAuthToken(), server.getCurrentGameId(), null);
+        ws.sendMessage(command);
+        return "Loading";
     }
 
     public String makeMove(String[] params) throws ResponseException {
@@ -101,6 +111,9 @@ public class InGame {
             }
             else if(result.equals("opponents move")){
                 System.out.println("Move has been made");
+            }
+            else if(result.equals("Loading")){
+                System.out.println("Loading...");
             }
             else{
                 System.out.println(help());
