@@ -95,22 +95,24 @@ public class WebSocketHandler {
 
     private void makeMove(UserGameCommand action, Session session) throws IOException, InvalidMoveException {
         // Extract the realMove from the command
-        ChessGame game = connections.getGame(action.getGameID());
-        if (game == null) {
+        GameData gameData = gameDao.getGameData(action.getGameID());
+        if (gameData == null) {
             System.out.println("Game not found.");
             return;
         }
         ChessMove move = action.getRealMove();
 
         // Fetch the game board associated with the gameID or authToken
-        ChessBoard board = connections.getBoard(action.getAuthToken());
+        //ChessBoard board = connections.getBoard(action.getAuthToken());
+        ChessBoard board = gameData.game().getBoard();
         if (board == null) {
             System.out.println("Game not found for the given authToken.");
             return;
         }
 
         // Attempt to make the move on the board
-        game.makeMove(move);
+        gameData.game().makeMove(move);
+        board = gameData.game().getBoard();
 
         // Broadcast the updated board state to all players
         LoadGame updateBoardd = new LoadGame(board);
