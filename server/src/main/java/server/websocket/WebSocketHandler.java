@@ -6,6 +6,7 @@ import chess.ChessMove;
 import chess.InvalidMoveException;
 import com.google.gson.Gson;
 //import dataaccess.DataAccess;
+import dataaccess.AuthSQLTokenClass;
 import dataaccess.GameSQLDao;
 import dataaccess.GameStorage;
 import model.GameData;
@@ -28,14 +29,15 @@ import java.io.IOException;
 public class WebSocketHandler {
 
     private final ConnectionManager connections = new ConnectionManager();
-    private GameSQLDao getDao = new GameSQLDao();
+    private GameSQLDao gameDao = new GameSQLDao();
+    private AuthSQLTokenClass authDao = new AuthSQLTokenClass();
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, InvalidMoveException {
         UserGameCommand action = new Gson().fromJson(message, UserGameCommand.class);
         switch (action.getCommandType()) {
             case CONNECT -> {
-                if(enterGameAttempt(action.getGameID()) == true){
-                    enterGameSuccesful(action.getAuthToken(), session);
+                if(enterGameAttempt(action.getGameID(), action.getAuthToken()) == true){
+                    enterGameSuccesful(action.getAuthToken(), session, action.getGameID());
                 }
                 else {
                     sendErrorMessage(session);
@@ -57,25 +59,27 @@ public class WebSocketHandler {
         session.getRemote().sendString(error);
     }
 
-    private boolean enterGameAttempt(int gameId){
+    private boolean enterGameAttempt(int gameId, String authToken){
         //check game Id is correct
-            if(getDao.gameExists(gameId)){
-                return true;
+            if(gameDao.gameExists(gameId)){
+                if(authDao.containsAuthToken(authToken)){
+                    return true;
+                }
             }
-            else{
-                return false;
-            }
+
+            return false;
+
     }
 
-    private void enterGameSuccesful(String visitorName, Session session) throws IOException {
+    private void enterGameSuccesful(String visitorName, Session session, int gameId) throws IOException {
         connections.add(visitorName, session);
         var message = String.format("%s is in the shop", visitorName);
         var notification = new Notifications(message);
         connections.broadcast(visitorName, notification);
         //make a load game object, copy of board, change later to get
         //the actual board that is being played at its current state
-        ChessBoard board = new ChessBoard();
-        board.resetBoard();
+        ChessGame gamegame = gameDao.getGameData(gameId).game();
+        ChessBoard board = gamegame.getBoard();
         LoadGame gameM = new LoadGame(board);
         String game = new Gson().toJson(gameM);
         //function to grab board
