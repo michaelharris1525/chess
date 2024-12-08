@@ -230,6 +230,9 @@ public class ChessGame {
         board.addPiece(endingPosition, newPiece);
         flipSetTeamTurn(newPiece.getTeamColor());
         board.removePiece(startingPosition);
+
+        //setBoard(board);
+
     }
     public void makeMoveCopy(ChessMove move, ChessBoard copyOfBoard)  {
         //throw new RuntimeException("Not implemented");

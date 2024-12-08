@@ -120,6 +120,7 @@ public class WebSocketHandler {
             // Attempt to make the move on the board
             gameData.game().makeMove(move);
             board = gameData.game().getBoard();
+            gameData.game().setBoard(board);
 
             // Broadcast the updated board state to all players
             LoadGame updateBoardd = new LoadGame(board);
