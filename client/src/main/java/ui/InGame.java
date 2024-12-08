@@ -32,6 +32,7 @@ public class InGame {
     private String help() {
         // implement later: join <ID> [WHITE|BLACK] - a game
         return """
+                load_game - loads the chessboard
                 Leave (you leave the room but can come back)
                 Make_Move - example <B3 ---> B4>
                 Resign - you hate losing but you feel like you got no choice

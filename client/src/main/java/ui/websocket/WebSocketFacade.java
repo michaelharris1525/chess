@@ -45,9 +45,20 @@ public class WebSocketFacade extends Endpoint {
                     ServerMessage notification = new Gson().
                             fromJson(message, ServerMessage.class);
 
+                    if (notification.getServerMessageType() == ServerMessage.ServerMessageType.NOTIFICATION){
+                        handleServerMessage(notification, null);
+                    }
+                    else if (notification.getServerMessageType() == ServerMessage.ServerMessageType.LOAD_GAME){
+                        LoadGame loadingBoard = new Gson().
+                                fromJson(message, LoadGame.class);
+                        handleServerMessage(notification, loadingBoard);
+                    }
+                    else {
+                        handleServerMessage(notification, null);
+                    }
                     // Handle game updates like moves or board state changes
-                    handleServerMessage(notification);
-                    notificationHandler.notify(notification);
+                    //handleServerMessage(notification);
+
 
 
                 }
@@ -91,7 +102,7 @@ public class WebSocketFacade extends Endpoint {
 //        displayChessBoard.renderBoardPerspective(false);  // Example perspective
 //    }
 
-    private void handleServerMessage(ServerMessage notification) {
+    private void handleServerMessage(ServerMessage notification, LoadGame game) {
         switch (notification.getServerMessageType()) {
 //                break; DO NOT NEED GAME OVER JUST GO THROUGH NOTIFICATION
             case LOAD_GAME:
@@ -99,8 +110,8 @@ public class WebSocketFacade extends Endpoint {
                 //update the chess board
                 //updateGameBoard(notification.getMessage());
                 //DisplayChessBoard displayBoard = new DisplayChessBoard(currentBoard);
-                LoadGame gameMessage = (LoadGame) notification;
-                ChessBoard board = gameMessage.getGame();
+                //LoadGame gameMessage = (LoadGame) notification;
+                ChessBoard board = game.getGame();
                 DisplayChessBoard displayBoard = new DisplayChessBoard(board);
                 displayBoard.renderBoardPerspective(false);
                 break;
