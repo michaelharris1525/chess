@@ -69,11 +69,11 @@ public class InGame {
         String startColChar = chessMoveStartPos.substring(1,2);
         String endColChar = chessMoveEndPos.substring(1,2);
 
-        int startRow = abcdefgh.getIntfromAlph(chessMoveStartPos.substring(0,1));
-        int endRow = abcdefgh.getIntfromAlph(chessMoveEndPos.substring(0,1));
+        int startCol = abcdefgh.getIntfromAlph(chessMoveStartPos.substring(0,1));
+        int endCol = abcdefgh.getIntfromAlph(chessMoveEndPos.substring(0,1));
 
-        int startCol = Integer.parseInt(startColChar);
-        int endCol = Integer.parseInt(endColChar);
+        int startRow = Integer.parseInt(startColChar);
+        int endRow = Integer.parseInt(endColChar);
 
         ChessMove move = new ChessMove(new ChessPosition(startRow, startCol),
                 new ChessPosition(endRow, endCol), null);
