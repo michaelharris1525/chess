@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class ChessGame {
     private TeamColor currentColor;
+    private boolean gameOver = false;
     private TeamColor wColor;
     private TeamColor bColor;
     private ChessBoard board;
@@ -57,6 +58,11 @@ public class ChessGame {
         WHITE,
         BLACK
     }
+
+    public boolean getGameOver() {
+        return gameOver;
+    }
+
     public boolean fixError(ChessPiece opponentPiece, ChessBoard simulatedBoard, ChessPosition pos, TeamColor teamColor){
         for (ChessMove opponentMove : opponentPiece.pieceMoves(simulatedBoard,  pos)) {
             if (isInCheckKing(teamColor, simulatedBoard)) {
@@ -327,6 +333,7 @@ public class ChessGame {
         if (canProtectKing(teamColor)) {
             return false;
         }
+        this.gameOver = true;
         return true; // King is in checkmate
     }
     private boolean kingHasValidMoves(TeamColor teamColor) {
@@ -399,6 +406,7 @@ public class ChessGame {
                 }
             }
             if (listWhitePieceMove.size() == (0)) {
+                this.gameOver = true;
                 return true;
             }
         }

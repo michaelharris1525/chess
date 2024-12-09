@@ -22,6 +22,7 @@ import websocket.messages.ServerMessage;
 import websocket.commands.UserGameCommand;
 
 import java.io.IOException;
+import java.util.Objects;
 
 
 @WebSocket
@@ -38,6 +39,24 @@ public class WebSocketHandler {
         if(authDao.getauthtoken(action.getAuthToken()) == null){
             sendErrorMessage(session, "Unauthorized auth token");
             return;
+        }
+
+        // updating the game username when leaving
+        if(action.getCommandType() == UserGameCommand.CommandType.LEAVE){
+            GameData gameDatatoLeave = gameDao.getGameData(action.getGameID());
+
+            AuthData authD = authDao.getauthtoken(action.getAuthToken());
+            String username = authD.username();
+            if(username == null){
+                sendErrorMessage(session, "User not found");
+                return;
+            }
+            if(Objects.equals(gameDatatoLeave.whiteUsername(), username)){
+                gameDao.updateWhiteColor(action.getGameID(), null);
+            }
+            else if(Objects.equals(gameDatatoLeave.blackUsername(), username)){
+                gameDao.updateWhiteColor(action.getGameID(), null);
+            }
         }
         switch (action.getCommandType()) {
             case CONNECT -> {
@@ -56,6 +75,15 @@ public class WebSocketHandler {
             }
             case RESIGN -> resign(action.getAuthToken(), session);
         }
+    }
+
+    private void exit(String visitorName) throws IOException {
+        connections.remove(visitorName);
+
+        var message = String.format("%s left the shop", visitorName);
+        var notification = new Notifications(message);
+        connections.broadcast(visitorName, notification);
+
     }
 
     private void resign(String authToken, Session session) throws IOException {
@@ -86,10 +114,11 @@ public class WebSocketHandler {
 
     }
 
+    //private void enterGameSuccesful(String visitorName, Session session, int gameId, String whiteBlack) throws IOException {
     private void enterGameSuccesful(String visitorName, Session session, int gameId, String whiteBlack) throws IOException {
         connections.add(visitorName, session);
         //userDao.get
-        String message = String.format("%s is in the game auth token for now", visitorName);
+        String message = String.format("%s is in the game auth token for now", authDao.getauthtoken(visitorName));
         var notification = new Notifications(message);
         connections.broadcast(visitorName, notification);
         //make a load game object, copy of board, change later to get
@@ -111,23 +140,30 @@ public class WebSocketHandler {
 //        connections.broadcast(null, );
         //function to grab board
         session.getRemote().sendString(game);
+        //connections.broadcast(visitorName, gameM);
     }
 
-    private void exit(String visitorName) throws IOException {
-        connections.remove(visitorName);
-        var message = String.format("%s left the shop", visitorName);
-        var notification = new Notifications(message);
-        connections.broadcast(visitorName, notification);
-    }
+
+//    private void isGameOver(){
+//
+//    }
+
+
 
     private void makeMove(UserGameCommand action, Session session) throws IOException, InvalidMoveException {
         // Extract the realMove from the command
         try {
+
             GameData gameData = gameDao.getGameData(action.getGameID());
             if (gameData == null) {
                 System.out.println("Game not found.");
                 return;
             }
+            if(gameData.game().getGameOver() == true){
+                sendErrorMessage(session, "FJSDFSDKFJS");
+                return;
+            }
+
             //this where the invalid move exception passes.
             ChessMove move = action.getRealMove();
 

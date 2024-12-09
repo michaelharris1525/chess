@@ -44,12 +44,20 @@ public class InGame {
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
         return switch (cmd) {
             case "help" -> help();
-            case "leave" -> "quit";
+            case "leave" -> leave();
             case "make_move" -> makeMove(params);
             case "load_game" -> loadGame();
             case "resign" -> resign();
             default -> "Unknown command.";
         };
+    }
+    public String leave() throws ResponseException {
+        // Prepare and send the UserGameCommand
+        ResponseSuccess res = server.getAuth();
+        UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.LEAVE,
+                res.getAuthToken(), server.getCurrentGameId(), null, null);
+        ws.sendMessage(command);
+        return "leave";
     }
 
     public String resign() throws ResponseException {
