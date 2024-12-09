@@ -51,12 +51,16 @@ public class WebSocketHandler {
             case MAKE_MOVE -> {
                 makeMove(action, session);
             }
-            case RESIGN -> resign();
+            case RESIGN -> resign(action.getAuthToken(), session);
         }
     }
 
-    private void resign(){
-
+    private void resign(String authToken, Session session) throws IOException {
+        connections.remove(authToken);
+        //userDao.get
+        var message = String.format("%s has resigned the game", authToken);
+        var notification = new Notifications(message);
+        connections.broadcast(authToken, notification);
     }
 
     private void sendErrorMessage(Session session, String errorMessage) throws IOException {

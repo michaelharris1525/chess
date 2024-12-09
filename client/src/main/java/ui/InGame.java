@@ -124,7 +124,7 @@ public class InGame {
             else if(result.equals("Loading")){
                 System.out.println("Loading...");
             }
-            else if(result.equals("Loading")){
+            else if(result.equals("resign")){
                 System.out.println("GameOver...");
             }
             else{
