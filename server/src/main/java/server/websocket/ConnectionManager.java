@@ -25,6 +25,7 @@ public class ConnectionManager {
     public ChessGame getGame(int gameID) {
         return games.get(gameID);
     }
+
     //update board everytime there is a connection
     public void addWithBoard(String visitorName, Session session, ChessBoard game) {
         var connection = new Connection(visitorName, session);

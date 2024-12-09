@@ -1,6 +1,7 @@
 package dataaccess;
 
 import chess.ChessGame;
+import com.google.gson.Gson;
 import model.GameData;
 import model.UnabletoConfigureDatabase;
 
@@ -28,6 +29,11 @@ public class GameSQLDao implements GameDataAccess{
         }
     }
 
+    @Override
+    public void updateBoard(int keyId){
+        GameData game = getGameData(keyId);
+    }
+
     // Method to clear all game data
     @Override
     public void clearGameData() {
@@ -43,7 +49,7 @@ public class GameSQLDao implements GameDataAccess{
     // Method to retrieve a game by ID
     @Override
     public GameData getGameData(int key) {
-        String query = "SELECT gameID, whiteUsername, blackUsername, gameName FROM gameData WHERE gameID = ?";
+        String query = "SELECT gameID, whiteUsername, blackUsername, gameName FROM gameData, chessBoard WHERE gameID = ?";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, key);
@@ -53,11 +59,11 @@ public class GameSQLDao implements GameDataAccess{
                 String whiteUsername = rs.getString("whiteUsername");
                 String blackUsername = rs.getString("blackUsername");
                 String gameName = rs.getString("gameName");
+                String chessboard = rs.getString("chessBoard");
 
-                // Initialize or load the ChessGame
-                ChessGame chessGame = new ChessGame();
+                ChessGame game = new  Gson().fromJson(chessboard, ChessGame.class);
 
-                return new GameData(gameId, whiteUsername, blackUsername, gameName, chessGame); // Adjust as needed for `ChessGame`
+                return new GameData(gameId, whiteUsername, blackUsername, gameName, game); // Adjust as needed for `ChessGame`
             }
         } catch (SQLException | DataAccessException e) {
             e.printStackTrace();
@@ -110,7 +116,7 @@ public class GameSQLDao implements GameDataAccess{
     @Override
     public Collection<GameData> getAllGameData() {
         List<GameData> games = new ArrayList<>();
-        String query = "SELECT gameID, whiteUsername, blackUsername, gameName FROM gameData";
+        String query = "SELECT gameID, whiteUsername, blackUsername, gameName, chessBoard FROM gameData";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
@@ -163,7 +169,8 @@ public class GameSQLDao implements GameDataAccess{
                 `gameID` int PRIMARY KEY,
                 `whiteUsername` VARCHAR(255),
                 `blackUsername` VARCHAR(255),
-                `gameName` VARCHAR(255)
+                `gameName` VARCHAR(255),
+                'chessBoard' LONG TEXT
             );
             """};
 

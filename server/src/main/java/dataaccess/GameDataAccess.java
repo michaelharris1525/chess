@@ -9,6 +9,9 @@ import java.util.HashMap;
 public interface GameDataAccess {
     int getSize();
     void addNewGame(int id, String gameName);
+
+    void updateBoard(int keyId);
+
     void clearGameData();
     GameData getGameData(int key);
     void updateWhiteColor(int gameId, String white);
