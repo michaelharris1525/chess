@@ -73,14 +73,14 @@ public class WebSocketFacade extends Endpoint {
     public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
 
-    public void connectToGame(ResponseSuccess userObj, int gameId) throws ResponseException {
+    public void connectToGame(ResponseSuccess userObj, int gameId, String whiteBlack) throws ResponseException {
         try {
             // Validate inputs
             if (userObj == null || userObj.getAuthToken() == null || gameId <= 0) {
                 throw new ResponseException(400, "Invalid authToken or gameId.");
             }
             UserGameCommand action = new UserGameCommand(UserGameCommand.CommandType.
-                    CONNECT, userObj.getAuthToken(), gameId, null);
+                    CONNECT, userObj.getAuthToken(), gameId, null, whiteBlack);
             //this.session.getBasicRemote().sendText(new Gson().toJson(action));
 
             // Ensure WebSocket session is open before sending

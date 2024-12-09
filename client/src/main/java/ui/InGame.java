@@ -56,7 +56,7 @@ public class InGame {
         // Prepare and send the UserGameCommand
         ResponseSuccess res = server.getAuth();
         UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.RESIGN,
-                res.getAuthToken(), server.getCurrentGameId(), null);
+                res.getAuthToken(), server.getCurrentGameId(), null, null);
         ws.sendMessage(command);
         return "resign";
     }
@@ -65,7 +65,7 @@ public class InGame {
         // Prepare and send the UserGameCommand
         ResponseSuccess res = server.getAuth();
         UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT,
-                res.getAuthToken(), server.getCurrentGameId(), null);
+                res.getAuthToken(), server.getCurrentGameId(), null, null);
         ws.sendMessage(command);
         return "Loading";
     }
@@ -90,7 +90,7 @@ public class InGame {
         // Prepare and send the UserGameCommand
         ResponseSuccess res = server.getAuth();
         UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE,
-                        res.getAuthToken(), server.getCurrentGameId(), move);
+                        res.getAuthToken(), server.getCurrentGameId(), move, null);
         ws.sendMessage(command);
 
 

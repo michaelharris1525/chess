@@ -63,12 +63,8 @@ public class Service {
         if(authdataac.getauthtoken(auth) == null){
             throw new DataAccessException("you screwed up");
         }
-        //   private TeamColor currentColor;
-        //    private TeamColor wColor;
-        //    private TeamColor bColor;
-        //    private ChessBoard board;
-//        ChessBoard board = new ChessBoard();
-//        board.resetBoard();
+
+
         ChessGame game = new ChessGame();
 
         //if validated create new game

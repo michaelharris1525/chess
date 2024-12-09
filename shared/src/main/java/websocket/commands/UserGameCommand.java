@@ -20,12 +20,15 @@ public class UserGameCommand {
 
     private final ChessMove move;
 
+    private final String whiteblack;
+
     public UserGameCommand(CommandType commandType,
-                           String authToken, Integer gameID, ChessMove move) {
+                           String authToken, Integer gameID, ChessMove move,String whiteblack) {
         this.commandType = commandType;
         this.authToken = authToken;
         this.gameID = gameID;
         this.move = move;
+        this.whiteblack = whiteblack;
     }
 
     public enum CommandType {
@@ -45,6 +48,10 @@ public class UserGameCommand {
 
     public Integer getGameID() {
         return gameID;
+    }
+
+    public String getWhiteblack() {
+        return whiteblack;
     }
 
     @Override

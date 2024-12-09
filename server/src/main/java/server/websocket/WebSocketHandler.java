@@ -1,15 +1,13 @@
 package server.websocket;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessMove;
-import chess.InvalidMoveException;
+import chess.*;
 import com.google.gson.Gson;
 //import dataaccess.DataAccess;
 import dataaccess.AuthSQLTokenClass;
 import dataaccess.GameSQLDao;
 import dataaccess.GameStorage;
 import dataaccess.UserSQLDao;
+import model.AuthData;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
@@ -36,10 +34,15 @@ public class WebSocketHandler {
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, InvalidMoveException {
         UserGameCommand action = new Gson().fromJson(message, UserGameCommand.class);
+
+        if(authDao.getauthtoken(action.getAuthToken()) == null){
+            sendErrorMessage(session, "Unauthorized auth token");
+            return;
+        }
         switch (action.getCommandType()) {
             case CONNECT -> {
                 if(enterGameAttempt(action.getGameID(), action.getAuthToken()) == true){
-                    enterGameSuccesful(action.getAuthToken(), session, action.getGameID());
+                    enterGameSuccesful(action.getAuthToken(), session, action.getGameID(),action.getWhiteblack());
                 }
                 else {
                     sendErrorMessage(session, "gameId or your input is wrong");
@@ -83,10 +86,10 @@ public class WebSocketHandler {
 
     }
 
-    private void enterGameSuccesful(String visitorName, Session session, int gameId) throws IOException {
+    private void enterGameSuccesful(String visitorName, Session session, int gameId, String whiteBlack) throws IOException {
         connections.add(visitorName, session);
         //userDao.get
-        var message = String.format("%s is in the game auth token for now", visitorName);
+        String message = String.format("%s is in the game auth token for now", visitorName);
         var notification = new Notifications(message);
         connections.broadcast(visitorName, notification);
         //make a load game object, copy of board, change later to get
@@ -95,6 +98,17 @@ public class WebSocketHandler {
         ChessBoard board = gamegame.getBoard();
         LoadGame gameM = new LoadGame(board);
         String game = new Gson().toJson(gameM);
+        if (whiteBlack != null) {
+            if (whiteBlack.equalsIgnoreCase("White")) {
+                gameDao.updateWhiteColor(gameId, visitorName);
+            } else if(whiteBlack.equalsIgnoreCase("Black")) {
+                gameDao.updateBlackColor(gameId, whiteBlack);
+            }
+        }
+
+//        Notifications message2 = new Notifications(message)
+//
+//        connections.broadcast(null, );
         //function to grab board
         session.getRemote().sendString(game);
     }
@@ -125,10 +139,39 @@ public class WebSocketHandler {
                 return;
             }
 
-            // Attempt to make the move on the board
-            gameData.game().makeMove(move);
-            board = gameData.game().getBoard();
-            gameData.game().setBoard(board);
+            //check if user color matches piece color
+            AuthData authData = authDao.getauthtoken(action.getAuthToken());
+            ChessPiece piece = board.getPiece(move.getStartPosition());
+
+            if(piece.getTeamColor() == ChessGame.TeamColor.WHITE ) {
+                if (gameData.getWhiteColor().equals(authData.username())) {
+                    // Attempt to make the move on the board
+                    gameData.game().makeMove(move);
+                    board = gameData.game().getBoard();
+                    gameData.game().setBoard(board);
+                }
+                else{
+                    sendErrorMessage(session, "Wrong color username");
+                    return;
+                }
+            }
+
+            else if(piece.getTeamColor() == ChessGame.TeamColor.BLACK ) {
+                if (gameData.getBlackColor().equals(authData.username())) {
+                    // Attempt to make the move on the board
+                    gameData.game().makeMove(move);
+                    board = gameData.game().getBoard();
+                    gameData.game().setBoard(board);
+                }
+                else{
+                    sendErrorMessage(session, "Wrong color username");
+                    return;
+                }
+            }
+            else{
+                sendErrorMessage(session, "Wrong color username");
+                return;
+            }
 
             //update board into database
             gameDao.updateGameState(action.getGameID(),gameData.game());

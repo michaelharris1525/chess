@@ -46,21 +46,22 @@ public class ConnectionManager {
     }
 
     public void broadcast(String excludeVisitorName, ServerMessage notification) throws IOException {
-        var removeList = new ArrayList<Connection>();
+        //var removeList = new ArrayList<Connection>();
         for (var c : connections.values()) {
 
             if (c.session.isOpen()) {
                 if (excludeVisitorName == null || !c.visitorName.equals(excludeVisitorName)) {
                     c.send(notification.toString());
                 }
-            } else {
-                removeList.add(c);
             }
+//            else {
+//                removeList.add(c);
+//            }
         }
 
         // Clean up any connections that were left open.
-        for (var c : removeList) {
-            connections.remove(c.visitorName);
-        }
+//        for (var c : removeList) {
+//            connections.remove(c.visitorName);
+//        }
     }
 }
