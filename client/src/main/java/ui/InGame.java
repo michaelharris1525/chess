@@ -47,8 +47,18 @@ public class InGame {
             case "leave" -> "quit";
             case "make_move" -> makeMove(params);
             case "load_game" -> loadGame();
+            case "resign" -> resign();
             default -> "Unknown command.";
         };
+    }
+
+    public String resign() throws ResponseException {
+        // Prepare and send the UserGameCommand
+        ResponseSuccess res = server.getAuth();
+        UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.RESIGN,
+                res.getAuthToken(), server.getCurrentGameId(), null);
+        ws.sendMessage(command);
+        return "resign";
     }
 
     public String loadGame() throws ResponseException {
@@ -82,8 +92,6 @@ public class InGame {
         UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE,
                         res.getAuthToken(), server.getCurrentGameId(), move);
         ws.sendMessage(command);
-//        this.session.getBasicRemote().sendText(new Gson().toJson(moveCommand));
-//        System.out.println("Move sent: " + startPos + " to " + endPos);
 
 
         return "opponents move";
@@ -115,6 +123,9 @@ public class InGame {
             }
             else if(result.equals("Loading")){
                 System.out.println("Loading...");
+            }
+            else if(result.equals("Loading")){
+                System.out.println("GameOver...");
             }
             else{
                 System.out.println(help());

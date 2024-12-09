@@ -50,9 +50,13 @@ public class WebSocketHandler {
             //case MAKE_MOVE -> makeMove(action, session);
             case MAKE_MOVE -> {
                 makeMove(action, session);
-
             }
+            case RESIGN -> resign();
         }
+    }
+
+    private void resign(){
+
     }
 
     private void sendErrorMessage(Session session, String errorMessage) throws IOException {
