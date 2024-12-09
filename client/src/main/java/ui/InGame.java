@@ -115,8 +115,12 @@ public class InGame {
                 break; // Exit the Postlogin UI to return to Prelogin
             }
             else if (result.equals("quit")) {
-                System.out.println("Quit out Room Successfully!");
+                System.out.println("logged out you are");
                 System.exit(0); // Exit the application
+            }
+            else if (result.equals("leave")) {
+                System.out.println("Quit out Room Successfully!");
+                return;
             }
             else if(result.equals("opponents move")){
                 System.out.println("Move has been made");
@@ -132,5 +136,9 @@ public class InGame {
                 System.out.println("need help? hit any key and hit enter");
             }
         }
+    }
+    private void goBackToPost(PreloginUi prelog) throws ResponseException {
+        PostloginUi postloginUi = new PostloginUi(prelog.getServerFacade(), prelog.getServerUrl());
+        postloginUi.run(); // Call the main functionality of Postlogin UI
     }
 }
