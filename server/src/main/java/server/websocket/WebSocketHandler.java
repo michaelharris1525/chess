@@ -130,6 +130,8 @@ public class WebSocketHandler {
             board = gameData.game().getBoard();
             gameData.game().setBoard(board);
 
+            //update board into database
+            gameDao.updateGameState(action.getGameID(),gameData.game());
             // Broadcast the updated board state to all players
             LoadGame updateBoardd = new LoadGame(board);
             String toUserBoard = new Gson().toJson(updateBoardd);
