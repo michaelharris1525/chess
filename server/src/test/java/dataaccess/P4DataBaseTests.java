@@ -75,24 +75,13 @@ public class P4DataBaseTests {
         String gameName = "Test Game";
         int gameId = 1;
 
-        // Act
-        //gameSQLDao.addNewGame(gameId, gameName);
-
         // Assert
         GameData gameData = gameSQLDao.getGameData(gameId);
         assertNull(gameData);
-//        assertEquals(gameId, gameData.getGameID());
-//        assertEquals(gameName, gameData.getGameName());
     }
 
     @Test
     void testClearGameData() {
-        // Arrange
-        //gameSQLDao.addNewGame(1, "Game 1");
-        //gameSQLDao.addNewGame(2, "Game 2");
-
-        // Act
-       // gameSQLDao.clearGameData();
 
         // Assert
         assertTrue(true);
@@ -113,19 +102,11 @@ public class P4DataBaseTests {
         // Act
         GameData gameData = gameSQLDao.getGameData(gameId);
 
-        // Assert
-//        assertNotNull(gameData);
-//        assertEquals(gameId, gameData.getGameID());
-//        assertEquals(whiteUsername, gameData.getWhiteColor());
-//        assertEquals(blackUsername, gameData.getBlackColor());
-//        assertEquals(gameName, gameData.getGameName());
+
     }
 
     @Test
     void testGetAllGameData() {
-        // Arrange
-//        gameSQLDao.addNewGame(1, "Game 1");
-//        gameSQLDao.addNewGame(2, "Game 2");
 
         // Act
         Collection<GameData> games = gameSQLDao.getAllGameData();

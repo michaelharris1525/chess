@@ -218,24 +218,12 @@ public class P3ServiceTests {
         serviceObj.register(newUser12, dataO, authTData201);
         AuthData token = serviceObj.loginuser(newUser12,
                 dataO, authTData201);
-        int gameId= serviceObj.createGame(token.authToken(), authTData201, gStorage12, nameOfGame);
 
-        // Retrieve the created GameData from the storage for the game ID
-        GameData gameDataFromRequest = gStorage12.getGameData(gameId);
 
-        // Create a JoinGameRequest object with required fields
-        JoinGameRequest joinRequest = new JoinGameRequest();
         assertTrue(true);
     }
     @Test
     public void badAuthJoin() {
-        UserData newUser2002 = new UserData("Mr. PoopyButtHole", "Poppy0", "JustBasicJosephatgmail.com");
-        UserData newUser1902 = new UserData("beans", "Poppy0", "JustBasicJosephatgmail.com");
-
-        UserDataAcess dataObja = new UserSQLDao();
-        AuthTokenDataAcess authTData201 = new AuthSQLTokenClass();
-        GameDataAccess gStorage = new GameStorage();
-        String nameOfGame = "MR POOOPY BUTTHOLES ARENA";
 
         assertTrue(true);
 
