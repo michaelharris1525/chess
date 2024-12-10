@@ -18,29 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class P3ServiceTests {
     private Service serviceObj = new Service();
 
-    void badCreateUserAndLoginAndJoinGameWhite(UserData newUser20, UserDataAcess dataObja,
-                                               AuthTokenDataAcess authTData201,
-                                       GameDataAccess gStorage, String nameOfGame)
-            throws UserNameIsWrong, UserNameIsNullinMemoryDao, UserPasswordIsWrong,
-            UserAlreadyExistsException, BadRequestsException,
-            DataAccessException, PlayerColorException {
-        //register
-        serviceObj.register(newUser20, dataObja, authTData201);
-        AuthData token = serviceObj.loginuser(newUser20,
-                dataObja, authTData201);
-        int gameId= serviceObj.createGame(token.authToken(), authTData201, gStorage, nameOfGame);
-
-        // Retrieve the created GameData from the storage for the game ID
-        GameData gameDataFromRequest = gStorage.getGameData(gameId);
-
-        // Create a JoinGameRequest object with required fields
-        JoinGameRequest joinRequest = new JoinGameRequest();
-        //joinRequest.changeIdForTesting(gameId);
-        //joinRequest.updatePlayerWhite();
-
-        //serviceObj.joinGame(null, authTData201, gStorage, gameDataFromRequest,joinRequest);
-
-    }
     @BeforeEach
     public void clearDatabases(){
         UserDataAcess dataObj = new UserSQLDao();
