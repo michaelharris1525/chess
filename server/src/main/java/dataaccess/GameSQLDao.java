@@ -40,10 +40,10 @@ public class GameSQLDao implements GameDataAccess {
         }
     }
 
-    @Override
-    public void updateBoard(int gameId, ChessGame game) {
-
-    }
+//    @Override
+//    public void updateBoard(int gameId, ChessGame game) {
+//
+//    }
 
     @Override
     public void clearGameData() {
@@ -160,21 +160,21 @@ public class GameSQLDao implements GameDataAccess {
         return games;
     }
 
-    // Check if the table is empty
-    @Override
-    public boolean isEmpty() {
-        String query = "SELECT COUNT(*) FROM gameData";
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1) == 0;
-            }
-        } catch (SQLException | DataAccessException e) {
-            e.printStackTrace();
-        }
-        return true;
-    }
+//    // Check if the table is empty
+//    @Override
+//    public boolean isEmpty() {
+//        String query = "SELECT COUNT(*) FROM gameData";
+//        try (Connection conn = DatabaseManager.getConnection();
+//             PreparedStatement stmt = conn.prepareStatement(query)) {
+//            ResultSet rs = stmt.executeQuery();
+//            if (rs.next()) {
+//                return rs.getInt(1) == 0;
+//            }
+//        } catch (SQLException | DataAccessException e) {
+//            e.printStackTrace();
+//        }
+//        return true;
+//    }
 
     @Override
     public int getSize() {

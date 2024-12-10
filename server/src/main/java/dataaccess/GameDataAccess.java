@@ -14,9 +14,7 @@ public interface GameDataAccess {
     void updateWhiteColor(int gameId, String white);
     void updateBlackColor(int gameId, String black);
     Collection<GameData> getAllGameData();
-    boolean isEmpty();
-    public boolean gameExists(int gameId);
-    public void addNewGame(int id, String gameName, ChessGame game);
+    boolean gameExists(int gameId);
+    void addNewGame(int id, String gameName, ChessGame game);
 
-    void updateBoard(int gameId, ChessGame game);
 }

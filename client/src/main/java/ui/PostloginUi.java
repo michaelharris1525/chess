@@ -1,6 +1,5 @@
 package ui;
 
-import chess.ChessBoard;
 import model.GameData;
 import requestextension.ResponseException;
 import ui.websocket.NotificationHandler;
@@ -15,9 +14,7 @@ import java.util.Scanner;
 public class PostloginUi {
     private final ServerFacade server;
     private final String serverUrl;
-    //private final ClientNotificationHandler notificationHandler;
     private Collection<GameData> collect;
-    //after ws
     private WebSocketFacade ws;
     private NotificationHandler notification;
 
@@ -87,15 +84,10 @@ public class PostloginUi {
         System.out.println("Joined game " + params[0] + " as " + whiteBlack + ".");
 
         return "inGame";
-        //Call the server join HTTP API to join them to the game.
-        //This step is only done for players. Observers do not need to make the join HTTP API request.
-        //is it the correct gameID? Does it match with the DatabasesID?
-        //white or black available? if so, call server for websocket connection with params
     }
 
     private String logout() {
         // Implement logout logic (e.g., call the server's logout API)
-        // If login is successful, notify the user and return a signal to transition to the Postlogin UI
         server.logout();
         System.out.println("Logout successful!");
         return "prelogin"; // Signal to transition to Postlogin UI
@@ -139,35 +131,6 @@ public class PostloginUi {
         ws = new WebSocketFacade(serverUrl, notification);
         ws.connectToGame(server.getAuth(), intyID, null);
 
-        // Fetch initial game state from server
-        //ChessBoard currentBoard = fetchGameState(gameIDInt); // Method to get the initial board state from the server
-
-        // Display the board
-//        DisplayChessBoard displayBoard = new DisplayChessBoard(currentBoard);
-//        if(whiteorblack.equalsIgnoreCase("white")){
-//            displayBoard.renderBoardPerspective(false);
-//        }
-//        else{
-//            displayBoard.renderBoardPerspective(true);
-//        }
-        // Listen for updates
-//        ws.onMessage(message -> {
-//            updateBoardState(currentBoard, message); // Update local board based on message
-//            displayBoard.renderBoardPerspective(false); // Re-render after update
-//        });
-        //delete later
-//        ChessBoard board = new ChessBoard();
-//        board.resetBoard();
-//        DisplayChessBoard chessBoard = new DisplayChessBoard(board);
-
-        //do Websocket don't do http request
-//        if(whiteorblack.equalsIgnoreCase("white")){
-//            chessBoard.renderBoardPerspective(false);
-//        }
-//        else {
-//            chessBoard.renderBoardPerspective(true);
-//        }
-        //do Websocket don't do http request
         server.observeID(intyID);
         return "observe game";
     }
@@ -204,8 +167,6 @@ public class PostloginUi {
             else if(result.equals("inGame")){
                 transitionToInGame();
             }
-            //If joingame go to new class, we'll call it InGame with new functions and if statements to do
-            //make a lot more if statements like joining game or observing game
             else{
                 System.out.println(help());
                 System.out.println("need help? hit any key and hit enter");

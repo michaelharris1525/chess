@@ -17,6 +17,5 @@ public class JoinGameRequest {
     public void updatePlayerBlack(){
         playerColor = "BLACK";
     }
-    public void changeIdForTesting(int newID){ gameID = newID;}
 }
 
