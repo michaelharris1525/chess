@@ -4,7 +4,6 @@ import chess.*;
 import com.google.gson.Gson;
 import dataaccess.AuthSQLTokenClass;
 import dataaccess.GameSQLDao;
-import dataaccess.UserSQLDao;
 import model.AuthData;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
@@ -25,7 +24,6 @@ public class WebSocketHandler {
     private final ConnectionManager connections = new ConnectionManager();
     private GameSQLDao gameDao = new GameSQLDao();
     private AuthSQLTokenClass authDao = new AuthSQLTokenClass();
-    private UserSQLDao userDao = new UserSQLDao();
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, InvalidMoveException {
         UserGameCommand action = new Gson().fromJson(message, UserGameCommand.class);
