@@ -180,21 +180,21 @@ public class ChessPiece {
             addRookMoves(myPosition, board, listMoves, direction[0], direction[1]);
         }
     }
-    private void addRookMoves(ChessPosition myPosition, ChessBoard board, Collection<ChessMove> listMoves, int rowOffset, int colOffset) {
-        ChessPosition newPeez1 = myPosition;
+    private void addRookMoves(ChessPosition myPosition, ChessBoard board,
+                              Collection<ChessMove> listMoves, int rowOffset, int colOffset) {
+        ChessPosition fasd = myPosition;
 
         while (true) {
-            int newRow = newPeez1.getRow() + rowOffset;
-            int newCol = newPeez1.getColumn() + colOffset;
+            int newRow = fasd.getRow() + rowOffset;
+            int newCol = fasd.getColumn() + colOffset;
 
-            // Check if the new position is within board limits
             if (newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8) {
                 break;
             }
 
-            newPeez1 = new ChessPosition(newRow, newCol);
-            ChessMove move = new ChessMove(myPosition, newPeez1, null);
-            ChessPiece pieceAtNewPosition = board.getPiece(newPeez1);
+            fasd = new ChessPosition(newRow, newCol);
+            ChessMove move = new ChessMove(myPosition, fasd, null);
+            ChessPiece pieceAtNewPosition = board.getPiece(fasd);
 
             // Add the move if the square is empty, or stop if a piece of the same color is there
             if (pieceAtNewPosition == null) {
@@ -287,12 +287,12 @@ public class ChessPiece {
             addBishopMoves(myPosition, board, listMoves, direction[0], direction[1]);
         }
     }
-    private void addBishopMoves(ChessPosition myPosition, ChessBoard board, Collection<ChessMove> listMoves, int rowOffset, int colOffset) {
+    private void addBishopMoves(ChessPosition myPosition, ChessBoard board,
+                                Collection<ChessMove> listMoves, int rowOffset, int colOffset) {
         ChessPosition newPeez = myPosition;
         while (true) {
             int newRow = newPeez.getRow() + rowOffset;
             int newCol = newPeez.getColumn() + colOffset;
-            // Check if the new position is within board limits
             if (newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8) {
                 break;
             }

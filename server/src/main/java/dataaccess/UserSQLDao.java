@@ -2,7 +2,7 @@ package dataaccess;
 
 import model.UnabletoConfigureDatabase;
 import model.UserData;
-import model.UserNameIsNullinMemoryDao;
+import requestextension.UserNameIsNullinMemoryDao;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.*;

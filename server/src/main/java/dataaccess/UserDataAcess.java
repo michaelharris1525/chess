@@ -1,7 +1,7 @@
 package dataaccess;
 
 import model.UserData;
-import model.UserNameIsNullinMemoryDao;
+import requestextension.UserNameIsNullinMemoryDao;
 
 public interface UserDataAcess{
     void clearuserdatabase();

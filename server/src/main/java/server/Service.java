@@ -1,10 +1,10 @@
 package server;
 
-import chess.ChessBoard;
 import chess.ChessGame;
 import dataaccess.*;
 import model.*;
 import org.mindrot.jbcrypt.BCrypt;
+import requestextension.UserNameIsNullinMemoryDao;
 
 import java.util.UUID;
 

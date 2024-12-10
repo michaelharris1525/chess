@@ -7,6 +7,7 @@ import dataaccess.GameSQLDao;
 import dataaccess.UserSQLDao;
 import model.*;
 import requestextension.JoinRequestIsNull;
+import requestextension.UserNameIsNullinMemoryDao;
 import spark.Request;
 import spark.Response;
 

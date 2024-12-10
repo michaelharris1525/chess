@@ -136,13 +136,13 @@ public class PostloginUi {
     }
 
     public void run() throws ResponseException {
-        Scanner scanner = new Scanner(System.in);
+        Scanner scab = new Scanner(System.in);
         System.out.println("Welcome to the Post-login interface! You can start playing now.");
         help();
         String trueornot = " ";
         while (!trueornot.equals("quit")) {
             System.out.print("postlogin>>> ");
-            String input = scanner.nextLine();
+            String input = scab.nextLine();
 
             String result = eval(input);
             trueornot = result;
