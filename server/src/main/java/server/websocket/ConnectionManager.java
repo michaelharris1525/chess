@@ -45,14 +45,11 @@ public class ConnectionManager {
         connections.remove(visitorName);
     }
 
-    public void sendSingleMessage(String singleMessage){
-
-    }
-
     public void broadcast(String excludeVisitorName, ServerMessage notification) throws IOException {
         //var removeList = new ArrayList<Connection>();
         for (var c : connections.values()) {
 
+            //if(c)
             if (c.session.isOpen()) {
                 if (excludeVisitorName == null || !c.visitorName.equals(excludeVisitorName)) {
                     c.send(notification.toString());

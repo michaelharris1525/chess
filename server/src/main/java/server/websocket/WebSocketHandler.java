@@ -61,28 +61,28 @@ public class WebSocketHandler {
 //        else if(action.getCommandType() == UserGameCommand.CommandType.RESIGN){
 //
 //        }
+        AuthData authDadfaf = authDao.getauthtoken(action.getAuthToken());
         switch (action.getCommandType()) {
             case CONNECT -> {
                 if(enterGameAttempt(action.getGameID(), action.getAuthToken()) == true){
-                    enterGameSuccesful(action.getAuthToken(), session, action.getGameID(),action.getWhiteblack());
+                    enterGameSuccesful(authDadfaf.username(), session, action.getGameID(),action.getWhiteblack());
                 }
                 else {
                     sendErrorMessage(session, "gameId or your input is wrong");
                 }
             }
 
-            case LEAVE -> {exit(action.getAuthToken());}
+            case LEAVE -> {exit(authDadfaf.username());}
             //case MAKE_MOVE -> makeMove(action, session);
             case MAKE_MOVE -> {
                 makeMove(action, session);
             }
-            case RESIGN -> {resign(action.getAuthToken(), session, action);}
+            case RESIGN -> {resign(authDadfaf.username(), session, action);}
         }
     }
 
     private void exit(String visitorName) throws IOException {
         connections.remove(visitorName);
-
         var message = String.format("%s left the shop", visitorName);
         var notification = new Notifications(message);
         connections.broadcast(visitorName, notification);
@@ -95,27 +95,32 @@ public class WebSocketHandler {
         AuthData authD = authDao.getauthtoken(action.getAuthToken());
         String username = authD.username();
 
-        if(authD.authToken().equals(gameDatatoLeave.blackUsername()) ||
-                authD.authToken().equals(gameDatatoLeave.whiteUsername())) {
+        if(!gameDatatoLeave.game().getIsItGameOver()) {
+            if (authD.username().equals(gameDatatoLeave.blackUsername()) ||
+                    authD.username().equals(gameDatatoLeave.whiteUsername())) {
 
-            //set game to game over in gamedata, do not think it works for database
-            gameDatatoLeave.game().setGameOver();
+                //set game to game over in gamedata, do not think it works for database
+                gameDatatoLeave.game().setGameOver();
 
-            gameDao.setGameOverInJson(action.getGameID());
+                gameDao.setGameOverInJson(action.getGameID());
 
-            var message = String.format("%s has resigned the game", authToken);
-            var notification = new Notifications(message);
-            connections.broadcast(authToken, notification);
-            //ChessGame gamegame = gameDao.getGameData(action.getGameID()).game();
-            // LoadGame gameboy = new LoadGame(gamegame);
-            Notifications n = new Notifications("GAME OVER");
+                var message = String.format("%s has resigned the game", authToken);
+                var notification = new Notifications(message);
+                connections.broadcast(null, notification);
+                //ChessGame gamegame = gameDao.getGameData(action.getGameID()).game();
+                // LoadGame gameboy = new LoadGame(gamegame);
+                Notifications n = new Notifications("GAME OVER");
 
-            String mes = new Gson().toJson(n);
+                String mes = new Gson().toJson(n);
 
-            session.getRemote().sendString(mes);
+                //session.getRemote().sendString(mes);
+            } else {
+                sendErrorMessage(session, "You are not playing game Observer");
+                return;
+            }
         }
-        else{
-            sendErrorMessage(session,"You are not playing game Observer");
+        else {
+            sendErrorMessage(session, "GAME IS ALREADY OVER JACK");
             return;
         }
 
@@ -252,7 +257,8 @@ public class WebSocketHandler {
             Notifications update = new Notifications(
                     "Move made");
             //send the message of it being updated to the users
-            connections.broadcast(action.getAuthToken(), update);
+            AuthData authdata3 = authDao.getauthtoken(action.getAuthToken());
+            connections.broadcast(authdata3.username(), update);
             connections.broadcast(null, updateBoardd);
         }
         catch (InvalidMoveException e) {
