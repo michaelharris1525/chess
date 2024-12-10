@@ -9,6 +9,7 @@ import dataaccess.GameStorage;
 import dataaccess.UserSQLDao;
 import model.AuthData;
 import model.GameData;
+import org.eclipse.jetty.server.Authentication;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
@@ -72,7 +73,7 @@ public class WebSocketHandler {
                 }
             }
 
-            case LEAVE -> {exit(authDadfaf.username());}
+            case LEAVE -> {exit(authDadfaf.username(), action);}
             //case MAKE_MOVE -> makeMove(action, session);
             case MAKE_MOVE -> {
                 makeMove(action, session);
@@ -81,11 +82,11 @@ public class WebSocketHandler {
         }
     }
 
-    private void exit(String visitorName) throws IOException {
+    private void exit(String visitorName, UserGameCommand command) throws IOException {
         connections.remove(visitorName);
         var message = String.format("%s left the shop", visitorName);
         var notification = new Notifications(message);
-        connections.broadcast(visitorName, notification);
+        connections.broadcast(visitorName, notification, command.getGameID());
 
     }
     private void resign(String authToken, Session session, UserGameCommand action) throws IOException {
@@ -106,7 +107,7 @@ public class WebSocketHandler {
 
                 var message = String.format("%s has resigned the game", authToken);
                 var notification = new Notifications(message);
-                connections.broadcast(null, notification);
+                connections.broadcast(null, notification, action.getGameID());
                 //ChessGame gamegame = gameDao.getGameData(action.getGameID()).game();
                 // LoadGame gameboy = new LoadGame(gamegame);
                 Notifications n = new Notifications("GAME OVER");
@@ -157,11 +158,11 @@ public class WebSocketHandler {
 
     //private void enterGameSuccesful(String visitorName, Session session, int gameId, String whiteBlack) throws IOException {
     private void enterGameSuccesful(String visitorName, Session session, int gameId, String whiteBlack) throws IOException {
-        connections.add(visitorName, session);
+        connections.add(visitorName, session, gameId);
         //userDao.get
         String message = String.format("%s is in the game auth token for now", authDao.getauthtoken(visitorName));
         var notification = new Notifications(message);
-        connections.broadcast(visitorName, notification);
+        connections.broadcast(visitorName, notification, gameId);
         //make a load game object, copy of board, change later to get
         //the actual board that is being played at its current state
         ChessGame gamegame = gameDao.getGameData(gameId).game();
@@ -258,8 +259,8 @@ public class WebSocketHandler {
                     "Move made");
             //send the message of it being updated to the users
             AuthData authdata3 = authDao.getauthtoken(action.getAuthToken());
-            connections.broadcast(authdata3.username(), update);
-            connections.broadcast(null, updateBoardd);
+            connections.broadcast(authdata3.username(), update, action.getGameID());
+            connections.broadcast(null, updateBoardd, action.getGameID());
         }
         catch (InvalidMoveException e) {
             // Handle invalid move
