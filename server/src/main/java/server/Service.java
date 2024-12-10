@@ -1,5 +1,7 @@
 package server;
 
+import chess.ChessBoard;
+import chess.ChessGame;
 import dataaccess.*;
 import model.*;
 import org.mindrot.jbcrypt.BCrypt;
@@ -61,9 +63,13 @@ public class Service {
         if(authdataac.getauthtoken(auth) == null){
             throw new DataAccessException("you screwed up");
         }
+
+
+        ChessGame game = new ChessGame();
+
         //if validated create new game
         int newGameId = gameStoraged.getSize() + 1;
-        gameStoraged.addNewGame(newGameId, nameOfGame);
+        gameStoraged.addNewGame(newGameId, nameOfGame, game);
 
 
         return newGameId;
@@ -75,6 +81,7 @@ public class Service {
                          JoinGameRequest joinRequest)
             throws DataAccessException, PlayerColorException,
             BadRequestsException {
+
         if(authdataac.getauthtoken(authToken) == null){
             throw new DataAccessException("you screwed up");
         }

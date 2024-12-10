@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class ChessGame {
     private TeamColor currentColor;
+    private boolean gameOver = false;
     private TeamColor wColor;
     private TeamColor bColor;
     private ChessBoard board;
@@ -57,6 +58,14 @@ public class ChessGame {
         WHITE,
         BLACK
     }
+
+    public boolean getIsItGameOver() {
+        return gameOver;
+    }
+    public void setGameOver(){
+        this.gameOver = true;
+    }
+
     public boolean fixError(ChessPiece opponentPiece, ChessBoard simulatedBoard, ChessPosition pos, TeamColor teamColor){
         for (ChessMove opponentMove : opponentPiece.pieceMoves(simulatedBoard,  pos)) {
             if (isInCheckKing(teamColor, simulatedBoard)) {
@@ -189,47 +198,52 @@ public class ChessGame {
     }
 
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        ChessBoard copyOfBoard = board.copyOfBoard();
-        ChessPosition startingPosition = move.getStartPosition();
-        ChessPosition endingPosition = move.getEndPosition();
-        //make a new piece
-        ChessPiece newPiece = board.getPiece(startingPosition);
-        if(newPiece == null){
-            throw new InvalidMoveException();
-        }
-        Collection<ChessMove>listPossibleMoves = newPiece.pieceMoves(board,startingPosition);
-        //where the invalid move exception throws in chessgame class
-        if(!listPossibleMoves.contains(move)){
-            throw new InvalidMoveException();
-        }
-        //is your piece in check
-        if(isInCheck(newPiece.getTeamColor())==true) {
-            makeMoveCopy(move, copyOfBoard);
-            //is your piece in check after you move
-            if(isInCheckKing(newPiece.getTeamColor(), copyOfBoard)) {
+        if(getIsItGameOver() != true) {
+            ChessBoard copyOfBoard = board.copyOfBoard();
+            ChessPosition startingPosition = move.getStartPosition();
+            ChessPosition endingPosition = move.getEndPosition();
+            //make a new piece
+            ChessPiece newPiece = board.getPiece(startingPosition);
+            if (newPiece == null) {
                 throw new InvalidMoveException();
             }
+            Collection<ChessMove> listPossibleMoves = newPiece.pieceMoves(board, startingPosition);
+            //where the invalid move exception throws in chessgame class
+            if (!listPossibleMoves.contains(move)) {
+                throw new InvalidMoveException();
+            }
+            //is your piece in check
+            if (isInCheck(newPiece.getTeamColor()) == true) {
+                makeMoveCopy(move, copyOfBoard);
+                //is your piece in check after you move
+                if (isInCheckKing(newPiece.getTeamColor(), copyOfBoard)) {
+                    throw new InvalidMoveException();
+                }
+            }
+            if (newPiece.getTeamColor() != currentColor) {
+                throw new InvalidMoveException();
+            }
+            // Handle the special case of pawn promotion
+            if (newPiece.getPieceType() == ChessPiece.PieceType.PAWN) {
+                int finalRow = newPiece.getTeamColor() == TeamColor.WHITE ? 8 : 1;
+                if (endingPosition.getRow() == finalRow) {
+                    if (move.getPromotionPiece() == null) {
+                        throw new InvalidMoveException("Pawn promotion requires a promotion piece.");
+                    }
+                    // Replace the pawn with the promoted piece
+                    newPiece = new ChessPiece(newPiece.getTeamColor(), move.getPromotionPiece());
+                }
+            } else if (move.getPromotionPiece() != null) {
+                // If a promotion type is provided for a non-pawn piece, it's an invalid move
+                throw new InvalidMoveException("Only pawns can be promoted.");
+            }
+            board.addPiece(endingPosition, newPiece);
+            flipSetTeamTurn(newPiece.getTeamColor());
+            board.removePiece(startingPosition);
         }
-        if(newPiece.getTeamColor() != currentColor){
+        else{
             throw new InvalidMoveException();
         }
-        // Handle the special case of pawn promotion
-        if (newPiece.getPieceType() == ChessPiece.PieceType.PAWN) {
-            int finalRow = newPiece.getTeamColor() == TeamColor.WHITE ? 8 : 1;
-            if (endingPosition.getRow() == finalRow) {
-                if (move.getPromotionPiece() == null) {
-                    throw new InvalidMoveException("Pawn promotion requires a promotion piece.");
-                }
-                // Replace the pawn with the promoted piece
-                newPiece = new ChessPiece(newPiece.getTeamColor(),move.getPromotionPiece());
-            }
-        } else if (move.getPromotionPiece() != null) {
-            // If a promotion type is provided for a non-pawn piece, it's an invalid move
-            throw new InvalidMoveException("Only pawns can be promoted.");
-        }
-        board.addPiece(endingPosition, newPiece);
-        flipSetTeamTurn(newPiece.getTeamColor());
-        board.removePiece(startingPosition);
 
         //setBoard(board);
 
@@ -327,6 +341,7 @@ public class ChessGame {
         if (canProtectKing(teamColor)) {
             return false;
         }
+        this.gameOver = true;
         return true; // King is in checkmate
     }
     private boolean kingHasValidMoves(TeamColor teamColor) {
@@ -399,6 +414,7 @@ public class ChessGame {
                 }
             }
             if (listWhitePieceMove.size() == (0)) {
+                this.gameOver = true;
                 return true;
             }
         }

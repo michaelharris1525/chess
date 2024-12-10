@@ -1,6 +1,7 @@
 package ui.websocket;
 
 import chess.ChessBoard;
+import chess.ChessGame;
 import model.GameData;
 import ui.DisplayChessBoard;
 import com.google.gson.Gson;
@@ -73,14 +74,14 @@ public class WebSocketFacade extends Endpoint {
     public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
 
-    public void connectToGame(ResponseSuccess userObj, int gameId) throws ResponseException {
+    public void connectToGame(ResponseSuccess userObj, int gameId, String whiteBlack) throws ResponseException {
         try {
             // Validate inputs
             if (userObj == null || userObj.getAuthToken() == null || gameId <= 0) {
                 throw new ResponseException(400, "Invalid authToken or gameId.");
             }
             UserGameCommand action = new UserGameCommand(UserGameCommand.CommandType.
-                    CONNECT, userObj.getAuthToken(), gameId, null);
+                    CONNECT, userObj.getAuthToken(), gameId, null, whiteBlack);
             //this.session.getBasicRemote().sendText(new Gson().toJson(action));
 
             // Ensure WebSocket session is open before sending
@@ -111,8 +112,8 @@ public class WebSocketFacade extends Endpoint {
                 //updateGameBoard(notification.getMessage());
                 //DisplayChessBoard displayBoard = new DisplayChessBoard(currentBoard);
                 //LoadGame gameMessage = (LoadGame) notification;
-                ChessBoard board = game.getGame();
-                DisplayChessBoard displayBoard = new DisplayChessBoard(board);
+                ChessGame board = game.getGame();
+                DisplayChessBoard displayBoard = new DisplayChessBoard(board.getBoard());
                 displayBoard.renderBoardPerspective(false);
                 break;
 

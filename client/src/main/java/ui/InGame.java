@@ -44,20 +44,47 @@ public class InGame {
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
         return switch (cmd) {
             case "help" -> help();
-            case "leave" -> "quit";
+            case "leave" -> leave();
             case "make_move" -> makeMove(params);
             case "load_game" -> loadGame();
             case "resign" -> resign();
             default -> "Unknown command.";
         };
     }
+    public String leave() throws ResponseException {
+        // Prepare and send the UserGameCommand
+        ResponseSuccess res = server.getAuth();
+        UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.LEAVE,
+                res.getAuthToken(), server.getCurrentGameId(), null, null);
+        ws.sendMessage(command);
+        return "leave";
+    }
 
     public String resign() throws ResponseException {
         // Prepare and send the UserGameCommand
-        ResponseSuccess res = server.getAuth();
-        UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.RESIGN,
-                res.getAuthToken(), server.getCurrentGameId(), null);
-        ws.sendMessage(command);
+        //prompt the user to make sure if they want to signout
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Are you sure you want to resign? Type 'yes' to confirm or 'no' to cancel:");
+
+        String userResponse = scanner.nextLine().trim().toLowerCase();
+
+        // Check the user's response
+        if (userResponse.equalsIgnoreCase("yes") || userResponse.equalsIgnoreCase("y")) {
+            // Prepare and send the UserGameCommand
+            ResponseSuccess res = server.getAuth();
+            UserGameCommand command = new UserGameCommand(
+                    UserGameCommand.CommandType.RESIGN,
+                    res.getAuthToken(),
+                    server.getCurrentGameId(),
+                    null,
+                    null
+            );
+            ws.sendMessage(command); // Send the resign command
+            return "You have successfully resigned.";
+        } else if (userResponse.equalsIgnoreCase("no") || userResponse.equalsIgnoreCase("n")) {
+            // Cancel resignation
+            return "Resignation canceled.";
+        }
         return "resign";
     }
 
@@ -65,7 +92,7 @@ public class InGame {
         // Prepare and send the UserGameCommand
         ResponseSuccess res = server.getAuth();
         UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT,
-                res.getAuthToken(), server.getCurrentGameId(), null);
+                res.getAuthToken(), server.getCurrentGameId(), null, null);
         ws.sendMessage(command);
         return "Loading";
     }
@@ -73,29 +100,20 @@ public class InGame {
     public String makeMove(String[] params) throws ResponseException {
         String chessMoveStartPos = params[0];
         String chessMoveEndPos = params[1];
-
-        // Convert chess notation to row-column indices
         AlphabetToNums abcdefgh = new AlphabetToNums();
         String startColChar = chessMoveStartPos.substring(1,2);
         String endColChar = chessMoveEndPos.substring(1,2);
-
         int startCol = abcdefgh.getIntfromAlph(chessMoveStartPos.substring(0,1));
         int endCol = abcdefgh.getIntfromAlph(chessMoveEndPos.substring(0,1));
-
         int startRow = Integer.parseInt(startColChar);
         int endRow = Integer.parseInt(endColChar);
-
         ChessMove move = new ChessMove(new ChessPosition(startRow, startCol),
                 new ChessPosition(endRow, endCol), null);
-        // Prepare and send the UserGameCommand
         ResponseSuccess res = server.getAuth();
         UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE,
-                        res.getAuthToken(), server.getCurrentGameId(), move);
+                        res.getAuthToken(), server.getCurrentGameId(), move, null);
         ws.sendMessage(command);
-
-
         return "opponents move";
-
     }
 
     public void run() throws ResponseException {
@@ -115,8 +133,12 @@ public class InGame {
                 break; // Exit the Postlogin UI to return to Prelogin
             }
             else if (result.equals("quit")) {
-                System.out.println("Quit out Room Successfully!");
+                System.out.println("logged out you are");
                 System.exit(0); // Exit the application
+            }
+            else if (result.equals("leave")) {
+                System.out.println("Quit out Room Successfully!");
+                return;
             }
             else if(result.equals("opponents move")){
                 System.out.println("Move has been made");
@@ -132,5 +154,9 @@ public class InGame {
                 System.out.println("need help? hit any key and hit enter");
             }
         }
+    }
+    private void goBackToPost(PreloginUi prelog) throws ResponseException {
+        PostloginUi postloginUi = new PostloginUi(prelog.getServerFacade(), prelog.getServerUrl());
+        postloginUi.run(); // Call the main functionality of Postlogin UI
     }
 }

@@ -81,7 +81,7 @@ public class PostloginUi {
 
         // Establish the WebSocket connection
         ws = new WebSocketFacade(serverUrl, notification);
-        ws.connectToGame(server.getAuth(), gameId);
+        ws.connectToGame(server.getAuth(), gameId, whiteBlack);
 
         // Print a message for confirmation
         System.out.println("Joined game " + params[0] + " as " + whiteBlack + ".");
@@ -137,7 +137,7 @@ public class PostloginUi {
         int intyID = Integer.parseInt(iD);
 
         ws = new WebSocketFacade(serverUrl, notification);
-        ws.connectToGame(server.getAuth(), intyID);
+        ws.connectToGame(server.getAuth(), intyID, null);
 
         // Fetch initial game state from server
         //ChessBoard currentBoard = fetchGameState(gameIDInt); // Method to get the initial board state from the server
