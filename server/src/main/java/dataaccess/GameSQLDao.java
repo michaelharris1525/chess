@@ -186,7 +186,7 @@ import java.util.List;
 
 public class GameSQLDao implements GameDataAccess {
     private final Gson gson = new Gson();
-
+    private boolean gameOver = false;
     // Method to add a new game
     @Override
     public void addNewGame(int id, String gameName, ChessGame game) {
@@ -199,6 +199,18 @@ public class GameSQLDao implements GameDataAccess {
             stmt.executeUpdate();
         } catch (SQLException | DataAccessException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void setGameOverInJson(int gameId) {
+        String sql = "UPDATE gameData SET gameState = JSON_SET(gameState, '$.gameOver', true) WHERE gameID = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, gameId);
+            stmt.executeUpdate();
+        } catch (SQLException | DataAccessException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to update gameOver in JSON", e);
         }
     }
 

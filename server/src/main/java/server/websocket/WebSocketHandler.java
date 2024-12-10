@@ -58,6 +58,9 @@ public class WebSocketHandler {
                 gameDao.updateWhiteColor(action.getGameID(), null);
             }
         }
+//        else if(action.getCommandType() == UserGameCommand.CommandType.RESIGN){
+//
+//        }
         switch (action.getCommandType()) {
             case CONNECT -> {
                 if(enterGameAttempt(action.getGameID(), action.getAuthToken()) == true){
@@ -68,12 +71,12 @@ public class WebSocketHandler {
                 }
             }
 
-            case LEAVE -> exit(action.getAuthToken());
+            case LEAVE -> {exit(action.getAuthToken());}
             //case MAKE_MOVE -> makeMove(action, session);
             case MAKE_MOVE -> {
                 makeMove(action, session);
             }
-            case RESIGN -> resign(action.getAuthToken(), session);
+            case RESIGN -> {resign(action.getAuthToken(), session, action);}
         }
     }
 
@@ -85,14 +88,47 @@ public class WebSocketHandler {
         connections.broadcast(visitorName, notification);
 
     }
+    private void resign(String authToken, Session session, UserGameCommand action) throws IOException {
+        //grabbing the game data by Game ID
+        GameData gameDatatoLeave = gameDao.getGameData(action.getGameID());
+        //grabbing User Info
+        AuthData authD = authDao.getauthtoken(action.getAuthToken());
+        String username = authD.username();
 
-    private void resign(String authToken, Session session) throws IOException {
-        connections.remove(authToken);
-        //userDao.get
-        var message = String.format("%s has resigned the game", authToken);
-        var notification = new Notifications(message);
-        connections.broadcast(authToken, notification);
+        if(authD.authToken().equals(gameDatatoLeave.blackUsername()) ||
+                authD.authToken().equals(gameDatatoLeave.whiteUsername())) {
+
+            //set game to game over in gamedata, do not think it works for database
+            gameDatatoLeave.game().setGameOver();
+
+            gameDao.setGameOverInJson(action.getGameID());
+
+            var message = String.format("%s has resigned the game", authToken);
+            var notification = new Notifications(message);
+            connections.broadcast(authToken, notification);
+            //ChessGame gamegame = gameDao.getGameData(action.getGameID()).game();
+            // LoadGame gameboy = new LoadGame(gamegame);
+            Notifications n = new Notifications("GAME OVER");
+
+            String mes = new Gson().toJson(n);
+
+            session.getRemote().sendString(mes);
+        }
+        else{
+            sendErrorMessage(session,"You are not playing game Observer");
+            return;
+        }
+
+
     }
+
+//    private void resign(String authToken, Session session) throws IOException {
+//        connections.remove(authToken);
+//        //userDao.get
+//        var message = String.format("%s has resigned the game", authToken);
+//        var notification = new Notifications(message);
+//        connections.broadcast(authToken, notification);
+//    }
 
     private void sendErrorMessage(Session session, String errorMessage) throws IOException {
 
@@ -124,8 +160,8 @@ public class WebSocketHandler {
         //make a load game object, copy of board, change later to get
         //the actual board that is being played at its current state
         ChessGame gamegame = gameDao.getGameData(gameId).game();
-        ChessBoard board = gamegame.getBoard();
-        LoadGame gameM = new LoadGame(board);
+        //ChessBoard board = gamegame.getBoard();
+        LoadGame gameM = new LoadGame(gamegame);
         String game = new Gson().toJson(gameM);
         if (whiteBlack != null) {
             if (whiteBlack.equalsIgnoreCase("White")) {
@@ -159,7 +195,7 @@ public class WebSocketHandler {
                 System.out.println("Game not found.");
                 return;
             }
-            if(gameData.game().getGameOver() == true){
+            if(gameData.game().getIsItGameOver() == true){
                 sendErrorMessage(session, "FJSDFSDKFJS");
                 return;
             }
@@ -178,41 +214,40 @@ public class WebSocketHandler {
             //check if user color matches piece color
             AuthData authData = authDao.getauthtoken(action.getAuthToken());
             ChessPiece piece = board.getPiece(move.getStartPosition());
-
-            if(piece.getTeamColor() == ChessGame.TeamColor.WHITE ) {
-                if (gameData.getWhiteColor().equals(authData.username())) {
-                    // Attempt to make the move on the board
-                    gameData.game().makeMove(move);
-                    board = gameData.game().getBoard();
-                    gameData.game().setBoard(board);
-                }
-                else{
+            if(!gameData.game().getIsItGameOver()) {
+                if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                    //problem is here, getting username when i should get the auth token
+                    if (gameData.getWhiteColor().equals(authData.username())) {
+                    //if (gameData.getWhiteColor().equals(authData.authToken())) {
+                        // Attempt to make the move on the board
+                        gameData.game().makeMove(move);
+                        board = gameData.game().getBoard();
+                        gameData.game().setBoard(board);
+                    } else {
+                        sendErrorMessage(session, "Wrong color username");
+                        return;
+                    }
+                } else if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
+                    if (gameData.getBlackColor().equals(authData.username())) {
+                        // Attempt to make the move on the board
+                        gameData.game().makeMove(move);
+                        board = gameData.game().getBoard();
+                        gameData.game().setBoard(board);
+                    } else {
+                        sendErrorMessage(session, "Wrong color username");
+                        return;
+                    }
+                } else {
                     sendErrorMessage(session, "Wrong color username");
                     return;
                 }
-            }
-
-            else if(piece.getTeamColor() == ChessGame.TeamColor.BLACK ) {
-                if (gameData.getBlackColor().equals(authData.username())) {
-                    // Attempt to make the move on the board
-                    gameData.game().makeMove(move);
-                    board = gameData.game().getBoard();
-                    gameData.game().setBoard(board);
-                }
-                else{
-                    sendErrorMessage(session, "Wrong color username");
-                    return;
-                }
-            }
-            else{
-                sendErrorMessage(session, "Wrong color username");
-                return;
             }
 
             //update board into database
             gameDao.updateGameState(action.getGameID(),gameData.game());
             // Broadcast the updated board state to all players
-            LoadGame updateBoardd = new LoadGame(board);
+            ChessGame gamegame = gameDao.getGameData(action.getGameID()).game();
+            LoadGame updateBoardd = new LoadGame(gamegame);
             String toUserBoard = new Gson().toJson(updateBoardd);
             Notifications update = new Notifications(
                     "Move made");

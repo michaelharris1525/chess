@@ -81,6 +81,7 @@ public class Service {
                          JoinGameRequest joinRequest)
             throws DataAccessException, PlayerColorException,
             BadRequestsException {
+
         if(authdataac.getauthtoken(authToken) == null){
             throw new DataAccessException("you screwed up");
         }

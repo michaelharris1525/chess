@@ -1,6 +1,7 @@
 package ui.websocket;
 
 import chess.ChessBoard;
+import chess.ChessGame;
 import model.GameData;
 import ui.DisplayChessBoard;
 import com.google.gson.Gson;
@@ -111,8 +112,8 @@ public class WebSocketFacade extends Endpoint {
                 //updateGameBoard(notification.getMessage());
                 //DisplayChessBoard displayBoard = new DisplayChessBoard(currentBoard);
                 //LoadGame gameMessage = (LoadGame) notification;
-                ChessBoard board = game.getGame();
-                DisplayChessBoard displayBoard = new DisplayChessBoard(board);
+                ChessGame board = game.getGame();
+                DisplayChessBoard displayBoard = new DisplayChessBoard(board.getBoard());
                 displayBoard.renderBoardPerspective(false);
                 break;
 

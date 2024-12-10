@@ -62,10 +62,36 @@ public class InGame {
 
     public String resign() throws ResponseException {
         // Prepare and send the UserGameCommand
-        ResponseSuccess res = server.getAuth();
-        UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.RESIGN,
-                res.getAuthToken(), server.getCurrentGameId(), null, null);
-        ws.sendMessage(command);
+        //prompt the user to make sure if they want to signout
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Are you sure you want to resign? Type 'yes' to confirm or 'no' to cancel:");
+
+        String userResponse = scanner.nextLine().trim().toLowerCase();
+
+        // Check the user's response
+        if (userResponse.equalsIgnoreCase("yes") || userResponse.equalsIgnoreCase("y")) {
+            // Prepare and send the UserGameCommand
+            ResponseSuccess res = server.getAuth();
+            UserGameCommand command = new UserGameCommand(
+                    UserGameCommand.CommandType.RESIGN,
+                    res.getAuthToken(),
+                    server.getCurrentGameId(),
+                    null,
+                    null
+            );
+            ws.sendMessage(command); // Send the resign command
+            return "You have successfully resigned.";
+        } else if (userResponse.equalsIgnoreCase("no") || userResponse.equalsIgnoreCase("n")) {
+            // Cancel resignation
+            return "Resignation canceled.";
+        }
+
+
+
+        //ResponseSuccess res = server.getAuth();
+        //UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.RESIGN,
+                //res.getAuthToken(), server.getCurrentGameId(), null, null);
+        //ws.sendMessage(command);
         return "resign";
     }
 
