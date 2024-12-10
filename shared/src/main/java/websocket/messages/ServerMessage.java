@@ -17,20 +17,12 @@ public class ServerMessage {
     public enum ServerMessageType {
         LOAD_GAME,
         ERROR,
-        NOTIFICATION,
-        GAME_OVER
+        NOTIFICATION
     }
 
     public ServerMessage(ServerMessageType type) {
         this.serverMessageType = type;
     }
-
-//    public String getMessage() {
-//        return message;
-//    }
-//    public String getErrorMessage() {
-//        return errorMessage;
-//    }
 
     public ServerMessageType getServerMessageType() {
         return this.serverMessageType;

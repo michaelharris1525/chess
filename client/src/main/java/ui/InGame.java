@@ -155,8 +155,4 @@ public class InGame {
             }
         }
     }
-    private void goBackToPost(PreloginUi prelog) throws ResponseException {
-        PostloginUi postloginUi = new PostloginUi(prelog.getServerFacade(), prelog.getServerUrl());
-        postloginUi.run(); // Call the main functionality of Postlogin UI
-    }
 }

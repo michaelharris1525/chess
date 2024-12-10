@@ -19,10 +19,8 @@ import java.net.URISyntaxException;
 
 //need to extend Endpoint for websocket to work properly
 public class WebSocketFacade extends Endpoint {
-
     Session session;
     NotificationHandler notificationHandler;
-
 
     public WebSocketFacade(String url, NotificationHandler notificationHandler) throws ResponseException {
         try {
@@ -32,9 +30,6 @@ public class WebSocketFacade extends Endpoint {
 
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, socketURI);
-
-
-
 
             //set message handler
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
@@ -57,11 +52,6 @@ public class WebSocketFacade extends Endpoint {
                     else {
                         handleServerMessage(notification, null);
                     }
-                    // Handle game updates like moves or board state changes
-                    //handleServerMessage(notification);
-
-
-
                 }
             });
         } catch (DeploymentException | IOException | URISyntaxException ex) {
@@ -76,15 +66,12 @@ public class WebSocketFacade extends Endpoint {
 
     public void connectToGame(ResponseSuccess userObj, int gameId, String whiteBlack) throws ResponseException {
         try {
-            // Validate inputs
             if (userObj == null || userObj.getAuthToken() == null || gameId <= 0) {
                 throw new ResponseException(400, "Invalid authToken or gameId.");
             }
             UserGameCommand action = new UserGameCommand(UserGameCommand.CommandType.
                     CONNECT, userObj.getAuthToken(), gameId, null, whiteBlack);
-            //this.session.getBasicRemote().sendText(new Gson().toJson(action));
 
-            // Ensure WebSocket session is open before sending
             if (session.isOpen()) {
                 this.session.getBasicRemote().sendText(new Gson().toJson(action));
                 System.out.println("Connected to game with ID: " + gameId);
@@ -97,21 +84,10 @@ public class WebSocketFacade extends Endpoint {
         }
 
     }
-//    private void updateGameBoard(String boardJson) {
-//        ChessBoard updatedBoard = new Gson().fromJson(boardJson, ChessBoard.class);
-//        displayChessBoard.updateBoard(updatedBoard);
-//        displayChessBoard.renderBoardPerspective(false);  // Example perspective
-//    }
 
     private void handleServerMessage(ServerMessage notification, LoadGame game) {
         switch (notification.getServerMessageType()) {
-//                break; DO NOT NEED GAME OVER JUST GO THROUGH NOTIFICATION
             case LOAD_GAME:
-                //Load the Game here, update the board
-                //update the chess board
-                //updateGameBoard(notification.getMessage());
-                //DisplayChessBoard displayBoard = new DisplayChessBoard(currentBoard);
-                //LoadGame gameMessage = (LoadGame) notification;
                 ChessGame board = game.getGame();
                 DisplayChessBoard displayBoard = new DisplayChessBoard(board.getBoard());
                 displayBoard.renderBoardPerspective(false);

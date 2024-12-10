@@ -1,10 +1,6 @@
 package ui;
 
 public class AlphabetToNums {
-//    private String a;
-//    public AlphabetToNums(String abcdefgh){
-//        this.a = abcdefgh;
-//    }
     public int turnAlphtoInt(String alph){
         if(alph.equalsIgnoreCase("A")){
             return 1;
