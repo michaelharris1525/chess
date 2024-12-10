@@ -85,13 +85,6 @@ public class InGame {
             // Cancel resignation
             return "Resignation canceled.";
         }
-
-
-
-        //ResponseSuccess res = server.getAuth();
-        //UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.RESIGN,
-                //res.getAuthToken(), server.getCurrentGameId(), null, null);
-        //ws.sendMessage(command);
         return "resign";
     }
 
@@ -107,29 +100,20 @@ public class InGame {
     public String makeMove(String[] params) throws ResponseException {
         String chessMoveStartPos = params[0];
         String chessMoveEndPos = params[1];
-
-        // Convert chess notation to row-column indices
         AlphabetToNums abcdefgh = new AlphabetToNums();
         String startColChar = chessMoveStartPos.substring(1,2);
         String endColChar = chessMoveEndPos.substring(1,2);
-
         int startCol = abcdefgh.getIntfromAlph(chessMoveStartPos.substring(0,1));
         int endCol = abcdefgh.getIntfromAlph(chessMoveEndPos.substring(0,1));
-
         int startRow = Integer.parseInt(startColChar);
         int endRow = Integer.parseInt(endColChar);
-
         ChessMove move = new ChessMove(new ChessPosition(startRow, startCol),
                 new ChessPosition(endRow, endCol), null);
-        // Prepare and send the UserGameCommand
         ResponseSuccess res = server.getAuth();
         UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE,
                         res.getAuthToken(), server.getCurrentGameId(), move, null);
         ws.sendMessage(command);
-
-
         return "opponents move";
-
     }
 
     public void run() throws ResponseException {
