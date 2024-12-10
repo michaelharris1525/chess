@@ -45,7 +45,6 @@ public class GameSQLDao implements GameDataAccess {
 
     }
 
-    // Method to clear all game data
     @Override
     public void clearGameData() {
         String sql = "DELETE FROM gameData";
