@@ -35,6 +35,7 @@ public class InGame {
                 load_game - loads the chessboard
                 Leave (you leave the room but can come back)
                 Make_Move - example <B3 ---> B4>
+                valid_moves = <A2> 
                 Resign - you hate losing but you feel like you got no choice
                 """;
     }

@@ -1,10 +1,8 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 
+import java.util.Collection;
 import java.util.Objects;
 
 public class DisplayChessBoard {
@@ -79,14 +77,22 @@ public class DisplayChessBoard {
             }
         }
     }
-
     public void renderBoardPerspective(boolean isBlackPerspective) {
         System.out.println(EscapeSequences.ERASE_SCREEN);
         printBoard();  // Refresh the display array
 
+        // Print column labels (top border)
+        //System.out.print("  "); // Offset for row numbers
+        for (int col = 0; col < 8; col++) {
+            char columnLabel = (char) ('a' + (isBlackPerspective ? 7 - col : col));
+            System.out.print("  " + columnLabel + " ");
+        }
+        System.out.println();
+
+        // Print the board
         for (int row = 0; row < 8; row++) {
             int actualRow = isBlackPerspective ? 7 - row : row;  // Perspective handling
-            System.out.print(isBlackPerspective ? row + 1 : 8 - row);
+            System.out.print(isBlackPerspective ? row + 1 : 8 - row); // Row numbers (left side)
 
             for (int col = 0; col < 8; col++) {
                 int actualCol = isBlackPerspective ? 7 - col : col;
@@ -97,7 +103,37 @@ public class DisplayChessBoard {
                 System.out.print(squareColor + piece + RESET_COLOR);
             }
 
-            System.out.println(isBlackPerspective ? row + 1 : 8 - row);
+            System.out.println(" " + (isBlackPerspective ? row + 1 : 8 - row)); // Row numbers (right side)
         }
+
+        // Print column labels (bottom border)
+        //System.out.print("  "); // Offset for row numbers
+        for (int col = 0; col < 8; col++) {
+            char columnLabel = (char) ('a' + (isBlackPerspective ? 7 - col : col));
+            System.out.print("  " + columnLabel + " ");
+        }
+        System.out.println();
     }
+
+
+//    public void renderBoardPerspective(boolean isBlackPerspective) {
+//        System.out.println(EscapeSequences.ERASE_SCREEN);
+//        printBoard();  // Refresh the display array
+//
+//        for (int row = 0; row < 8; row++) {
+//            int actualRow = isBlackPerspective ? 7 - row : row;  // Perspective handling
+//            System.out.print(isBlackPerspective ? row + 1 : 8 - row);
+//
+//            for (int col = 0; col < 8; col++) {
+//                int actualCol = isBlackPerspective ? 7 - col : col;
+//                boolean isLightSquare = (actualRow + actualCol) % 2 == 0;
+//                String squareColor = isLightSquare ? LIGHT_SQUARE : DARK_SQUARE;
+//
+//                String piece = printDA[actualRow][actualCol];
+//                System.out.print(squareColor + piece + RESET_COLOR);
+//            }
+//
+//            System.out.println(isBlackPerspective ? row + 1 : 8 - row);
+//        }
+//    }
 }

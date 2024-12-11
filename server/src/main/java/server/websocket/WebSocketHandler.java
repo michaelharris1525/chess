@@ -110,11 +110,12 @@ public class WebSocketHandler {
     }
     private void enterGameSuccesful(String visitorName, Session session, int gameId, String whiteBlack) throws IOException {
         connections.add(visitorName, session, gameId);
-        String message = String.format("%s is in the game auth token for now", authDao.getauthtoken(visitorName));
+        String message = String.format("%s is in the game for now", visitorName);
         var notification = new Notifications(message);
         connections.broadcast(visitorName, notification, gameId);
         ChessGame gamegame = gameDao.getGameData(gameId).game();
         LoadGame gameM = new LoadGame(gamegame);
+        gameM.setColorToWhiteBlack(whiteBlack);
         String game = new Gson().toJson(gameM);
         if (whiteBlack != null) {
             if (whiteBlack.equalsIgnoreCase("White")) {

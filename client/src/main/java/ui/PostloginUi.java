@@ -125,7 +125,6 @@ public class PostloginUi {
     }
     private String observeGame(String[] params) throws ResponseException {
         String iD = params[0];
-        String whiteorblack = params[1];
         int intyID = Integer.parseInt(iD);
 
         ws = new WebSocketFacade(serverUrl, notification);
@@ -163,6 +162,7 @@ public class PostloginUi {
             }
             else if(result.equals("observe game")){
                 System.out.println("You are now observing game!");
+                transitionToInGame();
             }
             else if(result.equals("inGame")){
                 transitionToInGame();

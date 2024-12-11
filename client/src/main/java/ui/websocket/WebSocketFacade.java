@@ -36,7 +36,7 @@ public class WebSocketFacade extends Endpoint {
                 @Override
                 public void onMessage(String message) {
                     //delete later
-                    System.out.println("Received message: " + message);
+                    //System.out.println("Received message: " + message);
 
                     ServerMessage notification = new Gson().
                             fromJson(message, ServerMessage.class);
@@ -74,7 +74,7 @@ public class WebSocketFacade extends Endpoint {
 
             if (session.isOpen()) {
                 this.session.getBasicRemote().sendText(new Gson().toJson(action));
-                System.out.println("Connected to game with ID: " + gameId);
+                //System.out.println("Connected to game with ID: " + gameId);
             } else {
                 throw new ResponseException(500, "WebSocket session is not open.");
             }
@@ -85,12 +85,22 @@ public class WebSocketFacade extends Endpoint {
 
     }
 
+    private boolean isitBlack(String whiteOrBlack){
+        if(whiteOrBlack.equalsIgnoreCase("white")){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     private void handleServerMessage(ServerMessage notification, LoadGame game) {
         switch (notification.getServerMessageType()) {
             case LOAD_GAME:
                 ChessGame board = game.getGame();
                 DisplayChessBoard displayBoard = new DisplayChessBoard(board.getBoard());
-                displayBoard.renderBoardPerspective(false);
+                boolean whiteOrBlack = isitBlack(game.getWhiteOrBlack());
+                displayBoard.renderBoardPerspective(whiteOrBlack);
                 break;
 
             case NOTIFICATION:
