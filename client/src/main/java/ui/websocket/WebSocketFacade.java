@@ -87,10 +87,10 @@ public class WebSocketFacade extends Endpoint {
 
     private boolean isitBlack(String whiteOrBlack){
         if(whiteOrBlack.equalsIgnoreCase("white")){
-            return true;
+            return false;
         }
         else {
-            return false;
+            return true;
         }
     }
 //    private DisplayChessBoard createDisplay(LoadGame game){

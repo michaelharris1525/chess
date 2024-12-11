@@ -66,7 +66,7 @@ public class DisplayChessBoard {
 
     }
     private void printBoard() {
-        for (int row = 0; row < 8; row++) {
+        for (int row = 7; row >= 0; row--) {
             for (int col = 0; col < 8; col++) {
                 ChessPosition pos = new ChessPosition(row + 1, col + 1);
                 ChessPiece currentPiece = squares.getPiece(pos);
@@ -91,9 +91,9 @@ public class DisplayChessBoard {
         System.out.println();
 
         // Print the board
-        for (int row = 0; row < 8; row++) {
+        for (int row = 7; row >= 0; row--) {
             int actualRow = isBlackPerspective ? 7 - row : row;  // Perspective handling
-            System.out.print(isBlackPerspective ? row + 1 : 8 - row); // Row numbers (left side)
+            System.out.print(isBlackPerspective ?  8 - row: row + 1); // Row numbers (left side)
 
             for (int col = 0; col < 8; col++) {
                 int actualCol = isBlackPerspective ? 7 - col : col;
@@ -111,7 +111,7 @@ public class DisplayChessBoard {
                 System.out.print(squareColor + piece + RESET_COLOR);
             }
 
-            System.out.println(" " + (isBlackPerspective ? row + 1 : 8 - row)); // Row numbers (right side)
+            System.out.println(" " + (isBlackPerspective ? 8-row : row + 1)); // Row numbers (right side)
         }
 
         // Print column labels (bottom border)

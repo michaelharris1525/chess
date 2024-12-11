@@ -122,9 +122,11 @@ public class InGame {
     public String makeMove(String[] params) throws ResponseException {
         String chessMoveStartPos = params[0];
         String chessMoveEndPos = params[1];
+
         AlphabetToNums abcdefgh = new AlphabetToNums();
         String startColChar = chessMoveStartPos.substring(1,2);
         String endColChar = chessMoveEndPos.substring(1,2);
+
         int startCol = abcdefgh.getIntfromAlph(chessMoveStartPos.substring(0,1));
         int endCol = abcdefgh.getIntfromAlph(chessMoveEndPos.substring(0,1));
         int startRow = Integer.parseInt(startColChar);

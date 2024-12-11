@@ -117,9 +117,10 @@ public class WebSocketHandler {
         connections.broadcast(visitorName, notification, gameId);
         ChessGame gamegame = gameDao.getGameData(gameId).game();
         LoadGame gameM = new LoadGame(gamegame, null);
-        gameM.setColorToWhiteBlack(whiteBlack);
+
         String game = new Gson().toJson(gameM);
         if (whiteBlack != null) {
+            gameM.setColorToWhiteBlack(whiteBlack);
             if (whiteBlack.equalsIgnoreCase("White")) {
                 gameDao.updateWhiteColor(gameId, visitorName);
             } else if(whiteBlack.equalsIgnoreCase("Black")) {
