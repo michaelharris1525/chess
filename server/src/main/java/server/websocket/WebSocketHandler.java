@@ -6,6 +6,7 @@ import dataaccess.AuthSQLTokenClass;
 import dataaccess.GameSQLDao;
 import model.AuthData;
 import model.GameData;
+import org.eclipse.jetty.server.Authentication;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
@@ -65,7 +66,15 @@ public class WebSocketHandler {
             case MAKE_MOVE -> {makeMove(action, session); }
             case RESIGN -> {resign(authDadfaf.username(), session, action);}
             case VALID -> {validMoves(action, session);}
+            case DISPLAY -> {displayboard(authDadfaf.username(), session, action.getGameID(),action.getWhiteblack()
+            ,action);}
         }
+    }
+    private void displayboard(String username, Session session, int gameId, String whiteBlack, UserGameCommand action) throws IOException {
+        ChessGame gamegame = gameDao.getGameData(gameId).game();
+        LoadGame gameM = new LoadGame(gamegame, null, whiteBlack);
+        String game = new Gson().toJson(gameM);
+        session.getRemote().sendString(game);
     }
     private void exit(String visitorName, UserGameCommand command) throws IOException {
         connections.remove(visitorName);
@@ -167,7 +176,7 @@ public class WebSocketHandler {
                         board = gameData.game().getBoard();
                         gameData.game().setBoard(board);
                     } else {
-                        sendErrorMessage(session, "Wrong color username");
+                        sendErrorMessage(session, "Invalid Move!");
                         return;
                     }
                 } else if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
@@ -177,7 +186,7 @@ public class WebSocketHandler {
                         board = gameData.game().getBoard();
                         gameData.game().setBoard(board);
                     } else {
-                        sendErrorMessage(session, "Wrong color username");
+                        sendErrorMessage(session, "Invalid Move!");
                         return;
                     }
                 } else {
@@ -193,10 +202,21 @@ public class WebSocketHandler {
             String toUserBoard = new Gson().toJson(updateBoardd);
             Notifications update = new Notifications(
                     "Move made");
-            //send the message of it being updated to the users
-            AuthData authdata3 = authDao.getauthtoken(action.getAuthToken());
-            connections.broadcast(authdata3.username(), update, action.getGameID());
-            connections.broadcast(null, updateBoardd, action.getGameID());
+            //check if the game is really over if it is, send different message
+            if(gameData.game().getIsItGameOver()) {
+                //send the message of it being updated to the users
+                AuthData authdata3 = authDao.getauthtoken(action.getAuthToken());
+                Notifications gameOverSon = new Notifications(
+                        "GAME OVER!!! " + authdata3.username() + " WINS");
+                connections.broadcast(authdata3.username(), gameOverSon, action.getGameID());
+                connections.broadcast(null, updateBoardd, action.getGameID());
+            }
+            else {
+                //send the message of it being updated to the users
+                AuthData authdata3 = authDao.getauthtoken(action.getAuthToken());
+                connections.broadcast(authdata3.username(), update, action.getGameID());
+                connections.broadcast(null, updateBoardd, action.getGameID());
+            }
         }
         catch (InvalidMoveException e) {
             // Handle invalid move

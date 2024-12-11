@@ -33,7 +33,7 @@ public class InGame {
     private String help() {
         // implement later: join <ID> [WHITE|BLACK] - a game
         return """
-                load_game - loads the chessboard
+                load_game - <White or black perspective> loads the chessboard
                 Leave (you leave the room but can come back)
                 Make_Move - example <B3 ---> B4>
                 valid_moves = <A2> 
@@ -48,7 +48,7 @@ public class InGame {
             case "help" -> help();
             case "leave" -> leave();
             case "make_move" -> makeMove(params);
-            case "load_game" -> loadGame();
+            case "load_game" -> loadGame(params);
             case "valid_moves" -> validMoves(params);
             case "resign" -> resign();
             default -> "Unknown command.";
@@ -92,11 +92,12 @@ public class InGame {
         return "resign";
     }
 
-    public String loadGame() throws ResponseException {
+    public String loadGame(String [] params) throws ResponseException {
         // Prepare and send the UserGameCommand
+        String whiteBlack = params[0];
         ResponseSuccess res = server.getAuth();
-        UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT,
-                res.getAuthToken(), server.getCurrentGameId(), null, null, null);
+        UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.DISPLAY,
+                res.getAuthToken(), server.getCurrentGameId(), null, whiteBlack, null);
         ws.sendMessage(command);
         return "Loading";
     }

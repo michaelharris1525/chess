@@ -41,7 +41,8 @@ public class UserGameCommand {
         MAKE_MOVE,
         LEAVE,
         RESIGN,
-        VALID
+        VALID,
+        DISPLAY
     }
 
     public ChessPosition getPosition() {
