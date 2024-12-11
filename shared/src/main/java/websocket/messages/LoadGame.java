@@ -11,14 +11,15 @@ public class LoadGame extends ServerMessage{
     //private ChessBoard game;
     ChessGame game;
     private boolean gameOver;
-    String whiteOrBlack;
+    String whiteOrBlack= "white";
     Collection<ChessMove> moves;
     //private boolean whiteOrblack = true;
-    public LoadGame(ChessGame game, Collection<ChessMove> moves) {
+    public LoadGame(ChessGame game, Collection<ChessMove> moves,String wb) {
         super(ServerMessageType.LOAD_GAME);
         this.game = game;
         this.gameOver = game.getIsItGameOver();
         this.moves = moves;
+        this.whiteOrBlack = wb;
     }
 
     public Collection<ChessMove> getMoves() {

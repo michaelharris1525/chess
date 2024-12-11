@@ -116,7 +116,7 @@ public class WebSocketHandler {
         var notification = new Notifications(message);
         connections.broadcast(visitorName, notification, gameId);
         ChessGame gamegame = gameDao.getGameData(gameId).game();
-        LoadGame gameM = new LoadGame(gamegame, null);
+        LoadGame gameM = new LoadGame(gamegame, null, whiteBlack);
 
         String game = new Gson().toJson(gameM);
         if (whiteBlack != null) {
@@ -133,7 +133,7 @@ public class WebSocketHandler {
         GameData gameGame = gameDao.getGameData(action.getGameID());
         Collection<ChessMove> collectionOfMoves = gameGame.game().validMoves(action.getPosition());
         ChessGame gamegame = gameDao.getGameData(action.getGameID()).game();
-        LoadGame updateBoardd = new LoadGame(gamegame, collectionOfMoves);
+        LoadGame updateBoardd = new LoadGame(gamegame, collectionOfMoves, action.getWhiteblack());
         connections.broadcast(null, updateBoardd, action.getGameID());
 
     }
@@ -189,7 +189,7 @@ public class WebSocketHandler {
             gameDao.updateGameState(action.getGameID(),gameData.game());
             // Broadcast the updated board state to all players
             ChessGame gamegame = gameDao.getGameData(action.getGameID()).game();
-            LoadGame updateBoardd = new LoadGame(gamegame, null);
+            LoadGame updateBoardd = new LoadGame(gamegame, null, action.getWhiteblack());
             String toUserBoard = new Gson().toJson(updateBoardd);
             Notifications update = new Notifications(
                     "Move made");
