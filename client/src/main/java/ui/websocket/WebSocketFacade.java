@@ -70,7 +70,7 @@ public class WebSocketFacade extends Endpoint {
                 throw new ResponseException(400, "Invalid authToken or gameId.");
             }
             UserGameCommand action = new UserGameCommand(UserGameCommand.CommandType.
-                    CONNECT, userObj.getAuthToken(), gameId, null, whiteBlack);
+                    CONNECT, userObj.getAuthToken(), gameId, null, whiteBlack, null);
 
             if (session.isOpen()) {
                 this.session.getBasicRemote().sendText(new Gson().toJson(action));
@@ -93,12 +93,21 @@ public class WebSocketFacade extends Endpoint {
             return false;
         }
     }
+//    private DisplayChessBoard createDisplay(LoadGame game){
+//        ChessGame board = game.getGame();
+//        if (game.getMoves() == null){
+//            DisplayChessBoard displayBoard = new DisplayChessBoard(board.getBoard(), null);
+//        }
+//        else{
+//            DisplayChessBoard displayBoard = new DisplayChessBoard(board.getBoard(), game.getMoves());
+//        }
+//    }
 
     private void handleServerMessage(ServerMessage notification, LoadGame game) {
         switch (notification.getServerMessageType()) {
             case LOAD_GAME:
                 ChessGame board = game.getGame();
-                DisplayChessBoard displayBoard = new DisplayChessBoard(board.getBoard());
+                DisplayChessBoard displayBoard = new DisplayChessBoard(board.getBoard(), game.getMoves());
                 boolean whiteOrBlack = isitBlack(game.getWhiteOrBlack());
                 displayBoard.renderBoardPerspective(whiteOrBlack);
                 break;
@@ -123,7 +132,7 @@ public class WebSocketFacade extends Endpoint {
             if (session.isOpen()) {
                 String message = new Gson().toJson(command);
                 this.session.getBasicRemote().sendText(message);
-                System.out.println("Sent message: " + message);
+                //System.out.println("Sent message: " + message);
             } else {
                 throw new ResponseException(500, "WebSocket session is not open.");
             }

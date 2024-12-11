@@ -12,11 +12,13 @@ public class DisplayChessBoard {
 
     private String[][] printDA = new String[8][8];
     private ChessBoard squares = new ChessBoard();
+    private Collection<ChessMove> validMoves;
 
     //redo this giving a board as a private
-    public DisplayChessBoard(ChessBoard chessBoard) {
+    public DisplayChessBoard(ChessBoard chessBoard, Collection<ChessMove> moves) {
 //        initializeDefaultBoard();
         this.squares = chessBoard.copyOfBoard();
+        this.validMoves = moves;
         printBoard();
     }
 
@@ -63,7 +65,6 @@ public class DisplayChessBoard {
         }
 
     }
-
     private void printBoard() {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
@@ -77,12 +78,12 @@ public class DisplayChessBoard {
             }
         }
     }
+
     public void renderBoardPerspective(boolean isBlackPerspective) {
         System.out.println(EscapeSequences.ERASE_SCREEN);
         printBoard();  // Refresh the display array
 
         // Print column labels (top border)
-        //System.out.print("  "); // Offset for row numbers
         for (int col = 0; col < 8; col++) {
             char columnLabel = (char) ('a' + (isBlackPerspective ? 7 - col : col));
             System.out.print("  " + columnLabel + " ");
@@ -99,6 +100,13 @@ public class DisplayChessBoard {
                 boolean isLightSquare = (actualRow + actualCol) % 2 == 0;
                 String squareColor = isLightSquare ? LIGHT_SQUARE : DARK_SQUARE;
 
+                ChessPosition currentPos = new ChessPosition(actualRow + 1, actualCol + 1);
+                // Check if this position is in the list of valid moves
+                if (validMoves != null && validMoves.stream()
+                        .anyMatch(move -> move.getEndPosition().equals(currentPos))) {
+                    squareColor = EscapeSequences.SET_BG_COLOR_BLUE; // Use a highlight color
+                }
+
                 String piece = printDA[actualRow][actualCol];
                 System.out.print(squareColor + piece + RESET_COLOR);
             }
@@ -107,7 +115,6 @@ public class DisplayChessBoard {
         }
 
         // Print column labels (bottom border)
-        //System.out.print("  "); // Offset for row numbers
         for (int col = 0; col < 8; col++) {
             char columnLabel = (char) ('a' + (isBlackPerspective ? 7 - col : col));
             System.out.print("  " + columnLabel + " ");
@@ -116,13 +123,35 @@ public class DisplayChessBoard {
     }
 
 
+//    private void printBoard() {
+//        for (int row = 0; row < 8; row++) {
+//            for (int col = 0; col < 8; col++) {
+//                ChessPosition pos = new ChessPosition(row + 1, col + 1);
+//                ChessPiece currentPiece = squares.getPiece(pos);
+//                if (currentPiece != null) {
+//                    addBoard(currentPiece, row, col);
+//                } else {
+//                    printDA[row][col] = EscapeSequences.EMPTY;
+//                }
+//            }
+//        }
+//    }
 //    public void renderBoardPerspective(boolean isBlackPerspective) {
 //        System.out.println(EscapeSequences.ERASE_SCREEN);
 //        printBoard();  // Refresh the display array
 //
+//        // Print column labels (top border)
+//        //System.out.print("  "); // Offset for row numbers
+//        for (int col = 0; col < 8; col++) {
+//            char columnLabel = (char) ('a' + (isBlackPerspective ? 7 - col : col));
+//            System.out.print("  " + columnLabel + " ");
+//        }
+//        System.out.println();
+//
+//        // Print the board
 //        for (int row = 0; row < 8; row++) {
 //            int actualRow = isBlackPerspective ? 7 - row : row;  // Perspective handling
-//            System.out.print(isBlackPerspective ? row + 1 : 8 - row);
+//            System.out.print(isBlackPerspective ? row + 1 : 8 - row); // Row numbers (left side)
 //
 //            for (int col = 0; col < 8; col++) {
 //                int actualCol = isBlackPerspective ? 7 - col : col;
@@ -133,7 +162,18 @@ public class DisplayChessBoard {
 //                System.out.print(squareColor + piece + RESET_COLOR);
 //            }
 //
-//            System.out.println(isBlackPerspective ? row + 1 : 8 - row);
+//            System.out.println(" " + (isBlackPerspective ? row + 1 : 8 - row)); // Row numbers (right side)
 //        }
+//
+//        // Print column labels (bottom border)
+//        //System.out.print("  "); // Offset for row numbers
+//        for (int col = 0; col < 8; col++) {
+//            char columnLabel = (char) ('a' + (isBlackPerspective ? 7 - col : col));
+//            System.out.print("  " + columnLabel + " ");
+//        }
+//        System.out.println();
 //    }
+//
+
+
 }

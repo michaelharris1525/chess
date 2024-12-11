@@ -15,6 +15,7 @@ import websocket.messages.Notifications;
 import websocket.commands.UserGameCommand;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Objects;
 
 
@@ -63,6 +64,7 @@ public class WebSocketHandler {
             case LEAVE -> {exit(authDadfaf.username(), action);}
             case MAKE_MOVE -> {makeMove(action, session); }
             case RESIGN -> {resign(authDadfaf.username(), session, action);}
+            case VALID -> {validMoves(action, session);}
         }
     }
     private void exit(String visitorName, UserGameCommand command) throws IOException {
@@ -114,7 +116,7 @@ public class WebSocketHandler {
         var notification = new Notifications(message);
         connections.broadcast(visitorName, notification, gameId);
         ChessGame gamegame = gameDao.getGameData(gameId).game();
-        LoadGame gameM = new LoadGame(gamegame);
+        LoadGame gameM = new LoadGame(gamegame, null);
         gameM.setColorToWhiteBlack(whiteBlack);
         String game = new Gson().toJson(gameM);
         if (whiteBlack != null) {
@@ -126,6 +128,15 @@ public class WebSocketHandler {
         }
         session.getRemote().sendString(game);
     }
+    private void validMoves(UserGameCommand action,Session session) throws IOException {
+        GameData gameGame = gameDao.getGameData(action.getGameID());
+        Collection<ChessMove> collectionOfMoves = gameGame.game().validMoves(action.getPosition());
+        ChessGame gamegame = gameDao.getGameData(action.getGameID()).game();
+        LoadGame updateBoardd = new LoadGame(gamegame, collectionOfMoves);
+        connections.broadcast(null, updateBoardd, action.getGameID());
+
+    }
+
     private void makeMove(UserGameCommand action, Session session) throws IOException, InvalidMoveException {
         // Extract the realMove from the command
         try {
@@ -177,7 +188,7 @@ public class WebSocketHandler {
             gameDao.updateGameState(action.getGameID(),gameData.game());
             // Broadcast the updated board state to all players
             ChessGame gamegame = gameDao.getGameData(action.getGameID()).game();
-            LoadGame updateBoardd = new LoadGame(gamegame);
+            LoadGame updateBoardd = new LoadGame(gamegame, null);
             String toUserBoard = new Gson().toJson(updateBoardd);
             Notifications update = new Notifications(
                     "Move made");

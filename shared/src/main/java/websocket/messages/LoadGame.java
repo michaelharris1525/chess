@@ -2,17 +2,27 @@ package websocket.messages;
 
 import chess.ChessBoard;
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
+
+import java.util.Collection;
 
 public class LoadGame extends ServerMessage{
     //private ChessBoard game;
     ChessGame game;
     private boolean gameOver;
     String whiteOrBlack = "white";
+    Collection<ChessMove> moves;
     //private boolean whiteOrblack = true;
-    public LoadGame(ChessGame game) {
+    public LoadGame(ChessGame game, Collection<ChessMove> moves) {
         super(ServerMessageType.LOAD_GAME);
         this.game = game;
         this.gameOver = game.getIsItGameOver();
+        this.moves = moves;
+    }
+
+    public Collection<ChessMove> getMoves() {
+        return moves;
     }
 
     public void setColorToWhiteBlack(String whiteorb){

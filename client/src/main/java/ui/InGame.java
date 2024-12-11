@@ -1,6 +1,7 @@
 package ui;
 
 import chess.ChessMove;
+import chess.ChessPiece;
 import chess.ChessPosition;
 import com.google.gson.Gson;
 import model.GameData;
@@ -48,15 +49,17 @@ public class InGame {
             case "leave" -> leave();
             case "make_move" -> makeMove(params);
             case "load_game" -> loadGame();
+            case "valid_moves" -> validMoves(params);
             case "resign" -> resign();
             default -> "Unknown command.";
         };
     }
+
     public String leave() throws ResponseException {
         // Prepare and send the UserGameCommand
         ResponseSuccess res = server.getAuth();
         UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.LEAVE,
-                res.getAuthToken(), server.getCurrentGameId(), null, null);
+                res.getAuthToken(), server.getCurrentGameId(), null, null, null);
         ws.sendMessage(command);
         return "leave";
     }
@@ -78,7 +81,7 @@ public class InGame {
                     res.getAuthToken(),
                     server.getCurrentGameId(),
                     null,
-                    null
+                    null, null
             );
             ws.sendMessage(command); // Send the resign command
             return "You have successfully resigned.";
@@ -93,9 +96,27 @@ public class InGame {
         // Prepare and send the UserGameCommand
         ResponseSuccess res = server.getAuth();
         UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT,
-                res.getAuthToken(), server.getCurrentGameId(), null, null);
+                res.getAuthToken(), server.getCurrentGameId(), null, null, null);
         ws.sendMessage(command);
         return "Loading";
+    }
+
+    public String validMoves(String[] params) throws ResponseException {
+        String chessPiecePosition = params[0];
+        String startColChar = chessPiecePosition.substring(1,2);
+        int startRow = Integer.parseInt(startColChar);
+        AlphabetToNums abc = new AlphabetToNums();
+        int startCol = abc.getIntfromAlph(chessPiecePosition.substring(0,1));
+
+        ChessPosition position  = new ChessPosition(startRow,startCol);
+
+        ResponseSuccess res = server.getAuth();
+
+        UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.VALID,
+                res.getAuthToken(), server.getCurrentGameId(), null, null, position);
+        ws.sendMessage(command);
+
+        return "possible moves";
     }
 
     public String makeMove(String[] params) throws ResponseException {
@@ -112,7 +133,7 @@ public class InGame {
                 new ChessPosition(endRow, endCol), null);
         ResponseSuccess res = server.getAuth();
         UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE,
-                        res.getAuthToken(), server.getCurrentGameId(), move, null);
+                        res.getAuthToken(), server.getCurrentGameId(), move, null, null);
         ws.sendMessage(command);
         return "opponents move";
     }
@@ -149,6 +170,9 @@ public class InGame {
             }
             else if(result.equals("resign")){
                 System.out.println("GameOver...");
+            }
+            else if(result.equalsIgnoreCase("possible moves")){
+
             }
             else{
                 System.out.println(help());
