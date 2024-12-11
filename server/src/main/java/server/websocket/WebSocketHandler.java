@@ -48,7 +48,7 @@ public class WebSocketHandler {
                 gameDao.updateWhiteColor(action.getGameID(), null);
             }
             else if(Objects.equals(gameDatatoLeave.blackUsername(), username)){
-                gameDao.updateWhiteColor(action.getGameID(), null);
+                gameDao.updateBlackColor(action.getGameID(), null);
             }
         }
         AuthData authDadfaf = authDao.getauthtoken(action.getAuthToken());
@@ -124,7 +124,7 @@ public class WebSocketHandler {
             if (whiteBlack.equalsIgnoreCase("White")) {
                 gameDao.updateWhiteColor(gameId, visitorName);
             } else if(whiteBlack.equalsIgnoreCase("Black")) {
-                gameDao.updateBlackColor(gameId, whiteBlack);
+                gameDao.updateBlackColor(gameId, visitorName);
             }
         }
         session.getRemote().sendString(game);

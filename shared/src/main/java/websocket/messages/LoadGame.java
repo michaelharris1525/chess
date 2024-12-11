@@ -11,7 +11,7 @@ public class LoadGame extends ServerMessage{
     //private ChessBoard game;
     ChessGame game;
     private boolean gameOver;
-    String whiteOrBlack = "white";
+    String whiteOrBlack;
     Collection<ChessMove> moves;
     //private boolean whiteOrblack = true;
     public LoadGame(ChessGame game, Collection<ChessMove> moves) {
