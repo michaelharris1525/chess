@@ -8,7 +8,9 @@ import com.google.gson.Gson;
 import requestextension.ResponseException;
 import ui.ResponseSuccess;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGame;
+import websocket.messages.Notifications;
 import websocket.messages.ServerMessage;
 //actions = game commands, notifications = servermessage
 
@@ -42,7 +44,9 @@ public class WebSocketFacade extends Endpoint {
                             fromJson(message, ServerMessage.class);
 
                     if (notification.getServerMessageType() == ServerMessage.ServerMessageType.NOTIFICATION){
-                        handleServerMessage(notification, null);
+                        Notifications notif = new Gson().
+                                fromJson(message, Notifications.class);
+                        handleNotifactions(notif);
                     }
                     else if (notification.getServerMessageType() == ServerMessage.ServerMessageType.LOAD_GAME){
                         LoadGame loadingBoard = new Gson().
@@ -50,7 +54,9 @@ public class WebSocketFacade extends Endpoint {
                         handleServerMessage(notification, loadingBoard);
                     }
                     else {
-                        handleServerMessage(notification, null);
+                        ErrorMessage errpr = new Gson().
+                                fromJson(message, ErrorMessage.class);
+                        handleErrorMessage(errpr);
                     }
                 }
             });
@@ -93,15 +99,13 @@ public class WebSocketFacade extends Endpoint {
             return true;
         }
     }
-//    private DisplayChessBoard createDisplay(LoadGame game){
-//        ChessGame board = game.getGame();
-//        if (game.getMoves() == null){
-//            DisplayChessBoard displayBoard = new DisplayChessBoard(board.getBoard(), null);
-//        }
-//        else{
-//            DisplayChessBoard displayBoard = new DisplayChessBoard(board.getBoard(), game.getMoves());
-//        }
-//    }
+    private void handleErrorMessage(ErrorMessage erro){
+        System.err.println("Error: " + erro);
+    }
+    private void handleNotifactions(Notifications message){
+        //notificationHandler.notify(message);
+        System.err.println(message.getMessage());
+    }
 
     private void handleServerMessage(ServerMessage notification, LoadGame game) {
         switch (notification.getServerMessageType()) {

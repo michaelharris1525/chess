@@ -18,7 +18,7 @@ public class PostloginUi {
     private WebSocketFacade ws;
     private NotificationHandler notification;
 
-
+    private String userColor;
     public PostloginUi(ServerFacade server, String serverUrl) {
         this.server = server;
         this.serverUrl = serverUrl;
@@ -31,6 +31,9 @@ public class PostloginUi {
     }
     private Collection<GameData> keepMap(){
         return this.collect;
+    }
+    public void setColor(String color){
+        this.userColor = color;
     }
 
 
@@ -71,7 +74,7 @@ public class PostloginUi {
                 !whiteBlack.equalsIgnoreCase("BLACK")) {
             throw new ResponseException(400, "Team choice must be either 'White' or 'Black'.");
         }
-
+        setColor(whiteBlack);
 
         // Make the HTTP call to join the game
         server.joinGame(server.getAuth(), gameId, whiteBlack);
@@ -128,7 +131,7 @@ public class PostloginUi {
         int intyID = Integer.parseInt(iD);
 
         ws = new WebSocketFacade(serverUrl, notification);
-        ws.connectToGame(server.getAuth(), intyID, null);
+        ws.connectToGame(server.getAuth(), intyID, "white");
 
         server.observeID(intyID);
         return "observe game";
@@ -175,7 +178,7 @@ public class PostloginUi {
     }
 
     private void transitionToInGame() throws ResponseException {
-        InGame ingame = new InGame(server, serverUrl);
+        InGame ingame = new InGame(server, serverUrl, userColor);
         ingame.run(); // Call the main functionality of InGame UI
     }
 }

@@ -23,12 +23,12 @@ public class InGame {
     //after ws
     private WebSocketFacade ws;
     private NotificationHandler notification;
-    public InGame(ServerFacade server, String serverUrl) throws ResponseException {
+    private String userColorColor;
+    public InGame(ServerFacade server, String serverUrl, String userColor) throws ResponseException {
         this.server = server;
         this.serverUrl = serverUrl;
         this.ws = new WebSocketFacade(serverUrl, notification);
-
-        //this.notificationHandler = notificationHandler;
+        this.userColorColor = userColor;
     }
     private String help() {
         // implement later: join <ID> [WHITE|BLACK] - a game
@@ -114,7 +114,7 @@ public class InGame {
         ResponseSuccess res = server.getAuth();
 
         UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.VALID,
-                res.getAuthToken(), server.getCurrentGameId(), null, null, position);
+                res.getAuthToken(), server.getCurrentGameId(), null, userColorColor, position);
         ws.sendMessage(command);
 
         return "possible moves";

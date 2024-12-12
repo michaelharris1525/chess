@@ -150,14 +150,14 @@ public class WebSocketHandler {
     private void makeMove(UserGameCommand action, Session session) throws IOException, InvalidMoveException {
         // Extract the realMove from the command
         try {
-
+            String whiteorBlackJustForOneCase = null;
             GameData gameData = gameDao.getGameData(action.getGameID());
             if (gameData == null) {
                 System.out.println("Game not found.");
                 return;
             }
             if(gameData.game().getIsItGameOver() == true){
-                sendErrorMessage(session, "FJSDFSDKFJS");
+                sendErrorMessage(session, "Game is Over");
                 return;
             }
             ChessMove move = action.getRealMove();
@@ -175,6 +175,9 @@ public class WebSocketHandler {
                         gameData.game().makeMove(move);
                         board = gameData.game().getBoard();
                         gameData.game().setBoard(board);
+                        if(action.getWhiteblack() == null){
+                            whiteorBlackJustForOneCase = "white";
+                        }
                     } else {
                         sendErrorMessage(session, "Invalid Move!");
                         return;
@@ -185,6 +188,9 @@ public class WebSocketHandler {
                         gameData.game().makeMove(move);
                         board = gameData.game().getBoard();
                         gameData.game().setBoard(board);
+                        if(action.getWhiteblack() == null){
+                            whiteorBlackJustForOneCase = "black";
+                        }
                     } else {
                         sendErrorMessage(session, "Invalid Move!");
                         return;
@@ -194,34 +200,43 @@ public class WebSocketHandler {
                     return;
                 }
             }
+            //game over then print out.
+
+
             //update board into database
             gameDao.updateGameState(action.getGameID(),gameData.game());
             // Broadcast the updated board state to all players
             ChessGame gamegame = gameDao.getGameData(action.getGameID()).game();
-            LoadGame updateBoardd = new LoadGame(gamegame, null, action.getWhiteblack());
-            String toUserBoard = new Gson().toJson(updateBoardd);
-            Notifications update = new Notifications(
-                    "Move made");
+
+
+            LoadGame updateBoardd = new LoadGame(gamegame, null, whiteorBlackJustForOneCase);
+            //String toUserBoard = new Gson().toJson(updateBoardd);
+
+            Notifications update = new Notifications(" moved ");
             //check if the game is really over if it is, send different message
             if(gameData.game().getIsItGameOver()) {
-                //send the message of it being updated to the users
-                AuthData authdata3 = authDao.getauthtoken(action.getAuthToken());
-                Notifications gameOverSon = new Notifications(
-                        "GAME OVER!!! " + authdata3.username() + " WINS");
-                connections.broadcast(authdata3.username(), gameOverSon, action.getGameID());
-                connections.broadcast(null, updateBoardd, action.getGameID());
+                endGameSendMessage(updateBoardd, action);
             }
             else {
                 //send the message of it being updated to the users
                 AuthData authdata3 = authDao.getauthtoken(action.getAuthToken());
                 connections.broadcast(authdata3.username(), update, action.getGameID());
                 connections.broadcast(null, updateBoardd, action.getGameID());
+
             }
         }
         catch (InvalidMoveException e) {
             // Handle invalid move
             sendErrorMessage(session, "invalid move can't do that JACK!");
         }
+    }
+    private void endGameSendMessage(LoadGame board, UserGameCommand action) throws IOException {
+        //send the message of it being updated to the users
+        AuthData authdata3 = authDao.getauthtoken(action.getAuthToken());
+        Notifications gameOverSon = new Notifications(
+                "GAME OVER!!! " + authdata3.username() + " WINS");
+        connections.broadcast(authdata3.username(), gameOverSon, action.getGameID());
+        connections.broadcast(null, board, action.getGameID());
     }
 
 }
